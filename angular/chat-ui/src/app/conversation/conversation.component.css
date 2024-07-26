@@ -1,0 +1,329 @@
+
+:host \/::ng-deep\/ div {
+  border: 0!important;
+}
+
+.outer-fixed-width {
+  overflow-y: scroll;
+}
+
+.outer-fixed-width > * {
+  overflow-y: scroll;
+}
+
+.outer {
+  position: relative;
+  width: 100%;
+}
+
+.footer::-webkit-scrollbar, .outer::-webkit-scrollbar,
+  .paginator::-webkit-scrollbar,
+  .security::-webkit-scrollbar,
+  .parent::-webkit-scrollbar,
+  .focus::-webkit-scrollbar,
+  .add-message::-webkit-scrollbar, .more::-webkit-scrollbar, .less::-webkit-scrollbar {
+  display: none;
+}
+
+.footer, .outer, .back, .paginator, .security,
+  .focus, .parent,
+  .add-message, .more, .less {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.spinner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 80px;
+  margin: auto;
+  z-index: 9999;
+}
+
+.focus {
+  left: 330px;
+  color: white;
+  padding-left: 18px;
+  padding-top: 4px;
+  font-size: normal;
+}
+
+.security {
+  position: absolute;
+  left: 330px;
+  font-size: small;
+}
+
+.security .mat-icon {
+  font-size: 14px;
+  width: 14px;
+}
+
+.back .mat-icon  {
+  font-size: 22px;
+  width: 22px;
+}
+
+.back {
+  position: absolute;
+  left: 0px;
+  z-index: 1;
+}
+
+.paginator {
+  position: absolute;
+  background-color: transparent;
+  margin-top: -15px;
+  height: 40px;
+  width: 300px;
+  right: 600px;
+}
+
+.parent {
+  position: absolute;
+  top: 4px;
+  left: 330px;
+  height: 30px;
+  line-height: 30px;
+}
+
+/* Small format */
+
+@media (max-width: 1201px) {
+
+.security, .focus, .parent {
+  left: 270px;
+}
+
+.filter {
+  left: 360px;
+}
+
+}
+
+@media (max-width: 1080px) {
+
+.security, .focus, .parent {
+  left: 230px;
+}
+
+.filter {
+  left: 320px;
+}
+
+}
+
+@media (max-width: 960px) {
+
+.security, .focus {
+  left: 4px;
+}
+
+.filter {
+  left: 18px;
+}
+
+.parent {
+  left: 40px;
+  top: 0px;
+}
+
+.convoname, .anonconvoname {
+  display: inline-block;
+  position: absolute;
+  top: -8px;
+  font-size: large;
+  padding-left: 60px;
+}
+
+.add-idea {
+  right: 5px;
+}
+
+}
+
+/* Large format */
+
+@media (min-width: 961px) {
+
+.back {
+  top: 32px;
+}
+
+.convoname, .anonconvoname {
+  margin-top: 6px;
+  display: inline-block;
+  font-size: large;
+  padding-left: 5px;
+}
+
+.anonconvoname {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+}
+
+/* Common */
+
+.back {
+  top: -4px;
+}
+
+
+@media (min-width: 650px) {
+
+}
+
+@media (max-width: 651px) {
+
+}
+
+.more {
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+}
+
+.less {
+  float: right;
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+}
+
+.bottom-border {
+  border-bottom: 1px lightgray outset;
+  border-right: mixed none;
+  border-top: mixed none;
+  border-left: mixed none;
+}
+
+.newpaginator {
+  height: 43px;
+  margin-top: -10px;
+  min-width: 300px;
+  background-color: transparent;
+}
+
+.debug1 {
+  background-color: green;
+}
+
+.debug2 {
+  background-color: blue;
+}
+
+.debug3 {
+  background-color: red;
+}
+
+.listcontent {
+}
+
+.input {
+  font-size: medium;
+  padding-bottom: 6px;
+}
+
+.inputText {
+  min-height: 32px;
+  background-color: white;
+  border: 0px;
+  border-color: white;
+  border-radius: 6px;
+  margin-top: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 2px;
+  z-index: 1;
+  font-size: medium;
+}
+
+.footer {
+  background-color: white;
+}
+
+.small-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.message-icon, .medium-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.add-message {
+  min-width: 40px;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+}
+
+.add-button-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.user {
+  text-align: center;
+  width: 64px;
+  margin: 5px;
+}
+
+.user-icon, .icon {
+  width: 32px;
+  height: 32px;
+}
+
+.user-icon {
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.online {
+  border: 2px solid red;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.white-color {
+  color: white;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+
+.flex-spacer {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+}
+
+.flex-fixed {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}

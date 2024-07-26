@@ -1,0 +1,28 @@
+<div class="flex-column" [style.height]="height" (window:resize)="onResize()">
+
+  <mat-toolbar>
+    <span>{{headerTitle()}}</span>
+    <div class="build">{{version()}}</div>
+    <div class="title">{{convName}}</div>
+    <span class="username">
+      <span class="name">Welcome <b>{{me ? me.fullname : ""}}</b></span>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="gotoApp('admin')">
+          Admin
+        </button>
+        <button mat-menu-item (click)="logoff()">
+          Logoff
+        </button>
+      </mat-menu>
+    </span>
+  </mat-toolbar>
+
+  <div class="main" [style.background-color]="streamBgColor()">
+    <app-streams [main]="this"></app-streams>
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

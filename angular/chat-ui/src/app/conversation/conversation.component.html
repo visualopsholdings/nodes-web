@@ -1,0 +1,58 @@
+<div id="convo" #convo class="outer mat-typography outer-fixed-width flex-column" [style.height]="height" (window:resize)="onResize($event)">
+  <div class="security" *ngIf="focusIdea">
+    Showing a single idea.
+    <a (click)="cancelFocus()">Click <mat-icon>arrow_back</mat-icon> to return to the entire stream.</a>
+  </div>
+  <mat-paginator #paginator *ngIf="stream" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+    (page)="onPage($event)" class="paginator"
+    [style.display]="displayPaginator()" [hidePageSize]="hidePageSize()">
+  </mat-paginator>
+  <div class="flex-fixed" [style.height]="'32px'"></div>
+  <div #listContent class="listcontent flex-spacer flex-column" cdkScrollable>
+    <div *ngIf="hasMore() && hidePaginator()" fxLayout='row'>
+      <div class="flex-spacer"></div>
+      <div class="flex-fixed" [style.width]="ideaWidth()">
+        <button class="more" mat-icon-button (click)="more()">
+          <mat-icon>skip_previous</mat-icon>
+        </button>
+      </div>
+      <div class="flex-spacer"></div>
+    </div>
+    <div *ngIf="hasLess() && hidePaginator()" fxLayout='row'>
+      <div class="flex-spacer"></div>
+      <div class="flex-fixed" [style.width]="ideaWidth()">
+        <button class="less" mat-icon-button (click)="less()">
+          <mat-icon>skip_next</mat-icon>
+        </button>
+      </div>
+      <div class="flex-spacer"></div>
+    </div>
+    <mat-spinner *ngIf="loading" class="spinner"></mat-spinner>
+    <div class="items" *ngFor="let item of items">
+      <app-idea class="item" (changed)="onChanged($event)" [me]="me" [parent]="this" [stream]="stream"
+        [idea]="item.object" [showSep]="ideaShowSep(item)" [item]="item"
+        [width]="ideaWidth()">
+      </app-idea>
+    </div>
+  </div>
+  <div *ngIf="stream"
+      class="footer top-border" class="flex-fixed flex-row" [style.width]="footerWidth()"
+       [style.background-color]="streamBgColor()">
+    <div class="flex-spacer" [style.background-color]="streamBgColor()"></div>
+    <div class="flex-fixed" [style.width]="'40px'"
+      [style.background-color]="streamBgColor()" [style.display]="displayActionsSpacer()" ></div>
+    <div class="flex-fixed" class="input" [style.width]="replyWidth()" [style.background-color]="streamBgColor()">
+      <textarea matInput class="inputText mat-typography" [style.width]="innerReplyWidth()" [(ngModel)]="message"
+        name="newText" placeholder="Type a message."
+        (keydown.enter)="onEnter($event)" (keydown)="onKey($event)"
+        autocomplete="off" (focusin)="showKeyboard($event)" (focusout)="hideKeyboard($event)"
+        cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"></textarea>
+    </div>
+    <button mat-button class="flex-fixed" class="add-message" name="add-message"
+      [style.background-color]="streamBgColor()" (click)="addMessage()">
+      <img class="icon" src="assets/send-button.svg">
+    </button>
+    <div class="flex-spacer" [style.background-color]="streamBgColor()"></div>
+  </div>
+  <div *ngIf="isSmall()" class="flex-fixed" [style.height]="'14px'"></div>
+</div>

@@ -1,0 +1,24 @@
+
+.outer {
+  padding: 20px;
+  height: 100%;
+}
+
+table {
+  padding-left: 20px;
+  width: 100%;
+}
+
+.mat-form-field {
+  width: 98%;
+  padding-left: 20px;
+}
+
+.add-button, .purge-button, .vopsid-button {
+  margin-left: 20px;
+}
+
+.small-icon {
+  width: 32px;
+  height: 32px;
+}

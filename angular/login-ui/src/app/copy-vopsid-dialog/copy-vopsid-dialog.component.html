@@ -1,0 +1,18 @@
+<form [formGroup]="form" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Save your VID</h1>
+  <mat-dialog-content>
+    <p class="mat-form-field">{{data.fullname}}, your VID has been copied to the clipboard, just paste it into notepad or
+      a text file on your computer and you can use it to login at any time.</p>
+    <br/>
+    <mat-checkbox [(ngModel)]="showVID" [ngModelOptions]="{standalone: true}">Show your VID</mat-checkbox>
+    <mat-form-field *ngIf="showVID">
+      <textarea matInput name="vopsid" [(ngModel)]="data.vopsid" [ngModelOptions]="{standalone: true}"
+        cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1">
+      </textarea>
+    </mat-form-field>
+    <br/>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Continue</button>
+  </mat-dialog-actions>
+</form>

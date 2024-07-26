@@ -1,0 +1,296 @@
+
+.status {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.idea, .idea-blog {
+  display: inline-block;
+  position: relative;
+}
+
+.pad-name-menu {
+  padding: 20px 0 5px 0;
+}
+
+.pad-no-name-menu {
+  padding: 0px 0 5px 0;
+}
+
+.idea {
+  border-radius: 5px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.fields {
+  padding-top: 8px;
+}
+
+.user {
+  position: absolute;
+  top: 2px;
+  left: 8px;
+	display: flex;
+  align-items: center;
+  right: 30px;
+}
+
+.collapse-button {
+  position: absolute;
+  top: 12px;
+  right: -4px;
+}
+
+.user-name {
+  color: #46467d;
+	font-weight: bold;
+  font-size: small;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu {
+  position: absolute;
+  width: 20px;
+  right: 10px;
+  top: -4px;
+}
+
+.menu button {
+  position: absolute;
+  right: -14px;
+  top: -4px;
+  color: gray;
+}
+
+.description {
+  font-size: small;
+  padding: 10px;
+}
+
+.main-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.icon {
+  position: absolute;
+  top: 20px;
+  left: 8px;
+  height: 32px;
+  width: 32px;
+}
+
+.small-icon {
+  font-size: small;
+  height: 16px;
+  width: 16px;
+  padding-left: 4px;
+}
+
+.emojiIcon {
+  position: absolute;
+  font-size: xx-large;
+  top: 22px;
+  left: 8px;
+  height: 32px;
+  width: 32px;
+}
+
+.text, .icon-text {
+  font-size: medium;
+  margin: 2px;
+  word-break: break-word;
+}
+
+.icon-text {
+  margin-left: 28px;
+}
+
+.created, .modified {
+  padding-left: 10px;
+  font-size: x-small;
+}
+
+.info {
+  height: 10px;
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  background-color: red;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.count {
+  display: none;
+  font-size: xx-small;
+  color: lightgray;
+}
+
+.date {
+	font-size: xx-small;
+	font-weight: bold;
+  width: 100px;
+  padding-left: 6px;
+}
+
+.idea-date {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  color: #46467d;
+  font-size: small;
+}
+
+.idea-date-menu {
+  right: 34px;
+}
+
+.read {
+  font-size: small;
+  color: #b0b0b0;
+  padding-top: 5px;
+}
+
+.error {
+  font-size: medium;
+  color: red;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.dev {
+  margin-top: 5px;
+  padding: 10px;
+  border: 2px solid lightgray;
+}
+
+.assign-button {
+  margin: 10px;
+}
+
+.mat-card-subtitle {
+  margin-top: 20px !important;
+}
+
+.field {
+}
+
+.nameline {
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 2px;
+}
+
+.date-line {
+  width: 100%;
+}
+
+.divider {
+  margin: 10px;
+  height: 1px;
+}
+
+.security {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.security .mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.submit {
+  padding: 10px;
+}
+
+.branches {
+  width: 100%;
+  margin-bottom: 8px;
+  padding-top: 1px;
+}
+
+.branches button {
+  margin: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.branch {
+  position: relative;
+  border: 1px solid lightGray;
+  border-radius: 5px;
+  margin: 8px;
+}
+
+.branch-username {
+  margin-left: 4px;
+}
+
+.branch-text {
+  font-size: medium;
+  margin-top: 4px;
+  word-break: break-word;
+  margin-left: 10px;
+}
+
+.branch-date {
+  position: absolute;
+  top: 0px;
+  right: 8px;
+  font-size: x-small;
+}
+
+.more {
+  margin-left: 12px;
+}
+
+.close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.goto-branch {
+  float: right;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+
+.flex-spacer {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+}
+
+.flex-fixed {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+

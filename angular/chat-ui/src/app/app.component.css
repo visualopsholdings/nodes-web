@@ -1,0 +1,47 @@
+.username {
+  position: absolute;
+  font-size: small;
+  right: 20px;
+}
+
+.name {
+  display: inline-block;
+  padding-bottom: 12px;
+  height: 28px;
+  vertical-align: bottom;
+}
+
+a {
+  text-decoration: none;
+}
+
+.build {
+  position: absolute;
+  right: 8px;
+  top: -6px;
+  font-size: xx-small;
+  color: gray;
+}
+
+.title {
+  margin: auto;
+  position: absolute;
+  top: 14px; left: 0; bottom: 0; right: 0;
+  width: 80px;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+mat-toolbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+
+.main {
+}

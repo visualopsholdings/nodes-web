@@ -1,0 +1,41 @@
+<button *ngIf="!canAdmin()" mat-raised-button class="login" (click)="gotoApp('login')">
+  Login
+</button>
+<div *ngIf="canAdmin()" class="flex-column" [style.height]="height" (window:resize)="onResize()">
+
+  <mat-toolbar>
+    <span>{{headerTitle()}}</span>
+    <div class="build">{{version()}}</div>
+    <div class="title">Admin</div>
+    <span class="username">
+      <span class="name">Welcome <b>{{me ? me.fullname : ""}}</b></span>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="gotoApp('chat')">
+          Chat
+        </button>
+        <button mat-menu-item (click)="logoff()">
+          Logoff
+        </button>
+      </mat-menu>
+    </span>
+  </mat-toolbar>
+
+  <mat-drawer-container>
+
+    <mat-drawer #sidenav class="sidenav" mode="side" opened>
+      <mat-nav-list role="navigation">
+        <a mat-list-item routerLink="/users" routerLinkActive>Users</a>
+      </mat-nav-list>
+    </mat-drawer>
+
+    <mat-drawer-content>
+      <button *ngIf="opened" class="close" mat-icon-button (click)="close()"><mat-icon>chevron_left</mat-icon></button>
+      <button *ngIf="!opened" class="close" mat-icon-button (click)="open()"><mat-icon>menu_open</mat-icon></button>
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+
+  </mat-drawer-container>
+</div>

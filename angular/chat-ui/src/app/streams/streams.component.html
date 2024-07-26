@@ -1,0 +1,18 @@
+<div class="outer" (window:resize)="onResize($event)" [style.display]="opened ? 'block': 'none'">
+  <mat-toolbar>
+    <span class="title">{{tabTitle()}}</span>
+    <button mat-icon-button *ngIf="canClose()" class="close" name="closestreams" (click)="close()"><mat-icon>close</mat-icon></button>
+  </mat-toolbar>
+  <div [style.height]="listheight" fxLayout='column'>
+    <mat-nav-list class="list" fxFlex="1 1 auto">
+      <a mat-list-item class="stream" [routerLink]="[]" queryParamsHandling="preserve"
+        [ngClass]="{ 'selected': isSelected(stream) }" (click)="selectStream(stream)" *ngFor="let stream of streams | sortStream : me">
+        <p class="hidden">{{stream._id}}</p>
+        <img class="image" src="{{getIcon(stream)}}">
+        <div class="name">
+          <div class="trim-name">{{stream.name}}</div>
+        </div>
+      </a>
+    </mat-nav-list>
+  </div>
+</div>

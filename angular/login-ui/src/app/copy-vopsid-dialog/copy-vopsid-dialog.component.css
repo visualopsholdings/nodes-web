@@ -1,0 +1,9 @@
+
+.modal-dialog {
+  max-width: 400px;
+}
+
+.mat-form-field {
+  display: block;
+  width: 100%;
+}

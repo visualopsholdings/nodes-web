@@ -1,0 +1,70 @@
+
+.username {
+  position: absolute;
+  font-size: small;
+  right: 20px;
+}
+
+.name {
+  display: inline-block;
+  padding-bottom: 12px;
+  height: 28px;
+  vertical-align: bottom;
+}
+
+a {
+  text-decoration: none;
+}
+
+.mat-tab-link {
+  min-width: 50px;
+}
+
+.build {
+  position: absolute;
+  right: 8px;
+  top: -6px;
+  font-size: xx-small;
+  color: gray;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.close {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+}
+
+.title {
+  margin: auto;
+  position: absolute;
+  top: 14px; left: 0; bottom: 0; right: 0;
+  width: 80px;
+}
+
+mat-drawer-content {
+  width: 100%;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+mat-toolbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+
+mat-drawer-container {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+}

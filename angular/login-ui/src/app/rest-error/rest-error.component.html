@@ -1,0 +1,9 @@
+<form [formGroup]="form" (ngSubmit)="submit(form)" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Service Error</h1>
+  <mat-dialog-content class="mat-typography">
+    {{data.message}}
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button type="submit">Ok</button>
+  </mat-dialog-actions>
+</form>

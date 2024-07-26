@@ -1,0 +1,23 @@
+Feature: Manual
+
+   @javascript
+	Scenario: setup for manual testing
+      When there is default security
+
+      And there are streams:
+         | name               | policy |
+         | My Conversation 1  | p1     |
+         | My Conversation 2  | p1     |
+
+      And there are ideas:
+         | name         | stream             | policy | by     |
+         | Message 1    | My Conversation 1  | p1     | tracy  |
+         | Message 2    | My Conversation 1  | p1     | leanne |
+         | Message 3    | My Conversation 1  | p1     | tracy  |
+         | Message 4    | My Conversation 1  | p1     | tracy  |
+         | Message 5    | My Conversation 1  | p1     | leanne |
+         | Message 6    | My Conversation 2  | p1     | tracy  |
+         | Message 7    | My Conversation 2  | p1     | tracy  |
+         | Message 8    | My Conversation 2  | p1     | tracy  |
+         | Message 9    | My Conversation 2  | p1     | leanne |
+ 

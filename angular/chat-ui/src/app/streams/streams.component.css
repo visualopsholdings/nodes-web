@@ -1,0 +1,143 @@
+
+:host \/::ng-deep\/ .mat-list-item-content {
+  padding: 0!important;
+}
+
+.outer {
+  position: absolute;
+  background-color: white;
+  border: 1px solid lightgray;
+  padding: 2px;
+  width: 300px;
+  left: 0px;
+}
+
+.list {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.outer {
+  z-index: 2;
+}
+
+/* Small format */
+
+@media (max-width: 1201px) {
+
+.outer {
+  width: 240px;
+}
+
+}
+
+@media (max-width: 1080px) {
+
+.outer {
+  width: 200px;
+}
+
+}
+
+@media (max-width: 960px) {
+
+.outer {
+  top: 40px;
+  width: 300px;
+}
+
+}
+
+/* Large format */
+
+@media (min-width: 961px) {
+
+.outer {
+  top: 64px;
+}
+
+}
+
+/* Common */
+
+.close {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+}
+
+.selected {
+  background-color: lightgray;
+}
+
+mat-toolbar {
+  height: 40px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.title {
+  font-size: large;
+}
+
+.name {
+  display: inline-block;
+  width: 200px;
+  padding-left: 5px;
+  vertical-align: super;
+}
+
+.trim-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+mat-form-field {
+  width: 90%;
+  left: 18px;
+}
+
+.add-stream img {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-tiny {
+  width: 10px;
+  height: 10px;
+}
+
+.archive, .remove {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.stream, .image {
+	height: 40px;
+}
+
+.stream {
+  position: relative;
+}
+
+.image {
+  width: 40px;
+  object-fit: contain;
+}
+
+.debug {
+  background-color: blue;
+  -webkit-box-shadow:inset 0px 0px 0px 10px blue;
+    -moz-box-shadow:inset 0px 0px 0px 10px blue;
+    box-shadow:inset 0px 0px 0px 10px blue;
+}
+

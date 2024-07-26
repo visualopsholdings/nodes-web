@@ -1,0 +1,46 @@
+<form id="app" [formGroup]="form">
+  <mat-dialog-content>
+    <div class="flex-row" *ngIf="canRegister">
+      <div class="spacer"></div>
+      <p class="mat-typography">Enter a full name for your new account, then press Login.</p>
+      <div class="spacer"></div>
+    </div>
+    <div class="flex-row" *ngIf="canRegister">
+      <div class="spacer"></div>
+      <mat-form-field>
+        <input matInput type="fullname" name="fullname" [formControl]="fullnameCtrl" placeholder="Your name" autocapitalize=off required>
+      </mat-form-field>
+      <div class="spacer"></div>
+    </div>
+    <input matInput name="name" class="username" [formControl]="usernameCtrl" placeholder="VID" autocapitalize=off>
+    <div class="flex-row" *ngIf="!canRegister">
+      <div class="spacer"></div>
+      <mat-form-field>
+        <mat-label>Enter your VID</mat-label>
+        <input matInput type="password" name="password" [formControl]="passwordCtrl" placeholder="VID" required>
+      </mat-form-field>
+      <div class="spacer"></div>
+    </div>
+    <button mat-icon-button class="fileLoad" *ngIf="!canRegister && hasOpen()" (click)="uploadVID()"><mat-icon>file_upload</mat-icon></button>
+    <input *ngIf="!canRegister" type="file" #vidBrowserUpload id="vidBrowserUpload" name="vidBrowserUpload" accept="text/plain" style="display:none;" />
+    <div class="flex-row">
+      <div class="spacer"></div>
+      <button class="login" mat-raised-button (click)="doLogin()">Login</button>
+      <div class="spacer"></div>
+    </div>
+    <div class="flex-row">
+      <div class="spacer"></div>
+      <p></p>
+      <div class="spacer"></div>
+    </div>
+    <div class="flex-row" *ngIf="canRegister">
+      <div class="spacer"></div>
+      <a class="mat-typography" href="javascript: void(0);" (click)="existingUser()">Existing users click here</a>
+      <div class="spacer"></div>
+    </div>
+    <p class="mat-typography">{{msg}}</p>
+    <p class="mat-typography error">{{errmsg}}</p>
+   </mat-dialog-content>
+  <mat-dialog-actions>
+  </mat-dialog-actions>
+</form>

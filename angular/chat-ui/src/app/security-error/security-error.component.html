@@ -1,0 +1,9 @@
+<form [formGroup]="form" (ngSubmit)="submit(form)" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Security Error</h1>
+  <mat-dialog-content>
+    <div>You do not have sufficient privilege for this resource.</div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button type="submit">Ok</button>
+  </mat-dialog-actions>
+</form>
