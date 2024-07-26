@@ -37,6 +37,13 @@ sudo apt-get -y install g++ gcc make cmake ruby-rubygems
 
 ### Prerequisites
 
+We rely on https://github.com/visualopsholdings/zmqchat being built first, so do that, and then
+in your shell, define a variable to point to that:
+
+```
+export ZMQCHAT_HOME=/where/zmqchat/went
+```
+
 For convenience, do all these inside a folder you can remove, they take a lot of disk space
 but aren't used once instsalled.
 
@@ -163,7 +170,8 @@ zchttp/scripts/http.sh
 
 ## Testing
 
-The end to end tests use cucumber (Ruby), to get that going:
+The end to end tests use cucumber (Ruby) with capybara and selenium to run end to end tests
+from the browser, to get that going:
 
 ```
 $ bundle install
