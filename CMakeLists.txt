@@ -35,10 +35,24 @@ set(UTILS
   src/json.cpp
   src/cookie.cpp
 )
+set(HANDLERS
+  src/handlers/get/root.cpp
+  src/handlers/get/fonts.cpp
+  src/handlers/get/rawusers.cpp
+  src/handlers/get/streams.cpp
+  src/handlers/get/conversation.cpp
+  src/handlers/get/login.cpp
+  src/handlers/get/logout.cpp
+  src/handlers/get/me.cpp
+  src/handlers/get/stream.cpp
+  src/handlers/get/streampolicyusers.cpp
+  src/handlers/get/user.cpp
+  src/handlers/post/login.cpp
+)
 
 include_directories(include)
 
-add_executable(zchttp src/zchttp.cpp ${UTILS} src/session.cpp)
+add_executable(zchttp src/zchttp.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp)
   target_link_libraries(zchttp ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
   target_include_directories(zchttp PUBLIC $ENV{RESTINIO_HOME}/dev $ENV{RESTINIO_HOME}/dev/nodejs/llhttp/include $ENV{RESTINIO_HOME}/dev/expected-lite/include $ENV{RESTINIO_HOME}/dev/fmt/include)
   target_compile_definitions(zchttp  PUBLIC RESTINIO_USE_BOOST_ASIO=1)
