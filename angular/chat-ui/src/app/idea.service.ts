@@ -61,29 +61,4 @@ export class IdeaService extends BackendService {
     );
   }
 
-  addIdea(idea: Idea): Observable<Idea> {
-
-    var url = `${this.ideaUrl}`;
-
-    return this.http.post<Idea>(url, idea, { headers: this.httpHeaders() }).pipe(
-//      tap((team: Idea) => this.log(`added team w/ id=${team._id}`)),
-      catchError(this.handleError<Idea>('addIdea'))
-    );
-  }
-
-  updateIdea(idea: Idea): Observable<Idea> {
-    let url = `${this.ideaUrl}/${idea._id}`;
-    return this.http.patch<Idea>(url, idea, { headers: this.httpHeaders() }).pipe(
-      catchError(this.handleError<Idea>('updateIdea'))
-    );
-  }
-
-  deleteIdea(idea: Idea | string): Observable<Idea> {
-    const id = typeof idea === 'string' ? idea : idea._id;
-    const url = `${this.ideaUrl}/${id}`;
-    return this.http.delete<Idea>(url, { headers: this.httpHeaders() }).pipe(
-      catchError(this.handleError<Idea>('deleteIdea'))
-    );
-  }
-
 }

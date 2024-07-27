@@ -178,6 +178,45 @@ $ bundle install
 $ bundle exec cucumber
 ```
 
+## Development and debugging
+
+To develop and debug the various code bases, you can run them up after making changes. Run
+them up in a different terminal window.
+
+Firstly, you can populate the MongoDB with one of the tests, or for manual testing and general operation, 
+run the "manual" test:
+
+```
+bundle exec cucumber features/manual.feature
+```
+
+Build and run zmqchat:
+
+```
+cd zmqchat/build
+make && ./zmqchat --test --logLevel=trace
+```
+
+Build and run this http backend:
+
+```
+cd zchttp/build
+make && ./zchttp --logLevel=trace
+```
+
+And then for the angular chat front end.
+
+```
+cd zchttp/angular/chat-ui
+./run.sh
+```
+
+Then visit here with your browser:
+
+http://localhost:8081/login/?username=tracy
+
+Then you can edit the TypeScript code for chat and it will deploy instantly with each change.
+
 ## Current development focus
 
 ### Implement chat web app

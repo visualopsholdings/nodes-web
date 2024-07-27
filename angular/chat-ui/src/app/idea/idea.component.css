@@ -294,3 +294,9 @@
   box-sizing: border-box;
 }
 
+.flex-fixed-left {
+  display: flex;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+

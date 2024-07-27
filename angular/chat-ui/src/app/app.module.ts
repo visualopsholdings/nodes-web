@@ -39,7 +39,6 @@ import { MeService }  from './me.service';
 import { StreamService }  from './stream.service';
 import { StreamsComponent } from './streams/streams.component';
 import { PeopleComponent } from './people/people.component';
-import { ChatComponent } from './chat/chat.component';
 import { AddStreamDialogComponent } from './add-stream-dialog/add-stream-dialog.component';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { SortStreamPipe } from './sort-stream.pipe';
@@ -60,7 +59,6 @@ import { UserService }  from './user.service';
     SystemMaintenanceComponent,
     StreamsComponent,
     PeopleComponent,
-    ChatComponent,
     AddStreamDialogComponent,
     ConfirmComponent,
     SortStreamPipe,

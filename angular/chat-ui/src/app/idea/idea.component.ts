@@ -138,45 +138,6 @@ export class IdeaComponent implements OnInit {
     return this.me && this.me.admin;
   }
 
-  renameIdea(idea: Idea): void {
-    this.dialog.open(EditIdeaDialogComponent, {
-      width: '400px', data: { name: idea.text }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-       this.ideaService.updateIdea({ _id: idea._id, text: result.name } as Idea)
-        .subscribe(() => {
-          this._idea.text = result.name;
-        });
-      }
-    });
-  }
-
-  moveIdea(idea: Idea): void {
-    this.dialog.open(ChooseStreamDialogComponent, {
-      width: '400px', data: { hideStream: idea.stream }
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.streamService.moveIdea(result, idea._id).subscribe(() => {
-          this.changed.emit({ removed: idea._id });
-        });
-      }
-    });
-  }
-
-  deleteIdea(idea: Idea): void {
-    this.dialog.open(ConfirmComponent, {
-        width: '400px',
-        data: { title: "Delete Idea", description: "Are you sure you want to remove the idea permanently?" }
-    }).afterClosed().subscribe(success => {
-      if (success) {
-        this.ideaService.deleteIdea(idea)
-          .subscribe(() => {
-            this.changed.emit({ removed: idea._id });
-          });
-      }
-    });
-  }
-
   showData(idea: Idea, table: string): void {
     this.router.navigateByUrl("/data/ideas/" + idea._id + "/" + table);
   }

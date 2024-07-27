@@ -5,7 +5,7 @@
 </div>
 <div class="flex-row">
   <div class="flex-spacer"></div>
-  <div class="flex-fixed flex-column">
+  <div class="flex-fixed-left flex-column">
     <div class="mat-typography idea flex-spacer" [ngClass]="{ 'pad-name-menu': padTop(), 'pad-no-name-menu': !padTop() }"
       [style.width]="width" [style.background-color]="bgColor(isMe())">
       <div class="mat-typography user">
@@ -20,23 +20,8 @@
         </div>
       </div>
       <div class="error">{{error}}</div>
-      <div class="menu" *ngIf="idea && idea._id != null">
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_horiz</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="renameIdea(idea);">EDIT</button>
-          <button mat-menu-item (click)="focusIdea(idea);">FOCUS</button>
-        </mat-menu>
-        <mat-menu #move="matMenu">
-          <button mat-menu-item (click)="moveIdea(idea);">MOVE TO STREAM</button>
-          <button mat-menu-item (click)="deleteIdea(idea);">DELETE</button>
-        </mat-menu>
-      </div>
     </div>
-    <div class="flex-fixed flex-row">
-      <div class="date flex-spacer" [style.color]="dateColor()" [style.display]="dateDisplay()">{{idea.modifyDate | justNow }}</div>
-    </div>
+    <div class="date flex-fixed-left" [style.color]="dateColor()" [style.display]="dateDisplay()">{{idea.modifyDate | justNow }}</div>
   </div>
   <div class="flex-spacer"></div>
 </div>
