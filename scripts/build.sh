@@ -2,33 +2,33 @@
 # 
 # Build the project for http access
 
-if [ ! -d "zchttp" ];
+if [ ! -d "nodes-web" ];
 then
-  echo "zchttp project missing."
+  echo "nodes-web project missing."
   exit 1
 fi
 
-if [ ! -d "zchttp/build" ];
+if [ ! -d "nodes-web/build" ];
 then
-  mkdir zchttp/build
+  mkdir nodes-web/build
 fi
-pushd zchttp/build
+pushd nodes-web/build
 git pull
 cmake ..
 make -j4
 popd
 
-pushd zchttp/angular/login-ui
+pushd nodes-web/angular/login-ui
 npm install
 ./build.sh
 popd
 
-pushd zchttp/angular/admin-ui
+pushd nodes-web/angular/admin-ui
 npm install
 ./build.sh
 popd
 
-pushd zchttp/angular/chat-ui
+pushd nodes-web/angular/chat-ui
 npm install
 ./build.sh
 popd

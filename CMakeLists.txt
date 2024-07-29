@@ -3,15 +3,15 @@
 #   Author: Paul Hamilton (paul@visualops.com)
 #   Date: 21-May-2024
 #
-#   Input file for zchttp driver for Visual Ops
+#   Input file for nodes web driver for Visual Ops
 #
 #   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
 #   
-#   https://github.com/visualopsholdings/zchttp
+#   https://github.com/visualopsholdings/nodes-web
 
 cmake_minimum_required(VERSION 3.5)
 
-project (czhttp)
+project (nodes-web)
   find_package(Boost 1.85.0 COMPONENTS program_options filesystem unit_test_framework chrono thread log_setup log json REQUIRED)
   find_package(cppzmq REQUIRED)
   add_definitions(-DBOOST_ALL_DYN_LINK) 
@@ -52,10 +52,10 @@ set(HANDLERS
 
 include_directories(include)
 
-add_executable(zchttp src/zchttp.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp)
-  target_link_libraries(zchttp ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
-  target_include_directories(zchttp PUBLIC $ENV{RESTINIO_HOME}/dev $ENV{RESTINIO_HOME}/dev/nodejs/llhttp/include $ENV{RESTINIO_HOME}/dev/expected-lite/include $ENV{RESTINIO_HOME}/dev/fmt/include)
-  target_compile_definitions(zchttp  PUBLIC RESTINIO_USE_BOOST_ASIO=1)
+add_executable(nodes-web src/nodes-web.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp)
+  target_link_libraries(nodes-web ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
+  target_include_directories(nodes-web PUBLIC $ENV{RESTINIO_HOME}/dev $ENV{RESTINIO_HOME}/dev/nodejs/llhttp/include $ENV{RESTINIO_HOME}/dev/expected-lite/include $ENV{RESTINIO_HOME}/dev/fmt/include)
+  target_compile_definitions(nodes-web  PUBLIC RESTINIO_USE_BOOST_ASIO=1)
 
 add_executable(TestSession test/testsession.cpp src/session.cpp ${UTILS})
   target_link_libraries(TestSession ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})

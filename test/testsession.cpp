@@ -6,7 +6,7 @@
   
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
-  https://github.com/visualopsholdings/zmqchat
+  https://github.com/visualopsholdings/nodes-web
 */
 
 #include <iostream>

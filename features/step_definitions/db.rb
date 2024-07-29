@@ -146,16 +146,16 @@ When('there are users in group {string}:') do |name, table|
    end
    group.save
    
-   puts `$ZMQCHAT_HOME/build/zcaggregate --coll=group $ZMQCHAT_HOME/src/useringroups.json`
+   puts `$NODES_HOME/build/nodesaggregate --coll=group $NODES_HOME/src/useringroups.json`
 
 end
 
 When('the security indexes are generated') do
 
-   puts `$ZMQCHAT_HOME/build/zcaggregate --coll=policy $ZMQCHAT_HOME/src/groupeditpermissions.json`
-   puts `$ZMQCHAT_HOME/build/zcaggregate --coll=policy $ZMQCHAT_HOME/src/groupviewpermissions.json`
-   puts `$ZMQCHAT_HOME/build/zcaggregate --coll=policy $ZMQCHAT_HOME/src/usereditpermissions.json`
-   puts `$ZMQCHAT_HOME/build/zcaggregate --coll=policy $ZMQCHAT_HOME/src/userviewpermissions.json`
+   puts `$NODES_HOME/build/nodesaggregate --coll=policy $NODES_HOME/src/groupeditpermissions.json`
+   puts `$NODES_HOME/build/nodesaggregate --coll=policy $NODES_HOME/src/groupviewpermissions.json`
+   puts `$NODES_HOME/build/nodesaggregate --coll=policy $NODES_HOME/src/usereditpermissions.json`
+   puts `$NODES_HOME/build/nodesaggregate --coll=policy $NODES_HOME/src/userviewpermissions.json`
 
 end
 

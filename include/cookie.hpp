@@ -4,11 +4,11 @@
   Author: Paul Hamilton (paul@visualops.com)
   Date: 24-Jun-2024
     
-  Cookie code for ZCQChat HTTP Daemon
+  Cookie code for Nodes HTTP Daemon
   
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
-  https://github.com/visualopsholdings/zchttp
+  https://github.com/visualopsholdings/nodes-web
 */
 
 #ifndef H_cookie

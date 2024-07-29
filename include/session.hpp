@@ -4,11 +4,11 @@
   Author: Paul Hamilton (paul@visualops.com)
   Date: 9-Jul-2024
     
-  Session management for ZMQChat HTTP Daemon
+  Session management for Nodes HTTP Daemon
   
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
-  https://github.com/visualopsholdings/zchttp
+  https://github.com/visualopsholdings/nodes-web
 */
 
 #ifndef H_session

@@ -4,11 +4,11 @@
   Author: Paul Hamilton (paul@visualops.com)
   Date: 26-Jul-2024
     
-  A HTTP Server for zmqchat.
+  A HTTP Server for nodes.
   
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
-  https://github.com/visualopsholdings/zchttp
+  https://github.com/visualopsholdings/nodes-web
 */
 
 #ifndef H_server
@@ -66,7 +66,7 @@ private:
 	init_resp( RESP resp )
 	{
 		resp
-			.append_header("Server", "ZMQChat Server /v.0.1")
+			.append_header("Server", "Nodes Server /v.0.1")
 			.append_header_date_field()
 			.append_header("Content-Type", "application/json; charset=utf-8");
 

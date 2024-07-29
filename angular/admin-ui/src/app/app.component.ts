@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
   }
 
   headerTitle(): string {
-    return "ZMQChat";
+    return "Nodes";
   }
 
   version(): string {

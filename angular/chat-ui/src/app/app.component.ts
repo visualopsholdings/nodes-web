@@ -48,7 +48,7 @@ export class AppComponent {
   }
 
   headerTitle(): string {
-    return "ZMQChat";
+    return "Nodes";
   }
 
   version(): string {

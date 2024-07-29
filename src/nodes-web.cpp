@@ -1,14 +1,14 @@
 /*
-  zchttp.cpp
+  nodes-web.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
   Date: 4-Jul-2024
     
-  HTTP Daemon for ZMQChat.
+  HTTP Daemon for Nodes.
   
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
-  https://github.com/visualopsholdings/czhttp
+  https://github.com/visualopsholdings/nodes-web
 */
 
 #include "server.hpp"
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   }
 
   boost::log::formatter logFmt =
-         boost::log::expressions::format("%1%\tzchttp [%2%]\t%3%")
+         boost::log::expressions::format("%1%\tNodes WEB [%2%]\t%3%")
         %  boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f") 
         %  boost::log::expressions::attr< boost::log::trivial::severity_level>("Severity")
         %  boost::log::expressions::smessage;

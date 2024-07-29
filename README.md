@@ -1,19 +1,19 @@
-# zchttp
+# nodes-web
 
-Web based front end for zmqchat
+Web based front end for Nodes.
 
 ## Visual Ops
 
 This is a companion project to:
 
-https://github.com/visualopsholdings/zmqchat
+https://github.com/visualopsholdings/nodes
 
 Visual Ops is a proprietary (closed source) system that runs on very low end hardware
 like T4G's in AWS, or on a Raspberry Pi 4/5.
 
-An Open Source version of Visual Ops called "ZMQChat" is being developed.
+An Open Source version of Visual Ops called "Nodes" is being developed.
 
-This "plugin" can run on a a server with zmqchat (open source) to provide a login, admin and
+This "plugin" can run on a a server with nodes (open source) to provide a login, admin and
 chat system.
 
 If you would like access to the Visual Ops software it is available as an image download 
@@ -21,7 +21,7 @@ after we get to know you.
 
 Visit https://info.visualops.com/ for more info.
 
-All the places that mention "Visual Ops", could be interchanged with "ZMQChat".
+All the places that mention "Visual Ops", could be interchanged with "Nodes".
 
 ## Building
 
@@ -37,11 +37,11 @@ sudo apt-get -y install g++ gcc make cmake ruby-rubygems
 
 ### Prerequisites
 
-We rely on https://github.com/visualopsholdings/zmqchat being built first, so do that, and then
+We rely on https://github.com/visualopsholdings/nodes being built first, so do that, and then
 in your shell, define a variable to point to that:
 
 ```
-export ZMQCHAT_HOME=/where/zmqchat/went
+export NODES_HOME=/where/nodes/went
 ```
 
 For convenience, do all these inside a folder you can remove, they take a lot of disk space
@@ -134,13 +134,13 @@ export RESTINIO_HOME=/where/restinio/went
 Now this project:
 
 ```
-git clone https://github.com/visualopsholdings/zchttp.git
-zchttp/scripts/build.sh
+git clone https://github.com/visualopsholdings/nodes-web.git
+nodes-web/scripts/build.sh
 ```
 
 ## Web client
 
-The web client is written in angular and must be built before using the zchttp daemon
+The web client is written in angular and must be built before using the nodes web daemon
 
 To install angular.
 
@@ -151,21 +151,21 @@ npm install -g @angular/cli@16
 To build http stuff.
 
 ```
-zchttp/scripts/http.sh
+nodes-web/scripts/build.sh
 ```
 
-Then your ready to host in nginx and the proxy is provided by zchttp.
+Then your ready to host in nginx and the proxy is provided by Nodes web.
 
 To start the http daemon.
 
 ```
-zchttp/scripts/http.sh
+nodes-web/scripts/start.sh
 ```
 
 To stop.
 
 ```
-zchttp/scripts/http.sh
+nodes-web/scripts/stop.sh
 ```
 
 ## Testing
@@ -190,24 +190,24 @@ run the "manual" test:
 bundle exec cucumber features/manual.feature
 ```
 
-Build and run zmqchat:
+Build and run nodes:
 
 ```
-cd zmqchat/build
-make && ./zmqchat --test --logLevel=trace
+cd nodes/build
+make && ./nodes --test --logLevel=trace
 ```
 
 Build and run this http backend:
 
 ```
-cd zchttp/build
-make && ./zchttp --logLevel=trace
+cd nodes-web/build
+make && ./nodes-web --logLevel=trace
 ```
 
 And then for the angular chat front end.
 
 ```
-cd zchttp/angular/chat-ui
+cd nodes-web/angular/chat-ui
 ./run.sh
 ```
 
@@ -223,7 +223,7 @@ Then you can edit the TypeScript code for chat and it will deploy instantly with
 
 ## License
 
-ZMQChat is licensed under [version 3 of the GNU General Public License] contained in LICENSE.
+Nodes is licensed under [version 3 of the GNU General Public License] contained in LICENSE.
 
 ## Acknowlegements
 
@@ -248,5 +248,7 @@ ZMQChat is licensed under [version 3 of the GNU General Public License] containe
 ### 26 Jul 2024
 - Move web app to https://github.com/visualopsholdings/zchttp
 
+### 29 Jul 2024
+- rename to https://github.com/visualopsholdings/nodes-web
 
 

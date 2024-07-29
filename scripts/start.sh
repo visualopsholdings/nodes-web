@@ -1,13 +1,13 @@
 #!/bin/bash
 # 
-# Start zchttp
+# Start nodes-web
 
-if [ ! -f "zchttp/build/zchttp" ];
+if [ ! -f "nodes-web/build/nodes-web" ];
 then
   echo "Need to build project first"
   exit 1
 fi
 
-./zchttp/build/zchttp \
+./nodes-web/build/nodes-web \
   --logLevel=trace \
-  > zchttp.log 2>&1 &
+  > nodes-web.log 2>&1 &
