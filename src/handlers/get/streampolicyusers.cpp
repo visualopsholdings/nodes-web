@@ -52,7 +52,7 @@ status_t Server::getstreampolicyusers(
     { "policy", policy.value() }
   });
   j = receive();
-  auto users = Json::getArray(j, "policyusers");
+  auto users = Json::getArray(j, "users");
   if (!users) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "policyusers missing users";
