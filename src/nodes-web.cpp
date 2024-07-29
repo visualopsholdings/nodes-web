@@ -71,6 +71,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   
+  BOOST_LOG_TRIVIAL(info) << "Nodes WEB 0.1, 29-Jul-2024.";
+
   Server server("tcp://127.0.0.1:" + to_string(reqPort));
   server.run(httpPort);
   

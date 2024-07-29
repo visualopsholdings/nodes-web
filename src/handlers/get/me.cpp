@@ -27,6 +27,7 @@ status_t Server::getme(
 
   json j = { 
     { "id", session.value()->userid() },
+    { "_id", session.value()->userid() },
     { "name", session.value()->name() },
     { "fullname", session.value()->fullname() }
   };

@@ -42,10 +42,13 @@ status_t Server::getuser(
     return init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
+  json newuser = user.value();
+  newuser.as_object()["_id"] = Json::getString(newuser, "id").value();
+
   auto resp = init_resp( req->create_response() );
 
   stringstream ss;
-  ss << user.value();
+  ss << newuser;
   resp.set_body(ss.str());
 
   return resp.done();

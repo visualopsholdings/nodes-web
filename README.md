@@ -174,8 +174,7 @@ The end to end tests use cucumber (Ruby) with capybara and selenium to run end t
 from the browser, to get that going:
 
 ```
-$ bundle install
-$ bundle exec cucumber
+bundle exec cucumber
 ```
 
 ## Development and debugging

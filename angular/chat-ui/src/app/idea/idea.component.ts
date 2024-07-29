@@ -176,9 +176,6 @@ export class IdeaComponent implements OnInit {
   }
 
   itemBGColor(me: boolean): string {
-    if (this.stream) {
-      return "white";
-    }
     return this.parent ? this.parent.itemColor(me) : "white";
   }
 
