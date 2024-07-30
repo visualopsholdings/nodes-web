@@ -9,7 +9,7 @@ end
 
 ServiceManager.define_service 'nodes-web' do |s|
    s.start_cmd = 'build/nodes-web --logLevel=trace'
-   s.loaded_cue = /init accept #0/
+   s.loaded_cue = /Local REQ/
    s.cwd = Dir.pwd
    s.pid_file = 'nodes-web.pid'
 end

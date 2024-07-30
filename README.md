@@ -192,7 +192,7 @@ The end to end tests use cucumber (Ruby) with capybara and selenium to run end t
 from the browser, to get that going:
 
 ```
-bundle exec cucumber
+./test.sh
 ```
 
 ## Development and debugging

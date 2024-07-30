@@ -29,6 +29,22 @@ if (APPLE)
   LINK_DIRECTORIES(/opt/homebrew/Cellar/zeromq/4.3.5_1/lib)
 endif ()
 
+# fetch from other repos.
+
+include(FetchContent)
+
+FetchContent_Declare(
+  nodes-test
+  GIT_REPOSITORY https://github.com/visualopsholdings/nodes-test.git
+  GIT_TAG main
+)
+FetchContent_GetProperties(nodes-test)
+
+if(NOT nodes-test_POPULATED)
+  message(STATUS "Fetching nodes-test...")
+  FetchContent_Populate(nodes-test)
+endif()
+
 set(LIBS zmq)
 set(BOOSTLIBS ${Boost_LOG_LIBRARY} ${Boost_JSON_LIBRARY})
 set(UTILS
