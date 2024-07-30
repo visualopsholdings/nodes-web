@@ -85,6 +85,9 @@ as root user:
 
 #### ZMQ
 
+If you can get zeromq 4.3.5 or later, then use that otherwise you will need to build it
+all from source.
+
 ```
 wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.19-stable.tar.gz  
 tar xzf libsodium-1.0.19-stable.tar.gz
