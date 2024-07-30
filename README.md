@@ -31,7 +31,7 @@ A PUB/SUB socket on port tcp://127.0.0.1:3012.
 
 A REP/REQ socket on port tcp://127.0.0.1:3013.
 
-[Here are the formats for the messages](https://github.com/visualopsholdings/nodes/src/msg/README.md)
+[Here are the formats for the messages](https://github.com/visualopsholdings/nodes/blob/main/src/msg/README.md)
 
 ## Building
 
