@@ -403,6 +403,11 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
     message.stream = this.stream._id;
 
+    this.ideaService.addIdea(message).subscribe(i => {
+      message.date = i.date;
+      message._id = i._id;
+      message.needsSend = false;
+    });
   }
 
   addMessage(): void {

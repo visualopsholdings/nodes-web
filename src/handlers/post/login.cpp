@@ -16,9 +16,8 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::postlogin(
-  const req_t& req, params_t )
-{
+status_t Server::postlogin(const req_t& req, params_t ) {
+
   json j = boost::json::parse(req->body());
   BOOST_LOG_TRIVIAL(trace) << "postlogin " << j;
 

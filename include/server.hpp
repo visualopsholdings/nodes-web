@@ -56,6 +56,8 @@ public:
 	status_t postlogin(const req_t& req, params_t );
 	status_t getlogout(const req_t& req, params_t );
 	status_t getuser(const req_t& req, params_t );
+	status_t postideas(const req_t& req, params_t );
+	status_t posttyping(const req_t& req, params_t );
 
 private:
   zmq::context_t _context;

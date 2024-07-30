@@ -64,6 +64,8 @@ set(HANDLERS
   src/handlers/get/streampolicyusers.cpp
   src/handlers/get/user.cpp
   src/handlers/post/login.cpp
+  src/handlers/post/ideas.cpp
+  src/handlers/post/typing.cpp
 )
 
 include_directories(include)

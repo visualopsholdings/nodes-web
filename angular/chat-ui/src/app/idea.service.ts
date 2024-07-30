@@ -17,7 +17,7 @@ import { RestErrorComponent } from './rest-error/rest-error.component';
 @Injectable()
 export class IdeaService extends BackendService {
 
-  private ideaUrl = '/rest/1.0/tasks'
+  private ideaUrl = '/rest/1.0/ideas'
 
   constructor(
     dialog: MatDialog,
@@ -58,6 +58,15 @@ export class IdeaService extends BackendService {
     const url = `${this.ideaUrl}/${id}`;
     return this.http.get<Idea>(url).pipe(
       catchError(this.handleSecurityError<Idea>(id, token))
+    );
+  }
+
+  addIdea(idea: Idea): Observable<Idea> {
+
+    var url = `${this.ideaUrl}`;
+
+    return this.http.post<Idea>(url, idea, { headers: this.httpHeaders() }).pipe(
+      catchError(this.handleError<Idea>('addIdea'))
     );
   }
 

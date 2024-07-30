@@ -42,6 +42,8 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams", by(&Server::getstreams));
   router->http_get("/rest/1.0/conversations/:id", by(&Server::getconversation));
   router->http_get("/rest/1.0/streams/:id/policy/users", by(&Server::getstreampolicyusers));
+  router->http_post("/rest/1.0/ideas", by(&Server::postideas));
+  router->http_post("/rest/1.0/users/me/typing", by(&Server::posttyping));
 
   return router;
 }
