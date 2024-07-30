@@ -6,6 +6,7 @@ gem 'rspec'
 gem 'factory_bot'
 gem 'mongoid'
 gem 'database_cleaner-mongoid'
+
 gem 'capybara'
 gem 'selenium-webdriver'
 

@@ -23,6 +23,16 @@ Visit https://info.visualops.com/ for more info.
 
 All the places that mention "Visual Ops", could be interchanged with "Nodes".
 
+### ZMQ API
+
+This project communicate with Nodes using the ZMQ message queues.
+
+A PUB/SUB socket on port tcp://127.0.0.1:3012.
+
+A REP/REQ socket on port tcp://127.0.0.1:3013.
+
+[Here are the formats for the messages](https://github.com/visualopsholdings/nodes/src/msg/README.md)
+
 ## Building
 
 The development process for all of this code used a normal Linux environment with the BOOST
