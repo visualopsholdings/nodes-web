@@ -234,9 +234,23 @@ http://localhost:8081/login/?username=tracy
 
 Then you can edit the TypeScript code for chat and it will deploy instantly with each change.
 
+## Companion projects
+
+### DevOps
+
+https://github.com/visualopsholdings/nodes-devops
+
+### The main nodes system
+
+https://github.com/visualopsholdings/nodes
+
+### An IRC front end
+
+https://github.com/visualopsholdings/nodes-irc
+
 ## Current development focus
 
-### Implement chat web app
+### Implement admin enough to build a working system
 
 ## License
 
