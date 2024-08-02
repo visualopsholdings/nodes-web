@@ -10,7 +10,7 @@ fi
 
 if [ -d /home/nodes/nodes-lib ];
 then
-  $LIBS="LD_LIBRARY_PATH=/usr/local/lib:/home/nodes/nodes/build:/home/nodes/nodes-lib"
+  LIBS="LD_LIBRARY_PATH=/usr/local/lib:/home/nodes/nodes/build:/home/nodes/nodes-lib"
 fi
 
 $LIBS ./nodes-web/build/nodes-web \
