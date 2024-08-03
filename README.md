@@ -43,7 +43,8 @@ This port is also used to "ask" for things of the Nodes system such as login etc
 The development process for all of this code used a normal Linux environment with the BOOST
 libraries and a C++ compiler.
 
-So on your Linux (or mac using Homebrew etc), get all you need:
+So on your Linux (or mac using Homebrew etc), get all you need: (These steps have been tested
+on Ubuntu 24.04 on a Pi5 and in a TG4 in AWS):
 
 ```
 sudo apt-get update
@@ -72,61 +73,14 @@ cd working
 if you can get this or later with a simple tool then do that, otherwise you will
 need to build it from source:
 
-```
-wget https://github.com/boostorg/boost/releases/download/boost-1.85.0/boost-1.85.0-b2-nodocs.tar.gz
-tar xzf boost-1.85.0-b2-nodocs.tar.gz 
-cd boost-1.85.0
-./bootstrap.sh --prefix=/usr --with-python=python3
-./b2 stage threading=multi link=shared boost.stacktrace.from_exception=off
-
-as root user:
-./b2 install threading=multi link=shared
-```
+[Instructions](https://github.com/visualopsholdings/nodes-devops/blob/main/dev/BOOST.md)
 
 #### ZMQ
 
 If you can get zeromq 4.3.5 or later, then use that otherwise you will need to build it
 all from source.
 
-```
-wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.19-stable.tar.gz  
-tar xzf libsodium-1.0.19-stable.tar.gz
-cd libsodium-stable
-./configure
-make 
-sudo make install
-sudo ldconfig
-cd ..
-
-wget https://github.com/zeromq/libzmq/releases/download/v4.3.5/zeromq-4.3.5.tar.gz
-tar xzf zeromq-4.3.5.tar.gz
-cd zeromq-4.3.5
-./configure
-make
-sudo make install
-sudo ldconfig
-cd ..
-
-git clone https://github.com/zeromq/libzmq.git
-cd libzmq
-mkdir build
-cd build
-cmake ..
-make -j4
-make test
-sudo make install
-cd ../..
-
-git clone https://github.com/zeromq/cppzmq
-cd cppzmq
-mkdir build
-cd build
-cmake ..
-make -j4
-sudo make install
-cd ../..
-cd ..
-```
+[Instructions](https://github.com/visualopsholdings/nodes-devops/blob/main/dev/ZMQ.md)
 
 #### Restinio
 
@@ -149,7 +103,7 @@ You will need this in your .bashrc or equivalent
 export RESTINIO_HOME=/where/restinio/went
 ```
 
-Now this project:
+### This project
 
 ```
 git clone https://github.com/visualopsholdings/nodes-web.git
