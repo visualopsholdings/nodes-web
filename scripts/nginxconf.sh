@@ -18,7 +18,7 @@ PORT=$2
 HPORT=$3
 
 echo "Generate SSL Conf"
-nginx_conf nodes/scripts/nginx.tmpl nginx.conf $HOST $PORT $HPORT
+nginx_conf nodes-web/scripts/nginx.tmpl nginx.conf $HOST $PORT $HPORT
 
 echo "Using SSL certificate"
 sudo cp /etc/nginx/sites-enabled/default nginx-backup.conf

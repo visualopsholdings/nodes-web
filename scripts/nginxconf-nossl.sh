@@ -18,7 +18,7 @@ PORT=$2
 HPORT=$3
 
 echo "Generate Conf"
-nginx_conf nodes/scripts/nginx-nossl.tmpl nginx.conf $HOST $PORT $HPORT
+nginx_conf nodes-web/scripts/nginx-nossl.tmpl nginx.conf $HOST $PORT $HPORT
 
 echo "Using"
 sudo cp /etc/nginx/sites-enabled/default nginx-backup.conf
