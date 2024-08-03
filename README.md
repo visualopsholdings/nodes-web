@@ -84,11 +84,32 @@ all from source.
 
 #### Restinio
 
+
 ```
 cd working
 sudo gem install Mxx_ru
 git clone https://github.com/stiffstream/restinio.git
 cd restinio
+```
+
+Now if you have ruby 3.2.0 or later, you need to fix a script.
+
+```
+ruby -v
+```
+
+If you have this later version, then do something like:
+
+```
+sudo nano /var/lib/gems/3.2.0/gems/Mxx_ru-1.6.14.10/lib/mxx_ru/externals.rb
+```
+
+And then Ctrl+W and type "exists?" and then everywhere you see one change to "exist?" (no
+plural).
+
+Now the rest will work.
+
+```
 mxxruexternals
 cd dev
 cmake -Bcmake_build \
