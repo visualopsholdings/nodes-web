@@ -1,11 +1,6 @@
-server {
-       listen         $HPORT;
-		server_name    $SERVER;
-		return         301 https://$server_name$request_uri;
-}
 
 server {
-	listen $PORT;
+	listen $HPORT;
 	server_name $SERVER;
 
 	root /home/nodes/nodes-web/frontend;

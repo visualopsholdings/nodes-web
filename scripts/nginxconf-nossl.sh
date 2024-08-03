@@ -1,24 +1,22 @@
 # deploy a simple nginx conf
 
-if [ "$#" -ne 3 ]; then
-	echo "usage: $0 HOSTNAME PORT HPORT"
+if [ "$#" -ne 2 ]; then
+	echo "usage: $0 HOSTNAME HPORT"
 	exit 1
 fi
 
 nginx_conf() {
 	export SERVER=$3
-	export PORT=$4
-	export HPORT=$5
+	export HPORT=$4
   sudo rm -rf $2
-	envsubst '$SERVER,$PORT,$HPORT' < $1 > $2
+	envsubst '$SERVER,$HPORT' < $1 > $2
 }
 
 HOST=$1
-PORT=$2
-HPORT=$3
+HPORT=$2
 
 echo "Generate Conf"
-nginx_conf nodes-web/scripts/nginx-nossl.tmpl nginx.conf $HOST $PORT $HPORT
+nginx_conf nodes-web/scripts/nginx-nossl.tmpl nginx.conf $HOST $HPORT
 
 echo "Using"
 sudo cp /etc/nginx/sites-enabled/default nginx-backup.conf
