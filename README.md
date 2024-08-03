@@ -48,7 +48,7 @@ on Ubuntu 24.04 on a Pi5 and in a TG4 in AWS):
 
 ```
 sudo apt-get update
-sudo apt-get -y install g++ gcc make cmake ruby-rubygems
+sudo apt-get -y install g++ gcc make cmake ruby-rubygems npm
 ```
 
 ### Prerequisites
@@ -84,9 +84,9 @@ all from source.
 
 #### Restinio
 
+Put restinio alongside this project because you need to keep it around.
 
 ```
-cd working
 sudo gem install Mxx_ru
 git clone https://github.com/stiffstream/restinio.git
 cd restinio
@@ -128,20 +128,19 @@ export RESTINIO_HOME=/where/restinio/went
 
 ```
 git clone https://github.com/visualopsholdings/nodes-web.git
-nodes-web/scripts/build.sh
 ```
 
 ## Web client
 
-The web client is written in angular and must be built before using the nodes web daemon
+The web client is written in angular so you need to install that.
 
 To install angular.
 
 ```
-npm install -g @angular/cli@16
+sudo npm install -g @angular/cli@16
 ```
 
-To build http stuff.
+To build the project (including the angular front end):
 
 ```
 nodes-web/scripts/build.sh
