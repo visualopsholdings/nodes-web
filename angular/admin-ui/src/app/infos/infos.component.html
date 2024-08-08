@@ -1,0 +1,18 @@
+<mat-card class="info-card" *ngIf="hasInfos()">
+  <mat-card-header>
+    <mat-card-title>Local</mat-card-title>
+    <mat-card-subtitle>Information for this node</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="mat-typography">
+    <p *ngIf="hasAdmin()"><b>Server id</b>: {{getInfo("serverId")}}</p>
+    <p *ngIf="hasAdmin() && hasDefault()">
+      This server ID is the default and needs to be changed. Just click "RESET NODE" below and
+      a new server ID will be allocated.
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <span *ngIf="hasAdmin()">
+      <button *ngIf="hasDefault()" mat-raised-button (click)="resetNode();">RESET NODE</button>
+    </span>
+  </mat-card-actions>
+</mat-card>

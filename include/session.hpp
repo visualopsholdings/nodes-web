@@ -31,6 +31,7 @@ public:
   string userid() { return _userid; };
   string name() { return _name; };
   string fullname() { return _fullname; };
+  bool admin() { return _admin; };
 
 private:
   string _userid;

@@ -61,7 +61,7 @@ export class BackendService {
       else {
          let dialogRef = this.dialog.open(RestErrorComponent, {
           width: '400px',
-          data: { message: error.error.err }
+          data: { message: error.status == 400 ? error.error.err : error.message }
         });
         dialogRef.afterClosed().subscribe(success => {});
       }
@@ -110,6 +110,10 @@ export class BackendService {
       // Let the app keep running by returning an empty result.
       return of(new HttpResponse<T>({ body: result }));
     };
+  }
+
+  public httpHeaders(): HttpHeaders {
+    return new HttpHeaders({ 'Content-Type': 'application/json' });
   }
 
 }

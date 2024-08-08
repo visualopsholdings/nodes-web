@@ -37,6 +37,9 @@ import { SystemMaintenanceComponent } from './system-maintenance/system-maintena
 import { IconService }  from './icon.service';
 import { MeService }  from './me.service';
 import { UserService }  from './user.service';
+import { InfosComponent } from './infos/infos.component';
+import { InfoService }  from './info.service';
+import { ConfirmComponent } from './confirm/confirm.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,9 @@ import { UserService }  from './user.service';
     UsersComponent,
     SecurityErrorComponent,
     RestErrorComponent,
-    SystemMaintenanceComponent
+    SystemMaintenanceComponent,
+    InfosComponent,
+    ConfirmComponent
   ],
   imports: [
     BrowserModule,
@@ -77,7 +82,7 @@ import { UserService }  from './user.service';
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [IconService, MeService, UserService],
+  providers: [IconService, MeService, UserService, InfoService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

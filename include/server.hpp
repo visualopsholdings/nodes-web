@@ -58,6 +58,8 @@ public:
 	status_t getuser(const req_t& req, params_t );
 	status_t postideas(const req_t& req, params_t );
 	status_t posttyping(const req_t& req, params_t );
+	status_t getinfos(const req_t& req, params_t );
+	status_t postinfos(const req_t& req, params_t );
 
 private:
   zmq::context_t _context;

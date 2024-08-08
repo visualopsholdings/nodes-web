@@ -66,6 +66,8 @@ set(HANDLERS
   src/handlers/post/login.cpp
   src/handlers/post/ideas.cpp
   src/handlers/post/typing.cpp
+  src/handlers/get/infos.cpp
+  src/handlers/post/infos.cpp
 )
 
 include_directories(include)

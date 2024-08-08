@@ -1,8 +1,8 @@
 /*
-  getme.cpp
+  getinfos.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
-  Date: 26-Jul-2024
+  Date: 7-Aug-2024
     
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
@@ -15,27 +15,32 @@
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
+#include <restinio/core.hpp>
 
-status_t Server::getme(
-  const req_t& req, params_t )
+status_t Server::getinfos(
+  const req_t& req, params_t params)
 {
   auto session = getSession(req);
   if (!session) {
     return unauthorised(req);
   }
+  send({ 
+    { "type", "infos" }
+  });
+  json j = receive();
+  auto infos = Json::getArray(j, "infos");
+  
+  if (!infos) {
+    // send fatal error
+    BOOST_LOG_TRIVIAL(error) << "infos missing infos";
+    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+  }
+
   auto resp = init_resp( req->create_response() );
 
-  json j = { 
-    { "id", session.value()->userid() },
-    { "_id", session.value()->userid() },
-    { "name", session.value()->name() },
-    { "fullname", session.value()->fullname() },
-    { "admin", session.value()->admin() }
-  };
   stringstream ss;
-  ss << j;
+  ss << infos.value();
   resp.set_body(ss.str());
 
   return resp.done();
 }
-

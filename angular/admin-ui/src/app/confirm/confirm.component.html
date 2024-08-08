@@ -1,0 +1,10 @@
+<form [formGroup]="form" (ngSubmit)="submit(form)" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>{{data.title}}</h1>
+  <mat-dialog-content>
+    <p class="mat-typography">{{data.description}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type="submit">Ok</button>
+  </mat-dialog-actions>
+</form>
