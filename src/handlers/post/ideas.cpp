@@ -24,35 +24,11 @@ status_t Server::postideas(const req_t& req, params_t params) {
     return unauthorised(req);
   }
   json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << "postideas " << j;
+//  BOOST_LOG_TRIVIAL(trace) << "postideas " << j;
 
-  auto user = Json::getString(j, "user");
-  if (!user) {
-    BOOST_LOG_TRIVIAL(error) << "missing user";
-    return unauthorised(req);
-  }
-
-  if (session.value()->userid() != user.value()) {
-    BOOST_LOG_TRIVIAL(trace) << "wrong user";
-    return unauthorised(req);
-  }
-  auto stream = Json::getString(j, "stream");
-  if (!stream) {
-    BOOST_LOG_TRIVIAL(error) << "missing stream";
-    return unauthorised(req);
-  }
-  auto text= Json::getString(j, "text");
-  if (!text) {
-    BOOST_LOG_TRIVIAL(error) << "missing text";
-    return unauthorised(req);
-  }
+  j.as_object()["type"] = "message";
   
-	send({ 
-	  { "type", "message" }, 
-	  { "user", user.value() },
-	  { "stream", stream.value() },
-	  { "text", text.value() }
-	});
+	send(j);
   j = receive();
   
   BOOST_LOG_TRIVIAL(trace) << j;

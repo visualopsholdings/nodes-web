@@ -24,12 +24,15 @@ status_t Server::postinfos(const req_t& req, params_t params) {
     return unauthorised(req);
   }
   json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << "postinfos " << j;
+//  BOOST_LOG_TRIVIAL(trace) << "postinfos " << j;
 
-  auto serverId = Json::getString(j, "serverId");
-  if (serverId && serverId.value() == "none") {
-    BOOST_LOG_TRIVIAL(trace) << "Resetting server id";
-  }
+  j.as_object()["type"] = "setinfo";
+  
+	send(j);
+  j = receive();
+  
+  BOOST_LOG_TRIVIAL(trace) << j;
+  // test for an error...
   
   auto resp = req->create_response();
   resp.set_body("{}");
