@@ -82,7 +82,9 @@ export class InfosComponent implements OnInit {
       }).afterClosed().subscribe(success => {
         if (success) {
             this.infoService.updateInfos({ serverId: "none" })
-              .subscribe(infos => this.infos = infos);
+              .subscribe(() => {
+                this.getInfos();
+              });
         }
       });
   }

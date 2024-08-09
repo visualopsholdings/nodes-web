@@ -29,6 +29,7 @@
       <mat-nav-list role="navigation">
         <a mat-list-item routerLink="/infos" routerLinkActive>Local</a>
         <a mat-list-item routerLink="/users" routerLinkActive>Users</a>
+        <a *ngIf="hasAdmin()" mat-list-item routerLink="/nodes" routerLinkActive>Nodes</a>
       </mat-nav-list>
     </mat-drawer>
 

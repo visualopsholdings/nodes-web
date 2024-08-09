@@ -46,6 +46,10 @@ export class AppComponent implements OnInit {
     this.height = window.innerHeight + "px";
   }
 
+  hasAdmin(): boolean {
+    return this.me && this.me.admin;
+  }
+
   canAdmin(): boolean {
     return this.me != null;
   }

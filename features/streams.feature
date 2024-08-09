@@ -1,6 +1,8 @@
 Feature: Streams
 
    Background:
+      And the server has id "6eae665a-f376-472d-87e5-5159c2e0b389"
+      When there is an info
       When there is default security
 
       And there are streams:

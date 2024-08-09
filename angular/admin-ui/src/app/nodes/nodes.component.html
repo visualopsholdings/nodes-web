@@ -1,0 +1,16 @@
+<div class="outer">
+  <div class="mat-typography info">
+    <p><b>Server id</b>: {{getInfo("serverId")}}</p>
+    <p *ngIf="hasDefault()">
+      This server ID is the default and needs to be changed. Visit "Local" and click "RESET NODE" and
+      a new server ID will be allocated.
+    </p>
+    <p *ngIf="getInfo('privateKey')"><b>Private key</b>: {{getInfo("privateKey")}}</p>
+    <p *ngIf="getInfo('pubKey')"><b>Public key</b>: {{getInfo("pubKey")}}</p>
+    <p *ngIf="getInfo('upstream')"><b>Upstream node</b>: {{getInfo("upstream")}}</p>
+    <p *ngIf="getInfo('upstreamPubKey')"><b>Upstream public key</b>: {{getInfo("upstreamPubKey")}}</p>
+    <p *ngIf="getInfo('upstreamId')"><b>Upstream Server id</b>: {{getInfo("upstreamId")}}</p>
+    <p *ngIf="upstreamLastSeen"><b>Last time upstream seen</b>: <span [style.color]="fgColorLastSeenTime(upstreamLastSeen)">{{upstreamLastSeen | date: 'medium'}}</span></p>
+  </div>
+</div>
+

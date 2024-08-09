@@ -40,6 +40,7 @@ import { UserService }  from './user.service';
 import { InfosComponent } from './infos/infos.component';
 import { InfoService }  from './info.service';
 import { ConfirmComponent } from './confirm/confirm.component';
+import { NodesComponent } from './nodes/nodes.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { ConfirmComponent } from './confirm/confirm.component';
     RestErrorComponent,
     SystemMaintenanceComponent,
     InfosComponent,
-    ConfirmComponent
+    ConfirmComponent,
+    NodesComponent
   ],
   imports: [
     BrowserModule,
