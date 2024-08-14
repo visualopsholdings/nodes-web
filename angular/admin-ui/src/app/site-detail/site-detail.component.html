@@ -1,0 +1,19 @@
+<mat-card *ngIf="site" class="site-card">
+  <mat-card-header>
+    <mat-card-subtitle>{{site._id}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field class="field">
+      <mat-label>Header title</mat-label>
+      <input matInput name="headerTitle" [(ngModel)]="site.headerTitle" placeholder="Header title (used if no image selected above, empty for Visual Ops)">
+    </mat-form-field>
+    <mat-form-field class="field">
+      <mat-label>Stream background color</mat-label>
+      <input matInput name="streamBgColor" [(ngModel)]="site.streamBgColor" placeholder="Stream background color (#7096cc)">
+    </mat-form-field>
+    <div class="chip" [style.background-color]="site.streamBgColor ? site.streamBgColor : '#7096cc'"></div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="save();">SAVE</button>
+ </mat-card-actions>
+</mat-card>

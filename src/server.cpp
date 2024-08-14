@@ -46,6 +46,8 @@ auto Server::handler()
   router->http_post("/rest/1.0/users/me/typing", by(&Server::posttyping));
   router->http_get("/rest/1.0/infos", by(&Server::getinfos));
   router->http_post("/rest/1.0/infos", by(&Server::postinfos));
+  router->http_get("/rest/1.0/site", by(&Server::getsite));
+  router->http_put("/rest/1.0/site", by(&Server::putsite));
 
   return router;
 }
@@ -81,6 +83,49 @@ status_t Server::unauthorised(const req_t& req) {
   ss << err;
   resp.set_body(ss.str());
   return resp.done();
+}
+
+status_t Server::fatal(const req_t& req, const string &msg) {
+
+  auto resp = init_resp(req->create_response(restinio::status_internal_server_error()));
+  json err = {
+    { "status", 500 },
+    { "err", msg }
+  };
+  stringstream ss;
+  ss << err;
+  resp.set_body(ss.str());
+  return resp.done();
+}
+
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
+
+  json j = boost::json::parse(req->body());
+//  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
+
+  j.as_object()["type"] = type;
+  
+	send(j);
+  j = receive();
+  
+//  BOOST_LOG_TRIVIAL(trace) << j;
+  
+  // test for an error...
+  auto rettype = Json::getString(j, "type");
+  if (!rettype) {
+    BOOST_LOG_TRIVIAL(error) << type << " missing type in return";
+    return fatal(req, "missing type");
+  }
+  if (rettype.value() == "err") {
+    auto msg = Json::getString(j, "msg");
+    BOOST_LOG_TRIVIAL(error) << msg.value();
+    return fatal(req, msg.value());
+  }
+  
+  auto resp = req->create_response();
+  resp.set_body("{}");
+  return resp.done();
+
 }
 
 bool Server::isAdmin(const req_t& req) {

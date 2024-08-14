@@ -19,23 +19,10 @@
 
 status_t Server::postinfos(const req_t& req, params_t params) {
 
-  auto session = getSession(req);
-  if (!session) {
+  if (!isAdmin(req)) {
     return unauthorised(req);
   }
-  json j = boost::json::parse(req->body());
-//  BOOST_LOG_TRIVIAL(trace) << "postinfos " << j;
+  
+  return sendBodyReturnEmptyObj(req, "setinfo");
 
-  j.as_object()["type"] = "setinfo";
-  
-	send(j);
-  j = receive();
-  
-  BOOST_LOG_TRIVIAL(trace) << j;
-  // test for an error...
-  
-  auto resp = req->create_response();
-  resp.set_body("{}");
-  return resp.done();
-  
 }

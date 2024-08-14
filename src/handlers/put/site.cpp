@@ -1,8 +1,8 @@
 /*
-  postideas.cpp
+  putsite.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
-  Date: 30-Jul-2024
+  Date: 14-Aug-2024
     
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
@@ -15,14 +15,13 @@
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
-#include <restinio/core.hpp>
 
-status_t Server::postideas(const req_t& req, params_t params) {
+status_t Server::putsite(const req_t& req, params_t ) {
 
   if (!isAdmin(req)) {
     return unauthorised(req);
   }
   
-  return sendBodyReturnEmptyObj(req, "message");
-
+  return sendBodyReturnEmptyObj(req, "setsite");
+  
 }

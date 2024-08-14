@@ -60,6 +60,8 @@ public:
 	status_t posttyping(const req_t& req, params_t );
 	status_t getinfos(const req_t& req, params_t );
 	status_t postinfos(const req_t& req, params_t );
+	status_t getsite(const req_t& req, params_t );
+	status_t putsite(const req_t& req, params_t );
 
 private:
   zmq::context_t _context;
@@ -79,8 +81,10 @@ private:
 
   optional<string> finishlogin(const string &password);
   status_t unauthorised(const req_t& req);
+  status_t fatal(const req_t& req, const string &msg);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
+  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
 
 };
 

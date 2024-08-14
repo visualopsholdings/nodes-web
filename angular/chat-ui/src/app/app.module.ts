@@ -50,6 +50,7 @@ import { ChooseStreamDialogComponent } from './choose-stream-dialog/choose-strea
 import { JustNowPipe } from './just-now.pipe';
 import { UserListService }  from './user-list.service';
 import { UserService }  from './user.service';
+import { SiteService }  from './site.service';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,7 @@ import { UserService }  from './user.service';
     MatNativeDateModule,
     MatProgressSpinnerModule
   ],
-  providers: [IconService, MeService, StreamService, IdeaService, UserListService, UserService],
+  providers: [IconService, MeService, StreamService, IdeaService, UserListService, UserService, SiteService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

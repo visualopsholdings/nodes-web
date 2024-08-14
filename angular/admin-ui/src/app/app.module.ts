@@ -41,6 +41,8 @@ import { InfosComponent } from './infos/infos.component';
 import { InfoService }  from './info.service';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { NodesComponent } from './nodes/nodes.component';
+import { SiteDetailComponent } from './site-detail/site-detail.component';
+import { SiteService }  from './site.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,8 @@ import { NodesComponent } from './nodes/nodes.component';
     SystemMaintenanceComponent,
     InfosComponent,
     ConfirmComponent,
-    NodesComponent
+    NodesComponent,
+    SiteDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +87,7 @@ import { NodesComponent } from './nodes/nodes.component';
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [IconService, MeService, UserService, InfoService],
+  providers: [IconService, MeService, UserService, InfoService, SiteService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

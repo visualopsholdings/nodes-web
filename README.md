@@ -256,4 +256,7 @@ Nodes is licensed under [version 3 of the GNU General Public License] contained 
 ### 29 Jul 2024
 - rename to https://github.com/visualopsholdings/nodes-web
 
+### 14 Aug 2024
+- Use and update the "site" customised info
+
 

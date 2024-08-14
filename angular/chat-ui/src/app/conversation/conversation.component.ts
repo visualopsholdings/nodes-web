@@ -31,6 +31,7 @@ import { BootstrapService } from '../bootstrap.service';
 import { StreamFlags } from '../../../../shared-ui/streamflags';
 import { UpService }  from '../up.service';
 import { UserListService } from '../user-list.service';
+import { Site }  from '../site';
 
 @Component({
   selector: 'app-conversation',
@@ -46,6 +47,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
   private urlRegex = /((((ftp|https|http?):\/\/)|(w{3}\.))[\-\w@:%_\+.~#?,&\/\/=]+)/gi;
 
+  site: Site;
   me: Me;
   stream: Stream;
   streamflags: StreamFlags;
@@ -95,8 +97,9 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
     // it's possible that convo is created before bootstrap has occured.
     this.me = this.bootstrapService.getMe();
+    this.site = this.bootstrapService.getSite();
     this.subscriptions.push(this.bootstrapService.meChanged$.subscribe(me => {
-      [this.me] = me;
+      [this.me, this.site] = me;
       if (this.ideaToLoad) {
           this.getSingleIdea(this.ideaToLoad, true);
           this.ideaToLoad = null;
@@ -487,7 +490,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
   }
 
   streamBgColor(): string {
-    return "#7096cc";
+    return this.site && this.site.streamBgColor ? this.site.streamBgColor : "#7096cc";
   }
 
   cancelFocus() {

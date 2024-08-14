@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Me }  from './me';
 import { MeService }  from './me.service';
 import { BootstrapService } from './bootstrap.service';
+import { Site }  from './site';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { BootstrapService } from './bootstrap.service';
 })
 export class AppComponent {
 
+  site: Site;
   me: Me;
   height = "300px";
   title = 'chat-ui';
@@ -31,7 +33,7 @@ export class AppComponent {
     this.bootstrapService.meChanged$.subscribe(me => {
 
       if (me) {
-        [this.me] = me;
+        [this.me, this.site] = me;
         this.onResize();
       }
 
@@ -47,10 +49,6 @@ export class AppComponent {
     return this.me != null;
   }
 
-  headerTitle(): string {
-    return "Nodes";
-  }
-
   version(): string {
     return "0.1";
   }
@@ -63,8 +61,12 @@ export class AppComponent {
     window.open("../" + name, newwindow ? "_blank" : "_self");
   }
 
+  headerTitle(): string {
+    return this.site ? (this.site.headerTitle ? this.site.headerTitle : "Visual Ops") : "";
+  }
+
   streamBgColor(): string {
-    return "#7096cc";
+    return this.site ? (this.site.streamBgColor ? this.site.streamBgColor : "#7096cc") : "#FFFFFF";
   }
 
 }

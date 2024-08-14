@@ -68,6 +68,8 @@ set(HANDLERS
   src/handlers/post/typing.cpp
   src/handlers/get/infos.cpp
   src/handlers/post/infos.cpp
+  src/handlers/get/site.cpp
+  src/handlers/put/site.cpp
 )
 
 include_directories(include)
