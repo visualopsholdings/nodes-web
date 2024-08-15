@@ -29,9 +29,10 @@ status_t Server::getsite(
   auto site = Json::getObject(j, "site");
   
   if (!site) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "site missing site ";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    BOOST_LOG_TRIVIAL(trace) << "no site";
+    auto resp = init_resp( req->create_response() );
+    resp.set_body("{}");
+    return resp.done();
   }
 
   json newsite = site.value();
