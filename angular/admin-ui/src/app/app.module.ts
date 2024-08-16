@@ -43,6 +43,9 @@ import { ConfirmComponent } from './confirm/confirm.component';
 import { NodesComponent } from './nodes/nodes.component';
 import { SiteDetailComponent } from './site-detail/site-detail.component';
 import { SiteService }  from './site.service';
+import { AddUpstreamUserDialogComponent } from './add-upstream-user-dialog/add-upstream-user-dialog.component';
+import { UserQueryResultDialogComponent } from './user-query-result-dialog/user-query-result-dialog.component';
+import { SocketService }  from './socket.service';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,9 @@ import { SiteService }  from './site.service';
     InfosComponent,
     ConfirmComponent,
     NodesComponent,
-    SiteDetailComponent
+    SiteDetailComponent,
+    AddUpstreamUserDialogComponent,
+    UserQueryResultDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +92,7 @@ import { SiteService }  from './site.service';
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [IconService, MeService, UserService, InfoService, SiteService],
+  providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

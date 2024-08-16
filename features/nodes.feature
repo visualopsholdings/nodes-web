@@ -5,6 +5,10 @@ Feature: Nodes
       When there is an info
       When there is default security
 
+      And there are sites:
+         | headerTitle     | streamBgColor   |
+         | Local           | lightgreen      |
+
  	@javascript
 	Scenario: A server can be reset
       When "tracy" logs into admin

@@ -43,4 +43,10 @@ export class UserService extends BackendService {
     );
   }
 
+  addUser (user: User): Observable<User> {
+    return this.http.post<User>(this.usersUrl, user, { headers: this.httpHeaders() } ).pipe(
+      catchError(this.handleError<User>('addUser'))
+    );
+  }
+
 }

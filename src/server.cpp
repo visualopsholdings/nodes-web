@@ -13,12 +13,22 @@
 #include "json.hpp"
 #include "cookie.hpp"
 #include "session.hpp"
+#include "zmqclient.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/core.hpp>
 #include <restinio/router/express.hpp>
 
 using router_t = restinio::router::express_router_t<>;
+
+Server::Server(int reqPort, int subPort): 
+    _context(1), _req(_context, ZMQ_REQ) {
+    
+  _req.connect("tcp://127.0.0.1:" + to_string(reqPort));
+  
+	_zmq = shared_ptr<ZMQClient>(new ZMQClient(this, subPort));
+	
+}
 
 auto Server::handler()
 {
@@ -48,6 +58,7 @@ auto Server::handler()
   router->http_post("/rest/1.0/infos", by(&Server::postinfos));
   router->http_get("/rest/1.0/site", by(&Server::getsite));
   router->http_put("/rest/1.0/site", by(&Server::putsite));
+  router->http_post("/rest/1.0/users", by(&Server::postusers));
 
   return router;
 }
@@ -98,6 +109,14 @@ status_t Server::fatal(const req_t& req, const string &msg) {
   return resp.done();
 }
 
+status_t Server::returnEmptyObj(const req_t& req) {
+
+  auto resp = req->create_response();
+  resp.set_body("{}");
+  return resp.done();
+  
+}
+
 status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
 
   json j = boost::json::parse(req->body());
@@ -122,9 +141,7 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
     return fatal(req, msg.value());
   }
   
-  auto resp = req->create_response();
-  resp.set_body("{}");
-  return resp.done();
+  return returnEmptyObj(req);
 
 }
 
@@ -167,15 +184,10 @@ optional<string> Server::finishlogin(const string &password) {
   
 }
 
-Server::Server(const string &reqConn): 
-    _context(1), _req(_context, ZMQ_REQ) {
-    
-  _req.connect(reqConn);
-
-}
-
 void Server::run(int httpPort) {
 
+  _zmq->run();
+  
   using traits_t =
       restinio::traits_t<
          restinio::asio_timer_manager_t,

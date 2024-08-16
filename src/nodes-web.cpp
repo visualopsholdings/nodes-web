@@ -31,11 +31,13 @@ int main(int argc, char *argv[]) {
 
   int httpPort;
   int reqPort;
+  int subPort;
   string logLevel;
   
   po::options_description desc("Allowed options");
   desc.add_options()
     ("httpPort", po::value<int>(&httpPort)->default_value(3000), "HTTP port.")
+    ("subPort", po::value<int>(&subPort)->default_value(3012), "ZMQ Sub port.")
     ("reqPort", po::value<int>(&reqPort)->default_value(3013), "ZMQ Req port.")
     ("logLevel", po::value<string>(&logLevel)->default_value("info"), "Logging level [trace, debug, warn, info].")
     ("help", "produce help message")
@@ -76,7 +78,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_TRIVIAL(info) << version;
 	BOOST_LOG_TRIVIAL(info) << "Connect to ZMQ as Local REQ on " << reqPort;
 
-  Server server("tcp://127.0.0.1:" + to_string(reqPort));
+  Server server(reqPort, subPort);
   server.run(httpPort);
   
 }

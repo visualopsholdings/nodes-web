@@ -34,4 +34,5 @@
     <mat-paginator [length]="total" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="goPage($event)">
     </mat-paginator>
   </span>
+  <button *ngIf="hasUpstream" class="add-button" mat-raised-button (click)="queryUpstream();">ADD FROM UPSTREAM</button>
 </div>

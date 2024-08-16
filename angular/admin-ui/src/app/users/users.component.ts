@@ -7,6 +7,11 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { User } from '../user';
 import { UserService } from '../user.service';
 import { IconService } from '../icon.service';
+import { MeService }  from '../me.service';
+import { Me }  from '../me';
+import { InfoService }  from '../info.service';
+import { Info }  from '../info';
+import { AddUpstreamUserDialogComponent } from '../add-upstream-user-dialog/add-upstream-user-dialog.component';
 
 @Component({
   selector: 'app-users',
@@ -15,11 +20,13 @@ import { IconService } from '../icon.service';
 })
 export class UsersComponent implements OnInit {
 
+  private me: Me;
   items: any[];
   pageSizeOptions = [9, 36, 72];
   pageSize = 9;
   total: number = 0;
   displayedColumns: string[] = [ "icon", "id", "name", "actions" ];
+  hasUpstream = false;
 
   constructor(
     public dialog: MatDialog,
@@ -27,11 +34,20 @@ export class UsersComponent implements OnInit {
     private formBuilder: FormBuilder,
     private userService: UserService,
     private iconService: IconService,
+    private meService: MeService,
+    private infoService: InfoService
     )
   {}
 
   ngOnInit() {
-    this.getItems(0);
+    this.meService.getMe()
+      .subscribe(me => {
+        this.me = me;
+        this.getItems(0);
+        this.infoService.getInfos().subscribe(infos => {
+          this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
+        });
+     });
   }
 
   getItems(from: number): void {
@@ -49,6 +65,17 @@ export class UsersComponent implements OnInit {
 
   getIcon(item: any): string {
     return this.iconService.getIcon({ icon: "internal:user" });
+  }
+
+  queryUpstream(): void {
+    this.dialog.open(AddUpstreamUserDialogComponent).afterClosed().subscribe(result => {
+        if (result) {
+          result.query = true;
+          this.userService.addUser(result as User).subscribe(() => {
+            // need to refresh later
+          });
+        }
+    });
   }
 
 }

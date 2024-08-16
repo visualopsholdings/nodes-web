@@ -70,11 +70,13 @@ set(HANDLERS
   src/handlers/post/infos.cpp
   src/handlers/get/site.cpp
   src/handlers/put/site.cpp
+  src/handlers/post/users.cpp
+  src/handlers/queryResult.cpp
 )
 
 include_directories(include)
 
-add_executable(nodes-web src/nodes-web.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp)
+add_executable(nodes-web src/nodes-web.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp  src/zmqclient.cpp)
   target_link_libraries(nodes-web ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
   target_include_directories(nodes-web PUBLIC $ENV{RESTINIO_HOME}/dev $ENV{RESTINIO_HOME}/dev/nodejs/llhttp/include $ENV{RESTINIO_HOME}/dev/expected-lite/include $ENV{RESTINIO_HOME}/dev/fmt/include)
   target_compile_definitions(nodes-web  PUBLIC RESTINIO_USE_BOOST_ASIO=1)

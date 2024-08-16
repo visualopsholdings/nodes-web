@@ -6,6 +6,10 @@ import { Router } from '@angular/router';
 import { Me }  from './me';
 import { MeService }  from './me.service';
 import { BootstrapService } from './bootstrap.service';
+import { SocketService }  from './socket.service';
+import { User }  from './user';
+import { UserQueryResultDialogComponent } from './user-query-result-dialog/user-query-result-dialog.component';
+import { UserService }  from './user.service';
 
 @Component({
   selector: 'app-root',
@@ -21,11 +25,16 @@ export class AppComponent implements OnInit {
   height = "300px";
   opened = true;
 
+  private onSocket = new EventEmitter<any>();
+  private onQR = new EventEmitter<any>();
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
     private meService: MeService,
+    private userService: UserService,
     private bootstrapService: BootstrapService,
+    private socketService: SocketService,
   ) {
   }
 
@@ -35,6 +44,7 @@ export class AppComponent implements OnInit {
 
       if (me) {
         [this.me] = me;
+        this.startSocket();
         this.onResize();
       }
 
@@ -44,6 +54,33 @@ export class AppComponent implements OnInit {
 
   onResize() {
     this.height = window.innerHeight + "px";
+  }
+
+  private startSocket(): void {
+    if (this.me) {
+      this.socketService.start(this.me, console, this.onSocket);
+    }
+    else {
+      this.socketService.startDown(console, this.onSocket);
+    }
+    this.onQR.subscribe(result => {
+      if (result.queryType == "user") {
+        this.dialog.open(UserQueryResultDialogComponent, { data: { users: result.result } }).afterClosed().subscribe(result => {
+          if (result) {
+            result.forEach(user => {
+              this.userService.addUser({ _id: user, upstream: true } as User).subscribe(() => {
+                // need to refresh later
+              });
+            });
+          }
+        });
+      }
+      else {
+        console.log("Unknown query result type", result.queryType);
+      }
+    });
+    this.socketService.registerQR("app", this.onQR);
+    this.socketService.open(this.me, "system");
   }
 
   hasAdmin(): boolean {

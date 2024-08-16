@@ -33,11 +33,12 @@ using req_t = restinio::request_handle_t;
 using params_t = restinio::router::route_params_t;
 
 class Session;
+class ZMQClient;
 
 class Server {
 
 public:
-  Server(const string &reqConn);
+  Server(int reqPort, int subPort);
     
   void run(int httpPort);
   auto handler();
@@ -62,10 +63,12 @@ public:
 	status_t postinfos(const req_t& req, params_t );
 	status_t getsite(const req_t& req, params_t );
 	status_t putsite(const req_t& req, params_t );
+	status_t postusers(const req_t& req, params_t );
 
 private:
   zmq::context_t _context;
   zmq::socket_t _req;
+  shared_ptr<ZMQClient> _zmq;
 
 	template < typename RESP >
 	static RESP
@@ -85,6 +88,7 @@ private:
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
+  status_t returnEmptyObj(const req_t& req);
 
 };
 

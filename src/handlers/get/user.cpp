@@ -26,9 +26,7 @@ status_t Server::getuser(
   }
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    auto resp = init_resp( req->create_response() );
-    resp.set_body("{}");
-    return resp.done();
+    return returnEmptyObj(req);
   }
   send({ 
     { "type", "user" },

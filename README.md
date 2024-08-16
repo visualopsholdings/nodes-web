@@ -259,4 +259,10 @@ Nodes is licensed under [version 3 of the GNU General Public License] contained 
 ### 14 Aug 2024
 - Use and update the "site" customised info
 
+### 16 Aug 2024
+- Implement querying for a user from an upstream and getting the query result back.
+- Added new code to run ZMQ in a thread for the SUB. This is where queryResults come 
+back from.
+
+
 

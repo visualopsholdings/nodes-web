@@ -30,9 +30,7 @@ status_t Server::getsite(
   
   if (!site) {
     BOOST_LOG_TRIVIAL(trace) << "no site";
-    auto resp = init_resp( req->create_response() );
-    resp.set_body("{}");
-    return resp.done();
+    return returnEmptyObj(req);
   }
 
   json newsite = site.value();
