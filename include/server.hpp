@@ -15,6 +15,7 @@
 #define H_server
 
 #include <string>
+#include <map>
 #include <boost/json.hpp>
 #include <zmq.hpp>
 #include <restinio/http_headers.hpp>
@@ -26,7 +27,13 @@ namespace restinio {
   namespace router {
     class route_params_t;
   }
+  namespace websocket {
+    namespace basic {
+      class ws_t;
+    }
+  }
 };
+namespace rws = restinio::websocket::basic;
 
 using status_t = restinio::request_handling_status_t;
 using req_t = restinio::request_handle_t;
@@ -69,7 +76,8 @@ private:
   zmq::context_t _context;
   zmq::socket_t _req;
   shared_ptr<ZMQClient> _zmq;
-
+  std::map<std::uint64_t, std::shared_ptr<rws::ws_t> > _registry;
+  
 	template < typename RESP >
 	static RESP
 	init_resp( RESP resp )

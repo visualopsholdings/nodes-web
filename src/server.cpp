@@ -18,8 +18,16 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/core.hpp>
 #include <restinio/router/express.hpp>
+#include <restinio/websocket/websocket.hpp>
 
 using router_t = restinio::router::express_router_t<>;
+using traits_t =
+    restinio::traits_t<
+       restinio::asio_timer_manager_t,
+//        restinio::single_threaded_ostream_logger_t,
+       restinio::null_logger_t,
+       router_t >;
+
 
 Server::Server(int reqPort, int subPort): 
     _context(1), _req(_context, ZMQ_REQ) {
@@ -60,7 +68,48 @@ auto Server::handler()
   router->http_put("/rest/1.0/site", by(&Server::putsite));
   router->http_post("/rest/1.0/users", by(&Server::postusers));
 
+  router->http_get("/websocket", [this](auto req, auto) mutable {
+    
+    BOOST_LOG_TRIVIAL(trace) << "in socket";  
+
+    if (restinio::http_connection_header_t::upgrade == req->header().connection()) {
+    
+      BOOST_LOG_TRIVIAL(trace) << "upgrading";
+      
+      auto wsh =
+        rws::upgrade< traits_t >(
+          *req,
+          rws::activation_t::immediate,
+          [](auto wsh, auto m){
+            BOOST_LOG_TRIVIAL(trace) << "sending";
+            wsh->send_message( *m );
+          } );
+           
+      BOOST_LOG_TRIVIAL(trace) << "saving " << wsh->connection_id();
+
+      // Store websocket handle to registry object to prevent closing of the websocket
+      // on exit from this request handler.
+      _registry.emplace(wsh->connection_id(), wsh);
+
+      return restinio::request_accepted();
+    }
+
+    return restinio::request_rejected();
+  }
+  );
+    
   return router;
+}
+
+void Server::run(int httpPort) {
+
+  _zmq->run();
+  
+  restinio::run(
+    restinio::on_this_thread<traits_t>()
+      .port(httpPort).address("localhost")
+      .request_handler(handler())
+  );
 }
 
 optional<shared_ptr<Session> > Server::getSession(const req_t& req) {
@@ -182,24 +231,6 @@ optional<string> Server::finishlogin(const string &password) {
 
   return Sessions::instance()->create(j);
   
-}
-
-void Server::run(int httpPort) {
-
-  _zmq->run();
-  
-  using traits_t =
-      restinio::traits_t<
-         restinio::asio_timer_manager_t,
-//         restinio::single_threaded_ostream_logger_t,
-         restinio::null_logger_t,
-         router_t >;
-
-  restinio::run(
-    restinio::on_this_thread<traits_t>()
-      .port(httpPort).address("localhost")
-      .request_handler(handler())
-  );
 }
 
 void Server::send(const json &json) {

@@ -4,11 +4,19 @@ const PROXY_CONFIG = [
             "/login",
             "/rest",
             "/fonts",
-            "/socket.io"
         ],
         target: "http://localhost:3000",
         secure: false,
         logLevel: "debug"
+    },
+    {
+        context: [
+            "/websocket",
+        ],
+        target: "ws://localhost:3000",
+        secure: false,
+        logLevel: "debug",
+        ws: true
     }
 ]
 
