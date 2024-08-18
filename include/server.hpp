@@ -51,32 +51,13 @@ public:
   auto handler();
   void send(const json &json);
   json receive();
-  
-	status_t getroot(const req_t& req, params_t );
-	status_t getfonts(const req_t& req, params_t );
-	status_t getrawusers(const req_t& req, params_t );
-	status_t getstreams(const req_t& req, params_t );
-	status_t getstream(const req_t& req, params_t );
-	status_t getconversation(const req_t& req, params_t );
-	status_t getstreampolicyusers(const req_t& req, params_t );
-	status_t getme(const req_t& req, params_t );
-	status_t getlogin(const req_t& req, params_t );
-	status_t postlogin(const req_t& req, params_t );
-	status_t getlogout(const req_t& req, params_t );
-	status_t getuser(const req_t& req, params_t );
-	status_t postideas(const req_t& req, params_t );
-	status_t posttyping(const req_t& req, params_t );
-	status_t getinfos(const req_t& req, params_t );
-	status_t postinfos(const req_t& req, params_t );
-	status_t getsite(const req_t& req, params_t );
-	status_t putsite(const req_t& req, params_t );
-	status_t postusers(const req_t& req, params_t );
-
-private:
-  zmq::context_t _context;
-  zmq::socket_t _req;
-  shared_ptr<ZMQClient> _zmq;
-  std::map<std::uint64_t, std::shared_ptr<rws::ws_t> > _registry;
+  optional<string> finishlogin(const string &password);
+  status_t unauthorised(const req_t& req);
+  status_t fatal(const req_t& req, const string &msg);
+  optional<shared_ptr<Session> > getSession(const req_t& req);
+  bool isAdmin(const req_t& req);
+  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
+  status_t returnEmptyObj(const req_t& req);
   
 	template < typename RESP >
 	static RESP
@@ -90,14 +71,12 @@ private:
 		return resp;
 	}
 
-  optional<string> finishlogin(const string &password);
-  status_t unauthorised(const req_t& req);
-  status_t fatal(const req_t& req, const string &msg);
-  optional<shared_ptr<Session> > getSession(const req_t& req);
-  bool isAdmin(const req_t& req);
-  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
-  status_t returnEmptyObj(const req_t& req);
-
+private:
+  zmq::context_t _context;
+  zmq::socket_t _req;
+  shared_ptr<ZMQClient> _zmq;
+  std::map<std::uint64_t, std::shared_ptr<rws::ws_t> > _registry;
+  
 };
 
 #endif // H_server

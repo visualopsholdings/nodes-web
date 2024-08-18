@@ -17,20 +17,21 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::getlogout(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getlogout(Server *server, const req_t& req, params_t params)
 {
   BOOST_LOG_TRIVIAL(trace) << "GET /logout";
   
   if (!req->header().has_field("Cookie")) {
     BOOST_LOG_TRIVIAL(trace) << "no Cookie";  
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
   auto cookie = req->header().get_field("Cookie");
   auto id = Cookie::parseCookie(cookie);
   if (!id) {
     BOOST_LOG_TRIVIAL(trace) << "couldn't find id in cookie " << cookie;  
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
   Sessions::instance()->destroy(id.value());
   
@@ -40,3 +41,4 @@ status_t Server::getlogout(
   
 }
 
+};

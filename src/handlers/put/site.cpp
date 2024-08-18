@@ -16,12 +16,16 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::putsite(const req_t& req, params_t ) {
+namespace nodes {
 
-  if (!isAdmin(req)) {
-    return unauthorised(req);
+status_t putsite(Server *server, const req_t& req, params_t params) {
+
+  if (!server->isAdmin(req)) {
+    return server->unauthorised(req);
   }
   
-  return sendBodyReturnEmptyObj(req, "setsite");
+  return server->sendBodyReturnEmptyObj(req, "setsite");
   
 }
+
+};

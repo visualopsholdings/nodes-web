@@ -16,8 +16,12 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::posttyping(const req_t& req, params_t ) {
+namespace nodes {
 
-  return returnEmptyObj(req);
+status_t posttyping(Server *server, const req_t& req, params_t params) {
+
+  return server->returnEmptyObj(req);
 
 }
+
+};

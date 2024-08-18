@@ -14,8 +14,9 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getfonts(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getfonts(Server *server, const req_t& req, params_t params)
 {
   const auto file = restinio::cast_to<string>( params[ "file" ] );
 //  BOOST_LOG_TRIVIAL(trace) << "font " << file;
@@ -25,3 +26,5 @@ status_t Server::getfonts(
   
   return resp.done();
 }
+
+};

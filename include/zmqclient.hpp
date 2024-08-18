@@ -33,9 +33,6 @@ public:
   
   void run();
   
-  // messages
-  void queryResult(json &json);
-
 private:
   Server *_server;
   shared_ptr<zmq::context_t> _context;

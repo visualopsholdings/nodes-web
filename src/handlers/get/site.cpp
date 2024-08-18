@@ -17,26 +17,27 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getsite(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getsite(Server *server, const req_t& req, params_t params)
 {
-  if (!isAdmin(req)) {
-    return unauthorised(req);
+  if (!server->isAdmin(req)) {
+    return server->unauthorised(req);
   }
   
-  send({ { "type", "site" } });
-  json j = receive();
+  server->send({ { "type", "site" } });
+  json j = server->receive();
   auto site = Json::getObject(j, "site");
   
   if (!site) {
     BOOST_LOG_TRIVIAL(trace) << "no site";
-    return returnEmptyObj(req);
+    return server->returnEmptyObj(req);
   }
 
   json newsite = site.value();
   newsite.as_object()["_id"] = Json::getString(newsite, "id").value();
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
 
   stringstream ss;
   ss << newsite;
@@ -44,5 +45,7 @@ status_t Server::getsite(
 
   return resp.done();
 }
+
+};
 
 

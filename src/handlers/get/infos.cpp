@@ -17,26 +17,27 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getinfos(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getinfos(Server *server, const req_t& req, params_t params)
 {
-  auto session = getSession(req);
+  auto session = server->getSession(req);
   if (!session) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
-  send({ 
+  server->send({ 
     { "type", "infos" }
   });
-  json j = receive();
+  json j = server->receive();
   auto infos = Json::getArray(j, "infos");
   
   if (!infos) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "infos missing infos";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
 
   stringstream ss;
   ss << infos.value();
@@ -44,3 +45,5 @@ status_t Server::getinfos(
 
   return resp.done();
 }
+
+};

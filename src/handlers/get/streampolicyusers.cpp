@@ -17,46 +17,47 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getstreampolicyusers(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
 {
-  auto session = getSession(req);
+  auto session = server->getSession(req);
   if (!session) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    auto resp = init_resp( req->create_response() );
+    auto resp = server->init_resp( req->create_response() );
     resp.set_body("[]");
     return resp.done();
   }
-  send({ 
+  server->send({ 
     { "type", "stream" },
     { "stream", id }
   });
-  json j = receive();
+  json j = server->receive();
   auto stream = Json::getObject(j, "stream");
   if (!stream) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "stream missing stream";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
   auto policy = Json::getString(stream.value(), "policy");
   if (!policy) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "stream missing policy";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
-  send({ 
+  server->send({ 
     { "type", "policyusers" },
     { "policy", policy.value() }
   });
-  j = receive();
+  j = server->receive();
   auto users = Json::getArray(j, "users");
   if (!users) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "policyusers missing users";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
   boost::json::array newusers;
@@ -65,11 +66,13 @@ status_t Server::getstreampolicyusers(
     newusers.push_back(s);
   }
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
   stringstream ss;
   ss << newusers;
   resp.set_body(ss.str());
 
   return resp.done();
 }
+
+};
 

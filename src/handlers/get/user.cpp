@@ -17,33 +17,34 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getuser(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getuser(Server *server, const req_t& req, params_t params)
 {
-  auto session = getSession(req);
+  auto session = server->getSession(req);
   if (!session) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    return returnEmptyObj(req);
+    return server->returnEmptyObj(req);
   }
-  send({ 
+  server->send({ 
     { "type", "user" },
     { "user", id }
   });
-  json j = receive();
+  json j = server->receive();
   auto user = Json::getObject(j, "user");
   if (!user) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "user missing user";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
   json newuser = user.value();
   newuser.as_object()["_id"] = Json::getString(newuser, "id").value();
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
 
   stringstream ss;
   ss << newuser;
@@ -51,5 +52,7 @@ status_t Server::getuser(
 
   return resp.done();
 }
+
+};
 
 

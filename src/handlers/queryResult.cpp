@@ -13,8 +13,12 @@
 
 #include <boost/log/trivial.hpp>
 
-void ZMQClient::queryResult(json &json) {
+namespace nodes {
+
+void queryResult(ZMQClient *client, json &json) {
   
   BOOST_LOG_TRIVIAL(trace) << "queryResult " << json;
 
 }
+
+};

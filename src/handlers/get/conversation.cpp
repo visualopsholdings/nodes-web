@@ -17,30 +17,31 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getconversation(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getconversation(Server *server, const req_t& req, params_t params)
 {
-  auto session = getSession(req);
+  auto session = server->getSession(req);
   if (!session) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    auto resp = init_resp( req->create_response() );
+    auto resp = server->init_resp( req->create_response() );
     resp.set_body("[]");
     return resp.done();
   }
-  send({ 
+  server->send({ 
     { "type", "ideas" },
     { "stream", id }
   });
-  json j = receive();
+  json j = server->receive();
   auto ideas = Json::getArray(j, "ideas");
 
   if (!ideas) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "conversation missing ideas";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
   boost::json::array newideas;
@@ -49,10 +50,12 @@ status_t Server::getconversation(
     newideas.push_back(s);
   }
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
   stringstream ss;
   ss << newideas;
   resp.set_body(ss.str());
 
   return resp.done();
 }
+
+};

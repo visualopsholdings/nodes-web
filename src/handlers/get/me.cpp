@@ -16,14 +16,15 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::getme(
-  const req_t& req, params_t )
+namespace nodes {
+
+status_t getme(Server *server, const req_t& req, params_t params)
 {
-  auto session = getSession(req);
+  auto session = server->getSession(req);
   if (!session) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
 
   json j = { 
     { "id", session.value()->userid() },
@@ -39,3 +40,4 @@ status_t Server::getme(
   return resp.done();
 }
 
+};

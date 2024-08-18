@@ -17,10 +17,12 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::postusers(const req_t& req, params_t params) {
+namespace nodes {
 
-  if (!isAdmin(req)) {
-    return unauthorised(req);
+status_t postusers(Server *server, const req_t& req, params_t params) {
+
+  if (!server->isAdmin(req)) {
+    return server->unauthorised(req);
   }
   
   json j = boost::json::parse(req->body());
@@ -28,12 +30,12 @@ status_t Server::postusers(const req_t& req, params_t params) {
 
   auto query = Json::getBool(j, "query");
   if (!query || !query.value()) {
-    return fatal(req, "only understand query.");
+    return server->fatal(req, "only understand query.");
   }
   
   auto email = Json::getString(j, "email");
   if (!email) {
-    return fatal(req, "query requires email.");
+    return server->fatal(req, "query requires email.");
   }
   
   j = {
@@ -41,11 +43,13 @@ status_t Server::postusers(const req_t& req, params_t params) {
     { "objtype", "user" },      
     { "email", email.value() }
   };
-	send(j);
-  j = receive();
+	server->send(j);
+  j = server->receive();
   
   BOOST_LOG_TRIVIAL(trace) << j;
   
-  return returnEmptyObj(req);
+  return server->returnEmptyObj(req);
 
 }
+
+};

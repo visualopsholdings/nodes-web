@@ -13,11 +13,14 @@
 
 #include <restinio/router/express.hpp>
 
-status_t Server::getroot(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getroot(Server *server, const req_t& req, params_t params)
 {
   auto resp = req->create_response(restinio::status_found());
 	resp.append_header("Location", "/apps/chat/#/");
   return resp.done();
   
 }
+
+};

@@ -16,27 +16,28 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::getstreams(
-  const req_t& req, params_t )
+namespace nodes {
+
+status_t getstreams(Server *server, const req_t& req, params_t params)
 {
-  auto session = getSession(req);
+  auto session = server->getSession(req);
   if (!session) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
-  send({ 
+  server->send({ 
     { "type", "streams" },
     { "user", session.value()->userid() }
   });
-  json j = receive();
+  json j = server->receive();
   auto streams = Json::getArray(j, "streams");
   
   if (!streams) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "streams missing streams";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
 
   boost::json::array newstreams;
   for (auto s: streams.value()) {
@@ -49,3 +50,5 @@ status_t Server::getstreams(
 
   return resp.done();
 }
+
+};

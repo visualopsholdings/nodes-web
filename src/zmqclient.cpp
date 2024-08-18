@@ -16,6 +16,13 @@
 #include <boost/log/trivial.hpp>
 #include <thread>
 
+namespace nodes {
+
+// messages
+void queryResult(ZMQClient *client, json &json);
+
+};
+
 ZMQClient::ZMQClient(Server *server, int subPort) : 
   _server(server) {
 
@@ -30,7 +37,7 @@ ZMQClient::ZMQClient(Server *server, int subPort) :
 	BOOST_LOG_TRIVIAL(info) << "Connect to ZMQ as Local SUB on " << subPort;
 
   // expect these being published
-  _submessages["queryResult"] = bind(&ZMQClient::queryResult, this, placeholders::_1);
+  _submessages["queryResult"] = bind(&nodes::queryResult, this, placeholders::_1);
 
 }
 

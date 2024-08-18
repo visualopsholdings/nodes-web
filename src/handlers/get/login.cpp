@@ -17,18 +17,19 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::getlogin(
-  const req_t& req, params_t params)
+namespace nodes {
+
+status_t getlogin(Server *server, const req_t& req, params_t params)
 {
   BOOST_LOG_TRIVIAL(trace) << "GET /login";
   
   const auto qp = restinio::parse_query(req->header().query());
   if (qp.has("username")) {
     const auto username = restinio::cast_to<string>(qp["username"]);
-    auto id = finishlogin(username);
+    auto id = server->finishlogin(username);
     if (!id) {
       BOOST_LOG_TRIVIAL(trace) << "no id generated";  
-      return unauthorised(req);
+      return server->unauthorised(req);
     }
     BOOST_LOG_TRIVIAL(trace) << "sending response with cookie " << id.value();  
     auto resp = req->create_response(restinio::status_found());
@@ -43,3 +44,4 @@ status_t Server::getlogin(
   return resp.done();
 }
 
+};

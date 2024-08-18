@@ -38,6 +38,30 @@ Server::Server(int reqPort, int subPort):
 	
 }
 
+namespace nodes {
+
+status_t getroot(Server *server, const req_t& req, params_t );
+status_t getfonts(Server *server, const req_t& req, params_t );
+status_t getrawusers(Server *server, const req_t& req, params_t );
+status_t getstreams(Server *server, const req_t& req, params_t );
+status_t getstream(Server *server, const req_t& req, params_t );
+status_t getconversation(Server *server, const req_t& req, params_t );
+status_t getstreampolicyusers(Server *server, const req_t& req, params_t );
+status_t getme(Server *server, const req_t& req, params_t );
+status_t getlogin(Server *server, const req_t& req, params_t );
+status_t postlogin(Server *server, const req_t& req, params_t );
+status_t getlogout(Server *server, const req_t& req, params_t );
+status_t getuser(Server *server, const req_t& req, params_t );
+status_t postideas(Server *server, const req_t& req, params_t );
+status_t posttyping(Server *server, const req_t& req, params_t );
+status_t getinfos(Server *server, const req_t& req, params_t );
+status_t postinfos(Server *server, const req_t& req, params_t );
+status_t getsite(Server *server, const req_t& req, params_t );
+status_t putsite(Server *server, const req_t& req, params_t );
+status_t postusers(Server *server, const req_t& req, params_t );
+
+};
+
 auto Server::handler()
 {
   auto router = std::make_unique< router_t >();
@@ -47,26 +71,26 @@ auto Server::handler()
 		return std::bind( method, this, _1, _2 );
 	};
 
-  router->http_get("", by(&Server::getroot));
-  router->http_get("/", by(&Server::getroot));
-  router->http_get("/fonts/:file", by(&Server::getfonts));
-  router->http_get("/login", by(&Server::getlogin));
-  router->http_get("/logout", by(&Server::getlogout));
-  router->http_post("/login", by(&Server::postlogin));
-  router->http_get("/rest/1.0/rawusers", by(&Server::getrawusers));
-  router->http_get("/rest/1.0/users/me", by(&Server::getme));
-  router->http_get("/rest/1.0/users/:id", by(&Server::getuser));
-  router->http_get("/rest/1.0/streams/:id", by(&Server::getstream));
-  router->http_get("/rest/1.0/streams", by(&Server::getstreams));
-  router->http_get("/rest/1.0/conversations/:id", by(&Server::getconversation));
-  router->http_get("/rest/1.0/streams/:id/policy/users", by(&Server::getstreampolicyusers));
-  router->http_post("/rest/1.0/ideas", by(&Server::postideas));
-  router->http_post("/rest/1.0/users/me/typing", by(&Server::posttyping));
-  router->http_get("/rest/1.0/infos", by(&Server::getinfos));
-  router->http_post("/rest/1.0/infos", by(&Server::postinfos));
-  router->http_get("/rest/1.0/site", by(&Server::getsite));
-  router->http_put("/rest/1.0/site", by(&Server::putsite));
-  router->http_post("/rest/1.0/users", by(&Server::postusers));
+  router->http_get("", by(&nodes::getroot));
+  router->http_get("/", by(&nodes::getroot));
+  router->http_get("/fonts/:file", by(&nodes::getfonts));
+  router->http_get("/login", by(&nodes::getlogin));
+  router->http_get("/logout", by(&nodes::getlogout));
+  router->http_post("/login", by(&nodes::postlogin));
+  router->http_get("/rest/1.0/rawusers", by(&nodes::getrawusers));
+  router->http_get("/rest/1.0/users/me", by(&nodes::getme));
+  router->http_get("/rest/1.0/users/:id", by(&nodes::getuser));
+  router->http_get("/rest/1.0/streams/:id", by(&nodes::getstream));
+  router->http_get("/rest/1.0/streams", by(&nodes::getstreams));
+  router->http_get("/rest/1.0/conversations/:id", by(&nodes::getconversation));
+  router->http_get("/rest/1.0/streams/:id/policy/users", by(&nodes::getstreampolicyusers));
+  router->http_post("/rest/1.0/ideas", by(&nodes::postideas));
+  router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
+  router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
+  router->http_post("/rest/1.0/infos", by(&nodes::postinfos));
+  router->http_get("/rest/1.0/site", by(&nodes::getsite));
+  router->http_put("/rest/1.0/site", by(&nodes::putsite));
+  router->http_post("/rest/1.0/users", by(&nodes::postusers));
 
   router->http_get("/websocket", [this](auto req, auto) mutable {
     

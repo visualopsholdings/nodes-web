@@ -17,12 +17,16 @@
 #include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
-status_t Server::postinfos(const req_t& req, params_t params) {
+namespace nodes {
 
-  if (!isAdmin(req)) {
-    return unauthorised(req);
+status_t postinfos(Server *server, const req_t& req, params_t params) {
+
+  if (!server->isAdmin(req)) {
+    return server->unauthorised(req);
   }
   
-  return sendBodyReturnEmptyObj(req, "setinfo");
+  return server->sendBodyReturnEmptyObj(req, "setinfo");
 
 }
+
+};

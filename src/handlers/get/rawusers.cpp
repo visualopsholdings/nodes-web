@@ -15,24 +15,25 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::getrawusers(
-  const req_t& req, params_t )
+namespace nodes {
+
+status_t getrawusers(Server *server, const req_t& req, params_t params)
 {
-  if (!isAdmin(req)) {
-    return unauthorised(req);
+  if (!server->isAdmin(req)) {
+    return server->unauthorised(req);
   }
   
-  send({ { "type", "users" } });
-  json j = receive();
+  server->send({ { "type", "users" } });
+  json j = server->receive();
   auto users = Json::getArray(j, "users");
   
   if (!users) {
     // send fatal error
     BOOST_LOG_TRIVIAL(error) << "users missing users ";
-    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
-  auto resp = init_resp( req->create_response() );
+  auto resp = server->init_resp( req->create_response() );
 
   stringstream ss;
   ss << users.value();
@@ -40,3 +41,5 @@ status_t Server::getrawusers(
 
   return resp.done();
 }
+
+};

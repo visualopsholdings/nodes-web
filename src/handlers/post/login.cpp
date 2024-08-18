@@ -16,7 +16,9 @@
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
 
-status_t Server::postlogin(const req_t& req, params_t ) {
+namespace nodes {
+
+status_t postlogin(Server *server, const req_t& req, params_t params) {
 
   json j = boost::json::parse(req->body());
   BOOST_LOG_TRIVIAL(trace) << "postlogin " << j;
@@ -24,12 +26,12 @@ status_t Server::postlogin(const req_t& req, params_t ) {
   auto password = Json::getString(j, "password");
   if (!password) {
     BOOST_LOG_TRIVIAL(error) << "missing password";
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
 
-  auto id = finishlogin(password.value());
+  auto id = server->finishlogin(password.value());
   if (!id) {
-    return unauthorised(req);
+    return server->unauthorised(req);
   }
 
   auto resp = req->create_response();
@@ -39,3 +41,5 @@ status_t Server::postlogin(const req_t& req, params_t ) {
   return resp.done();
 
 }
+
+};
