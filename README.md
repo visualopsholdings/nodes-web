@@ -264,5 +264,11 @@ Nodes is licensed under [version 3 of the GNU General Public License] contained 
 - Added new code to run ZMQ in a thread for the SUB. This is where queryResults come 
 back from.
 
+### 19 Aug 2024
+- "ADD UPSTREAM USER" now returns the list of users using WebSockets.
+
+
+
+
 
 
