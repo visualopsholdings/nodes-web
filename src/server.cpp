@@ -28,7 +28,6 @@ using traits_t =
        restinio::null_logger_t,
        router_t >;
 
-
 Server::Server(int reqPort, int subPort): 
     _context(1), _req(_context, ZMQ_REQ) {
     
@@ -59,6 +58,7 @@ status_t postinfos(Server *server, const req_t& req, params_t );
 status_t getsite(Server *server, const req_t& req, params_t );
 status_t putsite(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
+status_t websocket(Server *server, const req_t& req, params_t );
 
 };
 
@@ -91,36 +91,7 @@ auto Server::handler()
   router->http_get("/rest/1.0/site", by(&nodes::getsite));
   router->http_put("/rest/1.0/site", by(&nodes::putsite));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
-
-  router->http_get("/websocket", [this](auto req, auto) mutable {
-    
-    BOOST_LOG_TRIVIAL(trace) << "in socket";  
-
-    if (restinio::http_connection_header_t::upgrade == req->header().connection()) {
-    
-      BOOST_LOG_TRIVIAL(trace) << "upgrading";
-      
-      auto wsh =
-        rws::upgrade< traits_t >(
-          *req,
-          rws::activation_t::immediate,
-          [](auto wsh, auto m){
-            BOOST_LOG_TRIVIAL(trace) << "sending";
-            wsh->send_message( *m );
-          } );
-           
-      BOOST_LOG_TRIVIAL(trace) << "saving " << wsh->connection_id();
-
-      // Store websocket handle to registry object to prevent closing of the websocket
-      // on exit from this request handler.
-      _registry.emplace(wsh->connection_id(), wsh);
-
-      return restinio::request_accepted();
-    }
-
-    return restinio::request_rejected();
-  }
-  );
+  router->http_get("/websocket", by(&nodes::websocket));
     
   return router;
 }
@@ -134,6 +105,16 @@ void Server::run(int httpPort) {
       .port(httpPort).address("localhost")
       .request_handler(handler())
   );
+}
+
+void Server::sendWS(uint64_t &id, const json &json) {
+
+  auto i = _registry.find(id);
+  if (i != _registry.end()) {
+      stringstream ss;
+      ss << json;
+      i->second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+  }
 }
 
 optional<shared_ptr<Session> > Server::getSession(const req_t& req) {

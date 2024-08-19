@@ -10,10 +10,6 @@ import { Message } from './message';
 import { SocketService }  from './socket.service';
 import { UpService }  from './up.service';
 
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
-
 @Injectable()
 export class UserService extends BackendService {
 
@@ -30,7 +26,7 @@ export class UserService extends BackendService {
   }
 
   newUser (user: User): Observable<Message> {
-    return this.http.post<Message>(`${this.usersUrl}/new`, user, httpOptions).pipe(
+    return this.http.post<Message>(`${this.usersUrl}/new`, user, { headers: this.httpHeaders() }).pipe(
       catchError(this.handleError<Message>('newUser'))
     );
   }

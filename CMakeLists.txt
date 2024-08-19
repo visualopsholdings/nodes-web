@@ -72,6 +72,7 @@ set(HANDLERS
   src/handlers/put/site.cpp
   src/handlers/post/users.cpp
   src/handlers/queryResult.cpp
+  src/handlers/get/websocket.cpp
 )
 
 include_directories(include)

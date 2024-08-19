@@ -11,6 +11,9 @@
 
 #include "zmqclient.hpp"
 
+#include "server.hpp"
+#include "json.hpp"
+
 #include <boost/log/trivial.hpp>
 
 namespace nodes {
@@ -19,6 +22,15 @@ void queryResult(ZMQClient *client, json &json) {
   
   BOOST_LOG_TRIVIAL(trace) << "queryResult " << json;
 
+  auto socketid = Json::getString(json, "socketid");
+  if (!socketid) {
+    BOOST_LOG_TRIVIAL(error) << "missing socketid";
+    return;
+  }
+
+  uint64_t id = stol(socketid.value());
+  client->_server->sendWS(id, json);
+  
 }
 
 };

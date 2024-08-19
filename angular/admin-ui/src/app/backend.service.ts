@@ -113,7 +113,13 @@ export class BackendService {
   }
 
   public httpHeaders(): HttpHeaders {
-    return new HttpHeaders({ 'Content-Type': 'application/json' });
+    let socketid = this.socketService.id();
+    if (socketid) {
+      return new HttpHeaders({ 'Content-Type': 'application/json', 'socketid': socketid });
+    }
+    else {
+      return new HttpHeaders({ 'Content-Type': 'application/json' });
+    }
   }
 
 }

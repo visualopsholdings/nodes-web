@@ -12,6 +12,7 @@ export class SocketService {
 
   // Our socket connection
   private socket;
+  private _id;
 
   private qrHandlers = [];
 
@@ -37,80 +38,34 @@ export class SocketService {
 
     var self = this;
     this.socket.onopen = function(e) {
-      console.log("[open] Connection established");
-      console.log("Sending to server");
-      self.socket.send("My name is John");
+      console.log("socket open");
     };
 
     this.socket.onmessage = function(event) {
-      console.log(`[message] Data received from server: ${event.data}`);
+      var json = JSON.parse(event.data);
+      if (json.type == "id") {
+        self._id = json.id;
+      }
+      else if (json.type == "queryResult") {
+        self.qrHandlers.forEach(e => {
+          e.emitter.emit(json);
+        });
+      }
+      else {
+        console.log("unknown", json.type);
+      }
     };
 
     this.socket.onclose = function(event) {
-      if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-      } else {
-        // e.g. server process killed or network down
-        // event.code is usually 1006 in this case
+      if (!event.wasClean) {
         console.log('[close] Connection died');
       }
     };
 
     this.socket.onerror = function(error) {
-      console.log(error);
+      console.log("socket err", error);
     };
 
-//     this.socket.on("connect", () => {
-//       logger.log("connect", this.socket.id);
-//     });
-//     this.socket.on("disconnect", (reason) => {
-//       logger.log("disconnect", reason);
-//     });
-//
-//     this.socket.on('id', () => {
-//       this.upService.connected();
-//       observer.next("socket ready");
-//     });
-//
-//     this.socket.on('queryResult', (data) => {
-// //      logger.log("socket", "queryResult", data);
-//       this.qrHandlers.forEach(e => {
-//         e.emitter.emit(data);
-//       });
-//     });
-//
-//     this.socket.on('connect_error', (err) => {
-//       logger.log("e." + err.type, err);
-//         this.upService.down();
-//     });
-//     this.socket.on('connect_timeout', () => {
-//       logger.log("t");
-//     });
-//     this.socket.on('reconnect', (n) => {
-//       this.clearStart();
-//       let down = moment.duration(moment().diff(this.lastDown)).asSeconds();
-//       logger.log("r." + n + ".d." + down);
-//       this.upService.reconnected(n > 2 || down > 10);
-//     });
-//     this.socket.on('reconnect_attempt', () => {
-//       logger.log("ra");
-//       this.clearStart();
-//       this.timeout = setTimeout(() => {
-//         this.start(me, logger, observer);
-//       }, 1000);
-//     });
-//     this.socket.on('reconnecting', () => {
-//       logger.log("ring");
-//       this.clearStart();
-//       this.lastDown = moment();
-//       this.upService.reconnecting();
-//     });
-//     this.socket.on('reconnect_error', (err) => {
-//       logger.log("re." + err.type, err);
-//     });
-//     this.socket.on('reconnect_failed', () => {
-//       logger.log("rf");
-//     });
   }
 
   startDown(logger: any, observer: EventEmitter<string>) {
@@ -120,69 +75,15 @@ export class SocketService {
     }
 
     this.upService.disconnected();
-
-    if (!this.socket) {
-      this.socket = new WebSocket("/websocket");
-    }
-
-    var self = this;
-    this.socket.onopen = function(e) {
-      console.log("[open] Connection established");
-      console.log("Sending to server");
-      self.socket.send("My name is John");
-    };
-
-    this.socket.onmessage = function(event) {
-      console.log(`[message] Data received from server: ${event.data}`);
-    };
-
-    this.socket.onclose = function(event) {
-      if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-      } else {
-        // e.g. server process killed or network down
-        // event.code is usually 1006 in this case
-        console.log('[close] Connection died');
-      }
-    };
-
-    this.socket.onerror = function(error) {
-      console.log(error);
-    };
-
-//     this.socket.on('reconnect', (n) => {
-//       this.clearStart();
-//       let down = moment.duration(moment().diff(this.lastDown)).asSeconds();
-//       logger.log("dr." + n + ".d." + down);
-//       this.upService.reconnected(n > 2 || down > 10);
-//     });
-//     this.socket.on('reconnect_attempt', () => {
-//       logger.log("dra");
-//       this.clearStart();
-//       this.timeout = setTimeout(() => {
-//         this.startDown(logger, observer);
-//       }, 1000);
-//     });
-//     this.socket.on('reconnecting', () => {
-//       logger.log("dring");
-//       this.clearStart();
-//       this.lastDown = moment();
-//       this.upService.reconnecting();
-//     });
-//     this.socket.on('reconnect_error', (err) => {
-//       logger.log("dre." + err.type, err);
-//     });
-//     this.socket.on('reconnect_failed', () => {
-//       logger.log("drf");
-//     });
+    this.start(null, logger, observer);
 
   }
 
   private clearStart() {
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-        this.timeout = null;
-      }
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
   }
 
   registerQR(ctx: string, emitter: EventEmitter<any>) {
@@ -191,11 +92,11 @@ export class SocketService {
   }
 
   id(): string {
-    return this.socket ? this.socket.id : null;
+    return this.socket ? this._id.toString() : null;
   }
 
   open(me: User, id: string): void {
-//		this.socket.emit('openDocument', { id: id, userid: me._id });
+//    this.socket.send(JSON.stringify({ type:"openDocument", id: id, userid: me._id }));
 	}
 
 }

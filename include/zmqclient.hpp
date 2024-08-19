@@ -33,8 +33,9 @@ public:
   
   void run();
   
-private:
   Server *_server;
+
+private:
   shared_ptr<zmq::context_t> _context;
   shared_ptr<zmq::socket_t> _sub;
   map<string, msgHandler> _submessages;

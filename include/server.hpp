@@ -58,6 +58,7 @@ public:
   bool isAdmin(const req_t& req);
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
   status_t returnEmptyObj(const req_t& req);
+  void sendWS(uint64_t &id, const json &json);
   
 	template < typename RESP >
 	static RESP
@@ -71,11 +72,12 @@ public:
 		return resp;
 	}
 
+  map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
+
 private:
   zmq::context_t _context;
   zmq::socket_t _req;
   shared_ptr<ZMQClient> _zmq;
-  std::map<std::uint64_t, std::shared_ptr<rws::ws_t> > _registry;
   
 };
 
