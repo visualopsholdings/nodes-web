@@ -28,6 +28,7 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   json j = boost::json::parse(req->body());
   BOOST_LOG_TRIVIAL(trace) << j;
 
+  // query a user.
   auto query = Json::getBool(j, "query");
   if (query && query.value()) {
     auto email = Json::getString(j, "email");
@@ -54,9 +55,24 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req);
   }
   
+  // add an upstream user
   auto upstream = Json::getBool(j, "upstream");
   if (upstream && upstream.value()) {
-    BOOST_LOG_TRIVIAL(trace) << "creating a new upstream user.";
+  
+    auto id = Json::getString(j, "_id");
+    if (!id) {
+      return server->fatal(req, "upstream requires id.");
+    }
+    j = {
+      { "type", "newuser" },
+      { "id", id.value() },      
+      { "upstream", true }
+    };
+    server->send(j);
+    j = server->receive();
+    
+    BOOST_LOG_TRIVIAL(trace) << j;
+    
     return server->returnEmptyObj(req);
   }
 

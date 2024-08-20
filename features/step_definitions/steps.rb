@@ -40,3 +40,24 @@ end
 Given("before the end of time the page contains {string}") do |text|
    beforeTheEndOfTime { expect(page).to have_content(text) }
 end
+
+Then(/^eventually table has (\d+) rows$/) do |count|
+   eventually { expect(find('table > tbody')).to have_selector('tr', count: count.to_i) }
+end
+
+Given(/^she enters "(.*?)" in "(.*?)"$/) do |text, field|
+   element = find_field(field)
+   element.native.clear
+   fill_in(field, :with => text)
+   eventually { expect(find_field(field).value).to eq text }
+   find_field(field).native.send_keys :tab
+end
+
+When('she refreshes the page') do
+   page.driver.browser.navigate.refresh
+end
+
+When("she waits {int} seconds") do |n|
+  sleep(n.to_i)
+end
+

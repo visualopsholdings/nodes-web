@@ -12,12 +12,24 @@ Feature: Users
          | headerTitle     | streamBgColor   |
          | Test            | lightgreen      |
 
- 	@javascript
+ 	@javascript @interactive
 	Scenario: A user can be added from upstream
       When "tracy" logs into admin
-	   And she clicks "Users"
-	   And she clicks "ADD FROM UPSTREAM"
-      And eventually a modal dialog appears
-      And she clicks "Ok"    
+ 	   And she clicks "Users"
+      And eventually table has 2 rows
+ 	   And she clicks "ADD FROM UPSTREAM"
+      And a modal dialog appears
+      And she enters "Paul" in "email"
+      And she clicks "Ok"
       And eventually the modal dialog disappears
+      And a modal dialog appears
+      And eventually the page contains "Paul Hamilton"
+      And she checks the first list option
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+#      And eventually the page contains "Discovery complete"
+      And she waits 1 seconds
+      And she refreshes the page
+      Then eventually table has 3 rows
+#      And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB
      

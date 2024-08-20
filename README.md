@@ -208,6 +208,20 @@ http://localhost:8081/login/?username=tracy
 
 Then you can edit the TypeScript code for chat and it will deploy instantly with each change.
 
+## Testing dependencies
+
+Testing relies on the external project:
+
+https://github.com/visualopsholdings/nodes-test
+
+If this changes, you can fetch it down and rebuild again with:
+
+```
+cd build
+rm -rf _deps/nodes-test-*
+make
+```
+
 ## Companion projects
 
 ### DevOps
