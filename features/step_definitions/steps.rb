@@ -61,3 +61,9 @@ When("she waits {int} seconds") do |n|
   sleep(n.to_i)
 end
 
+
+When('nodes is reloaded') do
+   result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace --cmd=reload`)
+   expect(result["type"]).to eq("ack")
+   sleep(5)
+end
