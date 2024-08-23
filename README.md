@@ -283,8 +283,7 @@ back from.
 
 ### 23 Aug 2024
 - New added users are now correctly discovered.
-
-
+- implemented teams and adding a user to a team.
 
 
 

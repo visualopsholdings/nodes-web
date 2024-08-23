@@ -17,6 +17,7 @@
 		<string>4EDE6FC6-0F46-4A79-A551-1620F79B6724</string>
 		<string>707CA29D-4347-4E43-91EE-21871BE2A46F</string>
 		<string>18DF7A2C-88BE-49DE-BD25-AA7F6C944D7B</string>
+		<string>7A59C946-D383-406C-B754-AB44FECD5640</string>
 		<string>7B20576F-6489-4CF1-8CFC-2C6D3FA7C649</string>
 	</array>
 	<key>ProjectItems</key>
@@ -432,6 +433,54 @@
 			<string>test</string>
 			<key>ItemType</key>
 			<string>FolderReference</string>
+		</dict>
+		<key>7A59C946-D383-406C-B754-AB44FECD5640</key>
+		<dict>
+			<key>ItemData</key>
+			<dict>
+				<key>BookmarkData</key>
+				<data>
+				Ym9va+ACAAAAAAQQMAAAABlWd9dwn8chRRRHC7q9Kcs5
+				dPmUFngILZXLyWZBRleP3AEAAAQAAAADAwAAAAgAKAUA
+				AAABAQAAVXNlcnMAAAAEAAAAAQEAAHBhdWwDAAAAAQEA
+				AERldgAJAAAAAQEAAG5vZGVzLXdlYgAAAA4AAAABAQAA
+				dGVzdC1zaW5nbGUuc2gAABQAAAABBgAAEAAAACAAAAAs
+				AAAAOAAAAEwAAAAIAAAABAMAANhaAAAAAAAACAAAAAQD
+				AAC8MgQAAAAAAAgAAAAEAwAARoMWAAAAAAAIAAAABAMA
+				ANc9PRIAAAAACAAAAAQDAADm040SAAAAABQAAAABBgAA
+				gAAAAJAAAACgAAAAsAAAAMAAAAAIAAAAAAQAAEHGPBp8
+				Br3YGAAAAAECAAABAAAAAAAAAA8AAAAAAAAAAAAAAAAA
+				AAAIAAAABAMAAAMAAAAAAAAABAAAAAMDAAD1AQAACAAA
+				AAEJAABmaWxlOi8vLwwAAAABAQAATWFjaW50b3NoIEhE
+				CAAAAAQDAAAAkIKW5wAAAAgAAAAABAAAQcYvyAaAAAAk
+				AAAAAQEAAEExNEU5RjM4LUFDQUQtNEVGQi05NENBLTM0
+				NDU3MUZFNUM2ORgAAAABAgAAgQAAAAEAAADvEwAAAQAA
+				AAAAAAAAAAAAAQAAAAEBAAAvAAAAAAAAAAEFAADMAAAA
+				/v///wEAAAAAAAAAEAAAAAQQAABkAAAAAAAAAAUQAADQ
+				AAAAAAAAABAQAAD8AAAAAAAAAEAQAADsAAAAAAAAAAIg
+				AADIAQAAAAAAAAUgAAA4AQAAAAAAABAgAABIAQAAAAAA
+				ABEgAAB8AQAAAAAAABIgAABcAQAAAAAAABMgAABsAQAA
+				AAAAACAgAACoAQAAAAAAADAgAADUAQAAAAAAAAHAAAAc
+				AQAAAAAAABHAAAAgAAAAAAAAABLAAAAsAQAAAAAAABDQ
+				AAAEAAAAAAAAAA==
+				</data>
+				<key>FileURL</key>
+				<string>file:///Users/paul/Dev/nodes-web/test-single.sh</string>
+				<key>HasSecurityScope</key>
+				<true/>
+				<key>RelativePath</key>
+				<string>./test-single.sh</string>
+				<key>TypeID</key>
+				<string>_CFileLocator</string>
+				<key>Version</key>
+				<integer>1</integer>
+			</dict>
+			<key>ItemName</key>
+			<string>test-single.sh</string>
+			<key>ItemType</key>
+			<string>FileReference</string>
+			<key>UserOverrideItemName</key>
+			<true/>
 		</dict>
 		<key>7B20576F-6489-4CF1-8CFC-2C6D3FA7C649</key>
 		<dict>

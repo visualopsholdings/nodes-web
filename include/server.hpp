@@ -56,6 +56,7 @@ public:
   status_t fatal(const req_t& req, const string &msg);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
+  status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
   status_t returnEmptyObj(const req_t& req);
   void sendWS(uint64_t &id, const json &json);

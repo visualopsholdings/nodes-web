@@ -45,4 +45,14 @@ export class UserService extends BackendService {
     );
   }
 
+  searchUsers(term: string): Observable<User[]> {
+    if (!term.trim()) {
+      // if not search term, return empty user array.
+      return of([]);
+    }
+    return this.http.get<User[]>(`${this.usersUrl}/?q=${term}`).pipe(
+      catchError(this.handleError<User[]>('searchUsers', []))
+    );
+  }
+
 }

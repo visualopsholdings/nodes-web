@@ -9,6 +9,10 @@ When('{string} logs into admin') do |name|
   visit("http://localhost:8082/login/?username=" + name)
 end
 
+Given('{string} log into app {string}') do |name, app|
+  visit("http://localhost:8082/login/?username=" + name)
+end
+
 When('eventually there are {int} streams') do |count|
    eventually { expect(find('app-streams mat-nav-list')).to have_selector('a', count: count.to_i) }
 end
@@ -61,9 +65,12 @@ When("she waits {int} seconds") do |n|
   sleep(n.to_i)
 end
 
-
 When('nodes is reloaded') do
    result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace --cmd=reload`)
    expect(result["type"]).to eq("ack")
    sleep(5)
+end
+
+Given("she clicks button named {string} in row with text {string}") do |name, text|
+   find(:xpath, "//table/tbody/tr/td[text()='#{text}']/..").find("button[name='#{name}']").click()
 end

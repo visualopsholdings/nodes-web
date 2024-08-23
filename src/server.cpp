@@ -59,6 +59,11 @@ status_t getsite(Server *server, const req_t& req, params_t );
 status_t putsite(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
+status_t getgroups(Server *server, const req_t& req, params_t );
+status_t getgroup(Server *server, const req_t& req, params_t );
+status_t getgroupusers(Server *server, const req_t& req, params_t );
+status_t getusers(Server *server, const req_t& req, params_t );
+status_t postgroupusers(Server *server, const req_t& req, params_t );
 
 };
 
@@ -92,6 +97,11 @@ auto Server::handler()
   router->http_put("/rest/1.0/site", by(&nodes::putsite));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
+  router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
+  router->http_get("/rest/1.0/groups/:id", by(&nodes::getgroup));
+  router->http_get("/rest/1.0/groups/:id/users", by(&nodes::getgroupusers));
+  router->http_get("/rest/1.0/users", by(&nodes::getusers));
+  router->http_post("/rest/1.0/groups/:id/users", by(&nodes::postgroupusers));
     
   return router;
 }
@@ -162,6 +172,8 @@ status_t Server::unauthorised(const req_t& req) {
 
 status_t Server::fatal(const req_t& req, const string &msg) {
 
+  BOOST_LOG_TRIVIAL(error) << "fatal " << msg;
+
   auto resp = init_resp(req->create_response(restinio::status_internal_server_error()));
   json err = {
     { "status", 500 },
@@ -181,18 +193,8 @@ status_t Server::returnEmptyObj(const req_t& req) {
   
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
+status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type) {
 
-  json j = boost::json::parse(req->body());
-//  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
-
-  j.as_object()["type"] = type;
-  
-	send(j);
-  j = receive();
-  
-//  BOOST_LOG_TRIVIAL(trace) << j;
-  
   // test for an error...
   auto rettype = Json::getString(j, "type");
   if (!rettype) {
@@ -201,11 +203,30 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
   }
   if (rettype.value() == "err") {
     auto msg = Json::getString(j, "msg");
-    BOOST_LOG_TRIVIAL(error) << msg.value();
     return fatal(req, msg.value());
   }
   
   return returnEmptyObj(req);
+
+}
+
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
+
+  json j = boost::json::parse(req->body());
+//  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
+
+  if (!j.is_object()) {
+    return fatal(req, "body is not object");
+  }
+
+  j.as_object()["type"] = type;
+  
+	send(j);
+  j = receive();
+  
+//  BOOST_LOG_TRIVIAL(trace) << j;
+  
+  return checkErrorsReturnEmptyObj(req, j, type);
 
 }
 

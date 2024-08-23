@@ -46,6 +46,11 @@ import { SiteService }  from './site.service';
 import { AddUpstreamUserDialogComponent } from './add-upstream-user-dialog/add-upstream-user-dialog.component';
 import { UserQueryResultDialogComponent } from './user-query-result-dialog/user-query-result-dialog.component';
 import { SocketService }  from './socket.service';
+import { TeamsComponent } from './teams/teams.component';
+import { TeamDetailComponent } from './team-detail/team-detail.component';
+import { AddTeamDialogComponent } from './add-team-dialog/add-team-dialog.component';
+import { TeamService }  from './team.service';
+import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +64,11 @@ import { SocketService }  from './socket.service';
     NodesComponent,
     SiteDetailComponent,
     AddUpstreamUserDialogComponent,
-    UserQueryResultDialogComponent
+    UserQueryResultDialogComponent,
+    TeamsComponent,
+    TeamDetailComponent,
+    AddTeamDialogComponent,
+    AddMemberDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -92,7 +101,7 @@ import { SocketService }  from './socket.service';
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService],
+  providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService, TeamService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

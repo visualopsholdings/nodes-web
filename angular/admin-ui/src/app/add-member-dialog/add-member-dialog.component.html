@@ -1,0 +1,28 @@
+<form [formGroup]="form" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>User Search</h1>
+  <mat-dialog-content>
+    <mat-form-field>
+      <input matInput #searchBox name="query" id="search-box" (keyup)="search(searchBox.value)" placeholder="User Query" />
+    </mat-form-field>
+    <table mat-table [dataSource]="users$ | async">
+
+      <ng-container matColumnDef="fullname">
+        <th mat-header-cell *matHeaderCellDef>FULLNAME</th>
+        <td mat-cell *matCellDef="let item">{{item.fullname}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>ACTIONS</th>
+        <td mat-cell *matCellDef="let item">
+          <button name="add" mat-raised-button (click)="addMember(item);">ADD</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+  </mat-dialog-actions>
+</form>

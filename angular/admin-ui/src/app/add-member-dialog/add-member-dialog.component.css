@@ -1,0 +1,18 @@
+
+.modal-dialog {
+  width: 600px;
+}
+
+.user-card {
+  width: 300px;
+  height: 120px;
+}
+
+table {
+  width: 100%;
+}
+
+.field {
+  display: block;
+  width: 300px;
+}

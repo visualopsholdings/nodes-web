@@ -73,6 +73,11 @@ set(HANDLERS
   src/handlers/post/users.cpp
   src/handlers/get/websocket.cpp
   src/handlers/sendWS.cpp
+  src/handlers/get/groups.cpp
+  src/handlers/get/group.cpp
+  src/handlers/get/groupusers.cpp
+  src/handlers/get/users.cpp
+  src/handlers/post/groupusers.cpp
 )
 
 include_directories(include)
