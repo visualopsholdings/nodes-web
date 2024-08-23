@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Me }  from './me';
 import { MeService }  from './me.service';
@@ -27,10 +28,12 @@ export class AppComponent implements OnInit {
 
   private onSocket = new EventEmitter<any>();
   private onQR = new EventEmitter<any>();
+  private onStatus = new EventEmitter<any>();
 
   constructor(
     private dialog: MatDialog,
     private router: Router,
+    private snackBar: MatSnackBar,
     private meService: MeService,
     private userService: UserService,
     private bootstrapService: BootstrapService,
@@ -79,7 +82,11 @@ export class AppComponent implements OnInit {
         console.log("Unknown query result type", result.queryType);
       }
     });
+    this.onStatus.subscribe(status => {
+      this.snackBar.open(status.text, "Hide", { duration: 3000 });
+    });
     this.socketService.registerQR("app", this.onQR);
+    this.socketService.registerStatus("app", this.onStatus);
     this.socketService.open(this.me, "system");
   }
 

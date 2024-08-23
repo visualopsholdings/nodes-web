@@ -14,6 +14,7 @@ export class SocketService {
   private socket;
   private _id;
 
+  private statusHandlers = [];
   private qrHandlers = [];
 
   private me: User;
@@ -48,6 +49,11 @@ export class SocketService {
       }
       else if (json.type == "queryResult") {
         self.qrHandlers.forEach(e => {
+          e.emitter.emit(json);
+        });
+      }
+      else if (json.type == "status") {
+        self.statusHandlers.forEach(e => {
           e.emitter.emit(json);
         });
       }
@@ -89,6 +95,11 @@ export class SocketService {
   registerQR(ctx: string, emitter: EventEmitter<any>) {
     this.qrHandlers = this.qrHandlers.filter(e => e.ctx != ctx);
     this.qrHandlers.push({ ctx: ctx, emitter: emitter });
+  }
+
+  registerStatus(ctx: string, emitter: EventEmitter<any>) {
+    this.statusHandlers = this.statusHandlers.filter(e => e.ctx != ctx);
+    this.statusHandlers.push({ ctx: ctx, emitter: emitter });
   }
 
   id(): string {

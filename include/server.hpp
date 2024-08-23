@@ -59,6 +59,7 @@ public:
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
   status_t returnEmptyObj(const req_t& req);
   void sendWS(uint64_t &id, const json &json);
+  void sendAllWS(const json &json);
   
 	template < typename RESP >
 	static RESP

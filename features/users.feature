@@ -26,14 +26,14 @@ Feature: Users
       And she enters "Paul" in "email"
       And she clicks "Ok"
       And eventually the modal dialog disappears
-      And a modal dialog appears
+      And eventually a modal dialog appears
       And eventually the page contains "Paul Hamilton"
       And she checks the first list option
       And she clicks "Ok"
       And eventually the modal dialog disappears
-#      And eventually the page contains "Discovery complete"
+      And eventually the page contains "Discovery complete"
       And she waits 1 seconds
       And she refreshes the page
       Then eventually table has 3 rows
-#      And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB
+      And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB
      

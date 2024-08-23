@@ -19,7 +19,7 @@
 namespace nodes {
 
 // messages
-void queryResult(ZMQClient *client, json &json);
+void sendWS(ZMQClient *client, json &json);
 
 };
 
@@ -37,7 +37,8 @@ ZMQClient::ZMQClient(Server *server, int subPort) :
 	BOOST_LOG_TRIVIAL(info) << "Connect to ZMQ as Local SUB on " << subPort;
 
   // expect these being published
-  _submessages["queryResult"] = bind(&nodes::queryResult, this, placeholders::_1);
+  _submessages["queryResult"] = bind(&nodes::sendWS, this, placeholders::_1);
+  _submessages["status"] = bind(&nodes::sendWS, this, placeholders::_1);
 
 }
 

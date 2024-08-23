@@ -238,7 +238,7 @@ https://github.com/visualopsholdings/nodes-irc
 
 ## Current development focus
 
-### Implement admin enough to build a working system
+### Add users to a team
 
 ## License
 
@@ -280,6 +280,11 @@ back from.
 
 ### 19 Aug 2024
 - "ADD UPSTREAM USER" now returns the list of users using WebSockets.
+
+### 23 Aug 2024
+- New added users are now correctly discovered.
+
+
 
 
 

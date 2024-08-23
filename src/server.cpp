@@ -111,10 +111,20 @@ void Server::sendWS(uint64_t &id, const json &json) {
 
   auto i = _registry.find(id);
   if (i != _registry.end()) {
-      stringstream ss;
-      ss << json;
-      i->second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+    stringstream ss;
+    ss << json;
+    i->second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
   }
+}
+
+void Server::sendAllWS(const json &json) {
+
+  stringstream ss;
+  ss << json;
+  for (auto i: _registry) {
+    i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+  }
+  
 }
 
 optional<shared_ptr<Session> > Server::getSession(const req_t& req) {
