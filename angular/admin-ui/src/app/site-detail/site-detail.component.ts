@@ -44,7 +44,7 @@ export class SiteDetailComponent implements OnInit {
   }
 
   getSite(): void {
-    this.siteService.getSite()
+    this.siteService.getSite(this.hasAdmin())
       .subscribe(site => this.site = site);
   }
 

@@ -14,7 +14,7 @@ import { UpService }  from './up.service';
 export class UserService extends BackendService {
 
   private usersUrl = '/rest/1.0/users';
-  private rawusersUrl = '/rest/1.0/rawusers';
+  private adminUsersUrl = '/rest/1.0/rawusers';
 
   constructor(
     dialog: MatDialog,
@@ -25,17 +25,11 @@ export class UserService extends BackendService {
     super(dialog, socketService, upService, http)
   }
 
-  newUser (user: User): Observable<Message> {
-    return this.http.post<Message>(`${this.usersUrl}/new`, user, { headers: this.httpHeaders() }).pipe(
-      catchError(this.handleError<Message>('newUser'))
-    );
-  }
-
-  getUsers(offset: number, limit: number): Observable<HttpResponse<User[]>> {
-    const url = `${this.rawusersUrl}?offset=${offset}&limit=${limit}`;
+  getUsers(admin: boolean, offset: number, limit: number): Observable<HttpResponse<User[]>> {
+    const url = `${admin ? this.adminUsersUrl : this.usersUrl}?offset=${offset}&limit=${limit}`;
     return this.http.get<User[]>(url, { observe: 'response' })
     .pipe(
-     catchError(this.handleResponseError<User[]>('getUsers', []))
+      catchError(this.handleResponseError<User[]>('getUsers', []))
     );
   }
 

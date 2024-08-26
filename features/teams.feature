@@ -28,17 +28,8 @@ Feature: Teams
 	   And she clicks "Teams"
       And eventually table has 3 rows
 
-# 	@javascript
-# 	Scenario: A user can be deleted from a team
-#       And she clicks button named "edit" in row with text "Team 1"
-#       And she clicks button named "delete" in row with text "Tracy"
-#       And a modal dialog appears
-#       And she clicks "Ok"
-#       And eventually the modal dialog disappears
-#       And eventually table has 2 rows
-
 	@javascript
-	Scenario: An existing member can be added to a team
+	Scenario: An user can be added to a team
       And she clicks button named "edit" in row with text "Team 2"
 	   And she clicks "ADD MEMBER"
       And eventually a modal dialog appears
@@ -46,3 +37,13 @@ Feature: Teams
       And she clicks button named "add" in row with text "Tracy"
       And eventually the modal dialog disappears
       And eventually table has 2 rows
+
+	@javascript
+	Scenario: A user can be deleted from a team
+      And she clicks button named "edit" in row with text "Team 1"
+      And she clicks button named "delete" in row with text "Tracy"
+      And a modal dialog appears
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually table has 2 rows
+

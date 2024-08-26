@@ -59,11 +59,12 @@ status_t getsite(Server *server, const req_t& req, params_t );
 status_t putsite(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
-status_t getgroups(Server *server, const req_t& req, params_t );
-status_t getgroup(Server *server, const req_t& req, params_t );
-status_t getgroupusers(Server *server, const req_t& req, params_t );
+status_t getrawgroups(Server *server, const req_t& req, params_t );
+status_t getrawgroup(Server *server, const req_t& req, params_t );
+status_t getrawgroupusers(Server *server, const req_t& req, params_t );
 status_t getusers(Server *server, const req_t& req, params_t );
 status_t postgroupusers(Server *server, const req_t& req, params_t );
+status_t deletegroupusers(Server *server, const req_t& req, params_t );
 
 };
 
@@ -97,11 +98,12 @@ auto Server::handler()
   router->http_put("/rest/1.0/site", by(&nodes::putsite));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
-  router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
-  router->http_get("/rest/1.0/groups/:id", by(&nodes::getgroup));
-  router->http_get("/rest/1.0/groups/:id/users", by(&nodes::getgroupusers));
+  router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
+  router->http_get("/rest/1.0/rawgroups/:id", by(&nodes::getrawgroup));
+  router->http_get("/rest/1.0/rawgroups/:id/users", by(&nodes::getrawgroupusers));
   router->http_get("/rest/1.0/users", by(&nodes::getusers));
   router->http_post("/rest/1.0/groups/:id/users", by(&nodes::postgroupusers));
+  router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
     
   return router;
 }

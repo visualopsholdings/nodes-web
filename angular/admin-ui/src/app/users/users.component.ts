@@ -50,8 +50,12 @@ export class UsersComponent implements OnInit {
      });
   }
 
+  hasAdmin(): boolean {
+    return this.me ? this.me.admin : false;
+  }
+
   getItems(from: number): void {
-    this.userService.getUsers(from, this.pageSize)
+    this.userService.getUsers(this.hasAdmin(), from, this.pageSize)
       .subscribe(resp => {
         this.total = this.userService.getTotal(resp);
         this.items = resp.body;

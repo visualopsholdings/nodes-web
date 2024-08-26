@@ -13,6 +13,7 @@ import { UpService }  from './up.service';
 @Injectable()
 export class TeamService extends BackendService {
 
+  private admTeamsUrl = '/rest/1.0/rawgroups';
   private teamsUrl = '/rest/1.0/groups';
 
   constructor(
@@ -24,23 +25,25 @@ export class TeamService extends BackendService {
     super(dialog, socketService, upService, http)
   }
 
-  getTeams(offset: number, limit: number): Observable<HttpResponse<Team[]>> {
-    const url = `${this.teamsUrl}?offset=${offset}&limit=${limit}`;
+  getTeams(admin: boolean, offset: number, limit: number): Observable<HttpResponse<Team[]>> {
+    const url = `${admin ? this.admTeamsUrl : this.teamsUrl}?offset=${offset}&limit=${limit}`;
     return this.http.get<Team[]>(url, { observe: 'response' })
     .pipe(
+//      tap(teams => this.log(`fetched teams`)),
       catchError(this.handleResponseError<Team[]>('getTeams', []))
     );
   }
 
-  getTeam(id: string): Observable<Team> {
-    const url = `${this.teamsUrl}/${id}`;
+  getTeam(admin: boolean, id: string): Observable<Team> {
+    const url = `${admin ? this.admTeamsUrl : this.teamsUrl}/${id}`;
     return this.http.get<Team>(url).pipe(
+//      tap(_ => this.log(`fetched team id=${id}`)),
       catchError(this.handleError<Team>(`getTeam id=${id}`))
     );
   }
 
-  getTeamMembers(id: string): Observable<TeamMember[]> {
-    const url = `${this.teamsUrl}/${id}/users`;
+  getTeamMembers(admin: boolean, id: string): Observable<TeamMember[]> {
+    const url = `${admin ? this.admTeamsUrl : this.teamsUrl}/${id}/users`;
     return this.http.get<TeamMember[]>(url)
     .pipe(
 //      tap(teams => this.log(`fetched teams`)),

@@ -16,6 +16,7 @@ const httpOptions = {
 @Injectable()
 export class SiteService extends BackendService {
 
+  private admSitesUrl = '/rest/1.0/rawsites';
   private sitesUrl = '/rest/1.0/site';
 
   constructor(
@@ -27,8 +28,8 @@ export class SiteService extends BackendService {
     super(dialog, socketService, upService, http)
   }
 
-  getSite(): Observable<Site> {
-    const url = `${this.sitesUrl}`;
+  getSite(admin: boolean): Observable<Site> {
+    const url = `${admin ? this.admSitesUrl : this.sitesUrl}`;
     return this.http.get<Site>(url).pipe(
       catchError(this.handleError<Site>(`getSite`))
     );

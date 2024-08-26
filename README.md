@@ -238,7 +238,7 @@ https://github.com/visualopsholdings/nodes-irc
 
 ## Current development focus
 
-### Add users to a team
+### Making users active/inactve and admin/admin
 
 ## License
 
@@ -285,8 +285,8 @@ back from.
 - New added users are now correctly discovered.
 - implemented teams and adding a user to a team.
 
-
-
+### 26 Aug 2024
+- Users can be added and removed from a team
 
 
 

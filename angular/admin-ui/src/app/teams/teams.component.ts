@@ -50,7 +50,7 @@ export class TeamsComponent implements OnInit {
   }
 
   getItems(from: number): void {
-    this.teamService.getTeams(from, this.pageSize)
+    this.teamService.getTeams(this.hasAdmin(), from, this.pageSize)
       .subscribe(resp => {
         this.total = this.teamService.getTotal(resp);
         this.items = resp.body;

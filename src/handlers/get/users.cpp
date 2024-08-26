@@ -20,6 +20,8 @@ namespace nodes {
 
 status_t getusers(Server *server, const req_t& req, params_t params)
 {
+  BOOST_LOG_TRIVIAL(trace) << "getusers";
+
   auto session = server->getSession(req);
   if (!session) {
     return server->unauthorised(req);

@@ -1,5 +1,5 @@
 /*
-  getgroups.cpp
+  getrawgroups.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
   Date: 23-Aug-2024
@@ -17,13 +17,14 @@
 
 namespace nodes {
 
-status_t getgroups(Server *server, const req_t& req, params_t params)
+status_t getrawgroups(Server *server, const req_t& req, params_t params)
 {
-  auto session = server->getSession(req);
-  if (!session) {
+  BOOST_LOG_TRIVIAL(trace) << "getrawgroups";
+
+  if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }
-
+  
   server->send({ { "type", "groups" } });
   json j = server->receive();
   auto groups = Json::getArray(j, "groups");

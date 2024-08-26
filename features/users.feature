@@ -13,8 +13,7 @@ Feature: Users
          | headerTitle     | streamBgColor   |
          | Test            | lightgreen      |
 
-     And nodes is reloaded
-
+      And nodes is reloaded
       
  	@javascript
 	Scenario: A user can be added from upstream

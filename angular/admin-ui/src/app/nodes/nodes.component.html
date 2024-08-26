@@ -10,6 +10,7 @@
     <p *ngIf="getInfo('upstream')"><b>Upstream node</b>: {{getInfo("upstream")}}</p>
     <p *ngIf="getInfo('upstreamPubKey')"><b>Upstream public key</b>: {{getInfo("upstreamPubKey")}}</p>
     <p *ngIf="getInfo('upstreamId')"><b>Upstream Server id</b>: {{getInfo("upstreamId")}}</p>
+    <p *ngIf="getInfo('hasInitialSync')"><b>Has Initial Sync</b>: {{getInfo("hasInitialSync")}}</p>
     <p *ngIf="upstreamLastSeen"><b>Last time upstream seen</b>: <span [style.color]="fgColorLastSeenTime(upstreamLastSeen)">{{upstreamLastSeen | date: 'medium'}}</span></p>
   </div>
 </div>
