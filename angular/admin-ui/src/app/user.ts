@@ -4,4 +4,6 @@ export class User {
   name?: string;
   fullname?: string;
   admin?: boolean;
+  active?:boolean;
+  hash?:string;
 }

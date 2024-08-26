@@ -67,6 +67,10 @@ export class UsersComponent implements OnInit {
     this.getItems(event.pageIndex * event.pageSize);
   }
 
+  edit(item: any): void {
+    this.router.navigateByUrl(`users/${item._id}`);
+  }
+
   getIcon(item: any): string {
     return this.iconService.getIcon({ icon: "internal:user" });
   }

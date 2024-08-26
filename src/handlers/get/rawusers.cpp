@@ -37,11 +37,17 @@ status_t getrawusers(Server *server, const req_t& req, params_t params)
 
   auto resp = server->init_resp( req->create_response() );
 
+  boost::json::array newusers;
+  for (auto s: users.value()) {
+    s.as_object()["_id"] = Json::getString(s, "id").value();
+    newusers.push_back(s);
+  }
   stringstream ss;
-  ss << users.value();
+  ss << newusers;
   resp.set_body(ss.str());
 
   return resp.done();
+
 }
 
 };

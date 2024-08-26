@@ -19,12 +19,14 @@
 
 namespace nodes {
 
-status_t getuser(Server *server, const req_t& req, params_t params)
+status_t getrawuser(Server *server, const req_t& req, params_t params)
 {
-  auto session = server->getSession(req);
-  if (!session) {
+  BOOST_LOG_TRIVIAL(trace) << "getrawuser";
+
+  if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }
+  
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
     return server->returnEmptyObj(req);
@@ -41,12 +43,10 @@ status_t getuser(Server *server, const req_t& req, params_t params)
     return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
-  // return a subset of the user.
-  json newuser = {
-    { "_id", Json::getString(user.value(), "id").value() },
-    { "fullname", Json::getString(user.value(), "fullname").value() }
-  };
-  
+  // return the entire user.
+  json newuser = user.value();
+  newuser.as_object()["_id"] = Json::getString(newuser, "id").value();
+
   auto resp = server->init_resp( req->create_response() );
 
   stringstream ss;

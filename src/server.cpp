@@ -65,6 +65,8 @@ status_t getrawgroupusers(Server *server, const req_t& req, params_t );
 status_t getusers(Server *server, const req_t& req, params_t );
 status_t postgroupusers(Server *server, const req_t& req, params_t );
 status_t deletegroupusers(Server *server, const req_t& req, params_t );
+status_t getrawuser(Server *server, const req_t& req, params_t );
+status_t putuser(Server *server, const req_t& req, params_t );
 
 };
 
@@ -104,7 +106,9 @@ auto Server::handler()
   router->http_get("/rest/1.0/users", by(&nodes::getusers));
   router->http_post("/rest/1.0/groups/:id/users", by(&nodes::postgroupusers));
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
-    
+  router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
+  router->http_put("/rest/1.0/users/:id", by(&nodes::putuser));
+   
   return router;
 }
 
@@ -222,6 +226,10 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
   }
 
   j.as_object()["type"] = type;
+  if (j.as_object().if_contains("_id")) {
+    j.as_object()["id"] = Json::getString(j, "_id").value();
+    j.as_object().erase("_id");
+  }
   
 	send(j);
   j = receive();

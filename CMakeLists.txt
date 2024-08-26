@@ -79,6 +79,8 @@ set(HANDLERS
   src/handlers/get/users.cpp
   src/handlers/post/groupusers.cpp
   src/handlers/delete/groupusers.cpp
+  src/handlers/get/rawuser.cpp
+  src/handlers/put/user.cpp
 )
 
 include_directories(include)

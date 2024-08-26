@@ -1,0 +1,26 @@
+<mat-card class="user-card" *ngIf="user">
+  <mat-card-header>
+      <img mat-card-avatar src="{{getIcon(user)}}">
+    <mat-card-title>{{user.fullname}}</mat-card-title>
+    <mat-card-subtitle>{{user._id}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="mat-typography">
+    <mat-form-field class="field">
+      <mat-label>Full Name</mat-label>
+      <input matInput name="fullname" [(ngModel)]="user.fullname" placeholder="Full Name">
+    </mat-form-field>
+    <mat-form-field class="field">
+      <mat-label>Username</mat-label>
+      <input matInput name="name" [(ngModel)]="user.name" placeholder="Username (used by external systems lice IRC)">
+    </mat-form-field>
+    <hr/>
+    <p *ngIf="user.hash && user.hash.length > 0">User has a password set.</p>
+    <p *ngIf="!user.hash || user.hash.length == 0">User has not set a password.</p>
+    <hr/>
+    <mat-checkbox [(ngModel)]="user.admin" (ngModelChange)="adminChange()">Admin (local to this node)</mat-checkbox><br/>
+    <mat-checkbox [(ngModel)]="user.active" (ngModelChange)="activeChange()">Active</mat-checkbox><br/>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="save();">SAVE</button>
+  </mat-card-actions>
+</mat-card>

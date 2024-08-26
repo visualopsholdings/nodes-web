@@ -51,6 +51,7 @@ import { TeamDetailComponent } from './team-detail/team-detail.component';
 import { AddTeamDialogComponent } from './add-team-dialog/add-team-dialog.component';
 import { TeamService }  from './team.service';
 import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.
     TeamsComponent,
     TeamDetailComponent,
     AddTeamDialogComponent,
-    AddMemberDialogComponent
+    AddMemberDialogComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,
