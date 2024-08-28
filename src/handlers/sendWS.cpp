@@ -20,8 +20,6 @@ namespace nodes {
 
 void sendWS(ZMQClient *client, json &json) {
   
-  BOOST_LOG_TRIVIAL(trace) << "sendWS " << json;
-
   auto socketid = Json::getString(json, "socketid");
   if (!socketid) {
     // send to all sockets.

@@ -17,7 +17,7 @@ const httpOptions = {
 export class SiteService extends BackendService {
 
   private admSitesUrl = '/rest/1.0/rawsites';
-  private sitesUrl = '/rest/1.0/site';
+  private sitesUrl = '/rest/1.0/sites';
 
   constructor(
     dialog: MatDialog,

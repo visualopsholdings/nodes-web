@@ -26,7 +26,7 @@ status_t getstreams(Server *server, const req_t& req, params_t params)
   }
   server->send({ 
     { "type", "streams" },
-    { "user", session.value()->userid() }
+    { "me", session.value()->userid() }
   });
   json j = server->receive();
   auto streams = Json::getArray(j, "streams");

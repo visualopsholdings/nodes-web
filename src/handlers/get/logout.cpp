@@ -21,8 +21,6 @@ namespace nodes {
 
 status_t getlogout(Server *server, const req_t& req, params_t params)
 {
-  BOOST_LOG_TRIVIAL(trace) << "GET /logout";
-  
   if (!req->header().has_field("Cookie")) {
     BOOST_LOG_TRIVIAL(trace) << "no Cookie";  
     return server->unauthorised(req);

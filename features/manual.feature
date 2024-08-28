@@ -23,3 +23,6 @@ Feature: Manual
          | Message 8    | My Conversation 2  | p1     | tracy  |
          | Message 9    | My Conversation 2  | p1     | leanne |
  
+       And there are sites:
+         | headerTitle     | streamBgColor   |
+         | Local           | lightgreen      |

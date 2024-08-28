@@ -16,14 +16,6 @@
 #include <restinio/core.hpp>
 #include <restinio/websocket/websocket.hpp>
 
-using router_t = restinio::router::express_router_t<>;
-using traits_t =
-    restinio::traits_t<
-       restinio::asio_timer_manager_t,
-//        restinio::single_threaded_ostream_logger_t,
-       restinio::null_logger_t,
-       router_t >;
-
 namespace nodes {
 
 status_t websocket(Server *server, const req_t& req, params_t params)
@@ -34,15 +26,7 @@ status_t websocket(Server *server, const req_t& req, params_t params)
   
     BOOST_LOG_TRIVIAL(trace) << "upgrading";
     
-    shared_ptr<rws::ws_t> wsh =
-      rws::upgrade< traits_t >(
-        *req,
-        rws::activation_t::immediate,
-        [](shared_ptr<rws::ws_t> wsh, shared_ptr<rws::message_t> m){
-        
-          BOOST_LOG_TRIVIAL(trace) << "got " << m->payload();;
-          
-        } );
+    shared_ptr<rws::ws_t> wsh = server->createWS(req);
          
     // send the ID.
     json j = {

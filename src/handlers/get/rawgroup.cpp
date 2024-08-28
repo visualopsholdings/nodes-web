@@ -21,8 +21,6 @@ namespace nodes {
 
 status_t getrawgroup(Server *server, const req_t& req, params_t params)
 {
-  BOOST_LOG_TRIVIAL(trace) << "getrawgroup";
-
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }

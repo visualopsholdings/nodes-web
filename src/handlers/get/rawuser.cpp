@@ -21,8 +21,6 @@ namespace nodes {
 
 status_t getrawuser(Server *server, const req_t& req, params_t params)
 {
-  BOOST_LOG_TRIVIAL(trace) << "getrawuser";
-
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }

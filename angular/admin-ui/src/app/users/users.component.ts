@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { Me }  from '../me';
 import { InfoService }  from '../info.service';
 import { Info }  from '../info';
 import { AddUpstreamUserDialogComponent } from '../add-upstream-user-dialog/add-upstream-user-dialog.component';
+import { SocketService }  from '../socket.service';
 
 @Component({
   selector: 'app-users',
@@ -28,6 +29,8 @@ export class UsersComponent implements OnInit {
   displayedColumns: string[] = [ "icon", "id", "name", "actions" ];
   hasUpstream = false;
 
+  private onStatus = new EventEmitter<any>();
+
   constructor(
     public dialog: MatDialog,
     public router: Router,
@@ -35,7 +38,8 @@ export class UsersComponent implements OnInit {
     private userService: UserService,
     private iconService: IconService,
     private meService: MeService,
-    private infoService: InfoService
+    private infoService: InfoService,
+    private socketService: SocketService,
     )
   {}
 
@@ -47,7 +51,15 @@ export class UsersComponent implements OnInit {
         this.infoService.getInfos().subscribe(infos => {
           this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
         });
+        this.startSocket();
      });
+  }
+
+  private startSocket(): void {
+    this.onStatus.subscribe(status => {
+      this.getItems(0);
+    });
+    this.socketService.registerStatus("users", this.onStatus);
   }
 
   hasAdmin(): boolean {

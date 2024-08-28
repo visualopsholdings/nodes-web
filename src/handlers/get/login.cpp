@@ -21,8 +21,6 @@ namespace nodes {
 
 status_t getlogin(Server *server, const req_t& req, params_t params)
 {
-  BOOST_LOG_TRIVIAL(trace) << "GET /login";
-  
   const auto qp = restinio::parse_query(req->header().query());
   if (qp.has("username")) {
     const auto username = restinio::cast_to<string>(qp["username"]);

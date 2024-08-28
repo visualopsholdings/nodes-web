@@ -169,6 +169,12 @@ from the browser, to get that going:
 ./test.sh
 ```
 
+If you know the name of a single test, you can just run that with:
+
+```
+./test-single.sh "A user can be set to admin"
+```
+
 ## Development and debugging
 
 To develop and debug the various code bases, you can run them up after making changes. Run
@@ -288,6 +294,9 @@ back from.
 ### 26 Aug 2024
 - Users can be added and removed from a team
 - A user can be have it's active and admin flags set.
+
+### 28 Aug 2024
+- Restinio uses BOOST logging.
 
 
 

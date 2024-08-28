@@ -20,13 +20,41 @@
 #include <restinio/router/express.hpp>
 #include <restinio/websocket/websocket.hpp>
 
+class boost_logger_t
+{
+	public:
+		template< typename Message_Builder >
+		void trace( Message_Builder && msg_builder )
+		{
+		  BOOST_LOG_TRIVIAL(trace) << msg_builder();
+		}
+
+		template< typename Message_Builder >
+		void info( Message_Builder && msg_builder )
+		{
+		  BOOST_LOG_TRIVIAL(info) << msg_builder();
+		}
+
+		template< typename Message_Builder >
+		void warn( Message_Builder && msg_builder )
+		{
+		  BOOST_LOG_TRIVIAL(warning) << msg_builder();
+		}
+
+		template< typename Message_Builder >
+		void error( Message_Builder && msg_builder )
+		{
+		  BOOST_LOG_TRIVIAL(error) << msg_builder();
+		}
+
+};
+
 using router_t = restinio::router::express_router_t<>;
 using traits_t =
-    restinio::traits_t<
-       restinio::asio_timer_manager_t,
-//        restinio::single_threaded_ostream_logger_t,
-       restinio::null_logger_t,
-       router_t >;
+  restinio::traits_t<
+    restinio::asio_timer_manager_t,
+    boost_logger_t,
+    router_t >;
 
 Server::Server(int reqPort, int subPort): 
     _context(1), _req(_context, ZMQ_REQ) {
@@ -55,7 +83,7 @@ status_t postideas(Server *server, const req_t& req, params_t );
 status_t posttyping(Server *server, const req_t& req, params_t );
 status_t getinfos(Server *server, const req_t& req, params_t );
 status_t postinfos(Server *server, const req_t& req, params_t );
-status_t getsite(Server *server, const req_t& req, params_t );
+status_t getrawsites(Server *server, const req_t& req, params_t );
 status_t putsite(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
@@ -67,6 +95,8 @@ status_t postgroupusers(Server *server, const req_t& req, params_t );
 status_t deletegroupusers(Server *server, const req_t& req, params_t );
 status_t getrawuser(Server *server, const req_t& req, params_t );
 status_t putuser(Server *server, const req_t& req, params_t );
+status_t getgroups(Server *server, const req_t& req, params_t );
+status_t getgroupusers(Server *server, const req_t& req, params_t );
 
 };
 
@@ -96,7 +126,7 @@ auto Server::handler()
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", by(&nodes::postinfos));
-  router->http_get("/rest/1.0/site", by(&nodes::getsite));
+  router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/site", by(&nodes::putsite));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
@@ -108,7 +138,9 @@ auto Server::handler()
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
   router->http_put("/rest/1.0/users/:id", by(&nodes::putuser));
-   
+  router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
+  router->http_get("/rest/1.0/groupusers", by(&nodes::getgroupusers));
+
   return router;
 }
 
@@ -123,7 +155,22 @@ void Server::run(int httpPort) {
   );
 }
 
+shared_ptr<rws::ws_t> Server::createWS(const req_t& req) {
+
+  return rws::upgrade< traits_t >(
+      *req,
+      rws::activation_t::immediate,
+      [](shared_ptr<rws::ws_t> wsh, shared_ptr<rws::message_t> m){
+      
+        BOOST_LOG_TRIVIAL(trace) << "got " << m->payload();;
+        
+      } );
+
+}
+
 void Server::sendWS(uint64_t &id, const json &json) {
+
+  BOOST_LOG_TRIVIAL(trace) << "sendWS " << json;
 
   auto i = _registry.find(id);
   if (i != _registry.end()) {
@@ -135,10 +182,17 @@ void Server::sendWS(uint64_t &id, const json &json) {
 
 void Server::sendAllWS(const json &json) {
 
+  BOOST_LOG_TRIVIAL(trace) << "sendAllWS " << json;
+
   stringstream ss;
   ss << json;
   for (auto i: _registry) {
-    i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+    try {
+      i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+    }
+    catch (...) {
+      BOOST_LOG_TRIVIAL(error) << "failed send_message on socket";      
+    }
   }
   
 }

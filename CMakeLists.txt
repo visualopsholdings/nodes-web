@@ -68,7 +68,7 @@ set(HANDLERS
   src/handlers/post/typing.cpp
   src/handlers/get/infos.cpp
   src/handlers/post/infos.cpp
-  src/handlers/get/site.cpp
+  src/handlers/get/rawsites.cpp
   src/handlers/put/site.cpp
   src/handlers/post/users.cpp
   src/handlers/get/websocket.cpp
@@ -81,6 +81,8 @@ set(HANDLERS
   src/handlers/delete/groupusers.cpp
   src/handlers/get/rawuser.cpp
   src/handlers/put/user.cpp
+  src/handlers/get/groups.cpp
+  src/handlers/get/groupusers.cpp
 )
 
 include_directories(include)

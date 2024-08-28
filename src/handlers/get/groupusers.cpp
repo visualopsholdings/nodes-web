@@ -1,8 +1,8 @@
 /*
-  getstream.cpp
+  getgroupusers.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
-  Date: 26-Jul-2024
+  Date: 27-Aug-2024
     
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
@@ -10,8 +10,8 @@
 */
 
 #include "server.hpp"
-#include "session.hpp"
 #include "json.hpp"
+#include "session.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -19,7 +19,7 @@
 
 namespace nodes {
 
-status_t getstream(Server *server, const req_t& req, params_t params)
+status_t getgroupusers(Server *server, const req_t& req, params_t params)
 {
   auto session = server->getSession(req);
   if (!session) {
@@ -30,29 +30,30 @@ status_t getstream(Server *server, const req_t& req, params_t params)
     return server->returnEmptyObj(req);
   }
   server->send({ 
-    { "type", "stream" },
+    { "type", "members" },
     { "me", session.value()->userid() },
-    { "stream", id }
+    { "group", id }
   });
   json j = server->receive();
-  auto stream = Json::getObject(j, "stream");
-
-  if (!stream) {
+  auto members = Json::getArray(j, "members");
+  if (!members) {
     // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "stream missing stream";
+    BOOST_LOG_TRIVIAL(error) << "members missing members";
     return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
   }
 
-  json newstream = stream.value();
-  newstream.as_object()["_id"] = Json::getString(newstream, "id").value();
-
   auto resp = server->init_resp( req->create_response() );
+
+  boost::json::array newmembers;
+  for (auto s: members.value()) {
+    s.as_object()["_id"] = Json::getString(s, "user").value();
+    newmembers.push_back(s);
+  }
   stringstream ss;
-  ss << newstream;
+  ss << newmembers;
   resp.set_body(ss.str());
 
   return resp.done();
 }
 
 };
-

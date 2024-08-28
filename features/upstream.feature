@@ -30,8 +30,6 @@ Feature: Upstream
       And she checks the first list option
       And she clicks "Ok"
       And eventually the modal dialog disappears
-      And eventually the page contains "Discovery complete"
-      And she waits 1 seconds
-      And she refreshes the page
-      Then eventually table has 3 rows
+      Then eventually the page contains "Discovery complete"
+      And eventually table has 3 rows
       And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB

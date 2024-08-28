@@ -1,5 +1,5 @@
 /*
-  getgroupusers.cpp
+  getrawgroupusers.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
   Date: 23-Aug-2024
@@ -20,8 +20,6 @@ namespace nodes {
 
 status_t getrawgroupusers(Server *server, const req_t& req, params_t params)
 {
-  BOOST_LOG_TRIVIAL(trace) << "getrawgroupusers";
-
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }
