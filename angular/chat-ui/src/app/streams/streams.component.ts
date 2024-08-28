@@ -164,7 +164,7 @@ export class StreamsComponent implements OnInit, OnDestroy {
   }
 
   headerTitle(): string {
-    return "ZMQ Chat";
+    return "Chat";
   }
 
   private setTitle(): void {
