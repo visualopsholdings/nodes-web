@@ -52,6 +52,7 @@ import { AddTeamDialogComponent } from './add-team-dialog/add-team-dialog.compon
 import { TeamService }  from './team.service';
 import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
+import { SetUpstreamDialogComponent } from './set-upstream-dialog/set-upstream-dialog.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { UserDetailComponent } from './user-detail/user-detail.component';
     TeamDetailComponent,
     AddTeamDialogComponent,
     AddMemberDialogComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    SetUpstreamDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -13,5 +13,6 @@
     <p *ngIf="getInfo('hasInitialSync')"><b>Has Initial Sync</b>: {{getInfo("hasInitialSync")}}</p>
     <p *ngIf="upstreamLastSeen"><b>Last time upstream seen</b>: <span [style.color]="fgColorLastSeenTime(upstreamLastSeen)">{{upstreamLastSeen | date: 'medium'}}</span></p>
   </div>
+  <button *ngIf="!hasDefault()" mat-raised-button (click)="setUpstream();">SET UPSTREAM</button>
 </div>
 

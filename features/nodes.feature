@@ -2,7 +2,6 @@ Feature: Nodes
 
    Background:
       And the server has id "6eae665a-f376-472d-87e5-5159c2e0b389"
-      When there is an info
       When there is default security
 
       And there are sites:
@@ -16,7 +15,6 @@ Feature: Nodes
       And eventually a modal dialog appears
       And she clicks "Ok"    
       And eventually the modal dialog disappears
+      And eventually the page contains "Server reset"
       And eventually the page does not contain "RESET"
-      And she clicks "Nodes"    
-      And eventually the page contains "Upstream node"
       

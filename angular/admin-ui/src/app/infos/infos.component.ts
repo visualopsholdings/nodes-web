@@ -9,7 +9,7 @@ import { InfoService }  from '../info.service';
 import { Info }  from '../info';
 import { MeService }  from '../me.service';
 import { Me }  from '../me';
-
+import { SocketService }  from '../socket.service';
 import { ConfirmComponent } from '../confirm/confirm.component';
 
 @Component({
@@ -23,18 +23,29 @@ export class InfosComponent implements OnInit {
 
   infos: Info[] = [];
 
+  private onStatus = new EventEmitter<any>();
+
   constructor(
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     private infoService: InfoService,
     private meService: MeService,
+    private socketService: SocketService,
   ) { }
 
   ngOnInit() {
     this.meService.getMe().subscribe(me => {
         this.me = me
         this.getInfos();
+        this.startSocket();
       });
+  }
+
+  private startSocket(): void {
+    this.onStatus.subscribe(status => {
+      this.getInfos();
+    });
+    this.socketService.registerStatus("infos", this.onStatus);
   }
 
   hasAdmin(): boolean {
@@ -78,7 +89,7 @@ export class InfosComponent implements OnInit {
           width: '400px',
           data: { title: "Reset Node",
             description: "Are you sure you want to reset the node? A new serverId and all keys will be reassigned. Only do this" +
-            " if you are absolutely sure you need a new server ID. Clicking OK will reboot this server."}
+            " if you are absolutely sure you need a new server ID."}
       }).afterClosed().subscribe(success => {
         if (success) {
             this.infoService.updateInfos({ serverId: "none" })

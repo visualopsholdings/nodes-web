@@ -3,11 +3,9 @@ Feature: Upstream
    Background:
       When there is default security
       
-      And the server has id "28d243ab-505e-4d81-a3e9-c314a8ef9761"
-      And the server has privateKey "0F(P!Ik}GR9uP3JzezQ=+@$++qXAfP<-1^<Q4dWJ"
-      And the server has pubKey "PUYdHOr65gaR*oW6^XxaCIR3-VN=x4W{nDlAfP-7"
-      And the server has upstream "nodes.visualops.com"
-      And the server has upstreamPubKey "K]<n72U1y#9PUS.j9BpC=XNxz6HCqhRfnGbSnajO"
+      And the server has id "6868f9ac-46fe-48fd-9e00-33a1e1e256da"
+      And the server has privateKey "su.uueDnW#]F{<4omtfxNNaZYZc{vAaok-qXB!s*"
+      And the server has pubKey "DVv<okIiqc/N<)o:a{#x4re)hqJJH0)6?*J.T=5n"
  
       And there are sites:
          | headerTitle     | streamBgColor   |
@@ -16,20 +14,13 @@ Feature: Upstream
       And nodes is reloaded
       
  	@javascript
-	Scenario: A user can be added from upstream
+	Scenario: The upstream server can be set
       When "tracy" logs into admin
- 	   And she clicks "Users"
-      And eventually table has 2 rows
- 	   And she clicks "ADD FROM UPSTREAM"
+      And she clicks "Nodes"
+ 	   And she clicks "SET UPSTREAM"
       And a modal dialog appears
-      And she enters "Paul" in "email"
+      And she enters "nodes.visualops.com" in "upstream"
+      And she enters "K]<n72U1y#9PUS.j9BpC=XNxz6HCqhRfnGbSnajO" in "upstreamPubKey"
       And she clicks "Ok"
       And eventually the modal dialog disappears
-      And eventually a modal dialog appears
-      And eventually the page contains "Paul Hamilton"
-      And she checks the first list option
-      And she clicks "Ok"
-      And eventually the modal dialog disappears
-      Then eventually the page contains "Discovery complete"
-      And eventually table has 3 rows
-      And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB
+      Then eventually the page contains "Upstream set"

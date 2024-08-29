@@ -15,8 +15,8 @@ import { InfoService }  from '../info.service';
 import { Info }  from '../info';
 import { MeService }  from '../me.service';
 import { Me }  from '../me';
-
 import { ConfirmComponent } from '../confirm/confirm.component';
+import { SetUpstreamDialogComponent } from '../set-upstream-dialog/set-upstream-dialog.component';
 
 @Component({
   selector: 'app-nodes',
@@ -87,6 +87,48 @@ export class NodesComponent implements OnInit {
 
   fgColorLastSeenTime(time: string): string {
     return this.isOldTime(time) ? "red" : "black";
+  }
+
+  setUpstream(): void {
+    let data = { upstream: null, upstreamPubKey: null };
+    for (let i of this.infos) {
+      if (i.type == "upstream") {
+        data.upstream = i.text;
+      }
+      else if (i.type == "upstreamPubKey") {
+        data.upstreamPubKey = i.text;
+      }
+    }
+    this.dialog.open(SetUpstreamDialogComponent, {
+        width: '400px',
+        data: data
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        if (result.upstream == null || result.upstream.length == 0) {
+          if (result.upstreamPubKey == null || result.upstream.length == 0) {
+            this.dialog.open(ConfirmComponent, {
+                width: '400px',
+                data: { title: "Orphan node", description: "Are you sure you want to make this node have no upstream?" }
+            }).afterClosed().subscribe(success => {
+              if (success) {
+                this.infoService.updateInfos({ upstream: "none", upstreamPubKey: "none" })
+                  .subscribe(infos => this.infos = infos);
+              }
+            });
+          }
+        }
+        else if (result.upstreamPubKey == null) {
+            this.dialog.open(ConfirmComponent, {
+                width: '400px',
+                data: { title: "Error", description: "You must set a public key for the upstream node." }
+            }).afterClosed().subscribe(success => {});
+        }
+        else {
+          this.infoService.updateInfos(result)
+            .subscribe(infos => this.infos = infos);
+        }
+      }
+    });
   }
 
 }

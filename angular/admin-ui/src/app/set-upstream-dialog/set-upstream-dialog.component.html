@@ -1,0 +1,27 @@
+<form [formGroup]="form" (ngSubmit)="submit(form)" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Set Upstream</h1>
+  <mat-dialog-content>
+    <p class="mat-typography">Changing the upstream server will setup this server to be able to sync
+      data with that server.</p>
+
+     <p class="mat-typography">Type the address and public key of the upstream server below:</p>
+
+    <mat-form-field>
+      <mat-label>Address</mat-label>
+      <input matInput name="upstream" formControlName="upstream" placeholder="Address">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Public Key</mat-label>
+      <input matInput name="upstreamPubKey" formControlName="upstreamPubKey" placeholder="Public Key">
+    </mat-form-field>
+
+    <p class="mat-typography">If you want to make this server STOP using an upstream server, just leave the
+    fields blank</p>
+
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type="submit">Ok</button>
+  </mat-dialog-actions>
+</form>
