@@ -69,7 +69,7 @@ set(HANDLERS
   src/handlers/get/infos.cpp
   src/handlers/post/infos.cpp
   src/handlers/get/rawsites.cpp
-  src/handlers/put/site.cpp
+  src/handlers/put/sites.cpp
   src/handlers/post/users.cpp
   src/handlers/get/websocket.cpp
   src/handlers/sendWS.cpp

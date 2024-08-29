@@ -1,5 +1,5 @@
 /*
-  putsite.cpp
+  putsites.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
   Date: 14-Aug-2024
@@ -18,7 +18,7 @@
 
 namespace nodes {
 
-status_t putsite(Server *server, const req_t& req, params_t params) {
+status_t putsites(Server *server, const req_t& req, params_t params) {
 
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);

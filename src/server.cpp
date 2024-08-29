@@ -84,7 +84,7 @@ status_t posttyping(Server *server, const req_t& req, params_t );
 status_t getinfos(Server *server, const req_t& req, params_t );
 status_t postinfos(Server *server, const req_t& req, params_t );
 status_t getrawsites(Server *server, const req_t& req, params_t );
-status_t putsite(Server *server, const req_t& req, params_t );
+status_t putsites(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
 status_t getrawgroups(Server *server, const req_t& req, params_t );
@@ -127,7 +127,7 @@ auto Server::handler()
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", by(&nodes::postinfos));
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
-  router->http_put("/rest/1.0/site", by(&nodes::putsite));
+  router->http_put("/rest/1.0/sites", by(&nodes::putsites));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
   router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
