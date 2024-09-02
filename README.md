@@ -92,7 +92,8 @@ git clone https://github.com/stiffstream/restinio.git
 cd restinio
 ```
 
-Now if you have ruby 3.2.0 or later, you need to fix a script.
+Now if you have ruby 3.2.0 or later, you need to fix a script, otherwise
+just skip these steps.
 
 ```
 ruby -v
