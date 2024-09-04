@@ -17,15 +17,15 @@ nginx_conf() {
 HOST=$1
 PORT=$2
 HPORT=$3
+FOLDER=$4
 
 echo "Generate SSL Conf"
-nginx_conf nodes-web/scripts/nginx.tmpl nginx.conf $HOST $PORT $HPORT "/home/nodes"
+nginx_conf nodes-web/scripts/nginx.tmpl nginx.conf $HOST $PORT $HPORT $FOLDER
 
 echo "Using SSL certificate"
-sudo cp /etc/nginx/sites-enabled/default nginx-backup.conf
-sudo cp nginx.conf /etc/nginx/sites-enabled/default
-sudo cp nginx.conf /etc/nginx/conf.d/default.conf
-sudo service nginx restart
+sudo cp /opt/homebrew/etc/nginx/servers/default nginx-backup.conf
+sudo cp nginx.conf /opt/homebrew/etc/nginx/servers/default
+brew services restart nginx
 
 exit 0
 
