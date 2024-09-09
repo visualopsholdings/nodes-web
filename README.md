@@ -299,5 +299,8 @@ back from.
 ### 28 Aug 2024
 - Restinio uses BOOST logging.
 
+### 9 Sep 2024
+- Use local.visualops.com as cert.
+
 
 
