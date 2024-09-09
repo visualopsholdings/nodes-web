@@ -1,0 +1,44 @@
+
+app-security {
+  width: 100%;
+}
+
+.security-card {
+  margin: 20px;
+  width: 100%;
+}
+
+.policy-icon {
+  position: relative;
+  top: 10px;
+  width: 32px;
+  height: 32px;
+}
+
+.policy {
+  height: 24px;
+  width: 100%;
+  display: inline-block;
+}
+
+.context-icon {
+  height: 100%;
+  width: 20%;
+  display: inline-block;
+}
+
+.policy-name {
+  width: 30%;
+  display: inline-block;
+}
+
+.policy-detail {
+  width: 30%;
+  display: inline-block;
+}
+
+.policy-role {
+  height: 100%;
+  width: 5%;
+  display: inline-block;
+}

@@ -1,0 +1,29 @@
+<div fxLayout="row" fxLayoutAlign="start">
+  <mat-card *ngIf="stream" class="stream-card">
+    <mat-card-header>
+      <p *ngIf="stream.emoji" mat-card-avatar class="emoji">{{stream.emoji}}</p>
+      <img *ngIf="!stream.emoji" mat-card-avatar src="{{getIcon(stream)}}">
+      <mat-card-title>{{stream.name}}</mat-card-title>
+      <mat-card-subtitle>{{stream._id}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field class="field">
+        <input matInput name="name" [(ngModel)]="stream.name" placeholder="Name">
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="editEmoji();">EDIT EMOJI</button>
+      <button mat-raised-button (click)="save();">SAVE</button>
+    </mat-card-actions>
+  </mat-card>
+  <div *ngIf="stream" class="right-area">
+    <app-security [obj]="'streams'" [exec]="true" [policy]="stream.policy"></app-security>
+    <mat-card class="actions-card">
+      <mat-card-header>
+        <mat-card-title>Actions</mat-card-title>
+      </mat-card-header>
+      <mat-card-actions>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

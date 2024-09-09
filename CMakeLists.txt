@@ -83,6 +83,9 @@ set(HANDLERS
   src/handlers/put/user.cpp
   src/handlers/get/groups.cpp
   src/handlers/get/groupusers.cpp
+  src/handlers/get/rawstreams.cpp
+  src/handlers/get/rawstream.cpp
+  src/handlers/get/rawstreampolicy.cpp
 )
 
 include_directories(include)

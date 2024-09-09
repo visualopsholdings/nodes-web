@@ -53,6 +53,18 @@ import { TeamService }  from './team.service';
 import { AddMemberDialogComponent } from './add-member-dialog/add-member-dialog.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { SetUpstreamDialogComponent } from './set-upstream-dialog/set-upstream-dialog.component';
+import { StreamsComponent } from './streams/streams.component';
+import { StreamDetailComponent } from './stream-detail/stream-detail.component';
+import { StreamService }  from './stream.service';
+import { AddStreamDialogComponent } from './add-stream-dialog/add-stream-dialog.component';
+import { SetEmojiDialogComponent } from './set-emoji-dialog/set-emoji-dialog.component';
+import { SecurityComponent } from './security/security.component';
+import { AddGroupPolicyDialogComponent } from './add-group-policy-dialog/add-group-policy-dialog.component';
+import { AddUserPolicyDialogComponent } from './add-user-policy-dialog/add-user-policy-dialog.component';
+import { AddGroupPolicyExecDialogComponent } from './add-group-policy-exec-dialog/add-group-policy-exec-dialog.component';
+import { AddUserPolicyExecDialogComponent } from './add-user-policy-exec-dialog/add-user-policy-exec-dialog.component';
+import { PolicyIdDialogComponent } from './policy-id-dialog/policy-id-dialog.component';
+import { PolicyService }  from './policy.service';
 
 @NgModule({
   declarations: [
@@ -72,7 +84,17 @@ import { SetUpstreamDialogComponent } from './set-upstream-dialog/set-upstream-d
     AddTeamDialogComponent,
     AddMemberDialogComponent,
     UserDetailComponent,
-    SetUpstreamDialogComponent
+    SetUpstreamDialogComponent,
+    StreamsComponent,
+    StreamDetailComponent,
+    AddStreamDialogComponent,
+    SetEmojiDialogComponent,
+    SecurityComponent,
+    AddGroupPolicyDialogComponent,
+    AddUserPolicyDialogComponent,
+    AddGroupPolicyExecDialogComponent,
+    AddUserPolicyExecDialogComponent,
+    PolicyIdDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -105,7 +127,8 @@ import { SetUpstreamDialogComponent } from './set-upstream-dialog/set-upstream-d
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService, TeamService],
+  providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService,
+    TeamService, StreamService, PolicyService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

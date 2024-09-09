@@ -1,0 +1,39 @@
+
+.stream-card {
+  margin-top: 20px;
+  width: 300px;
+}
+
+.field {
+  display: block;
+  width: 300px;
+}
+
+button {
+  margin-top: 8px !important;
+  margin-left: 8px !important;
+}
+
+.image {
+  font-size: 12px;
+  padding-top: 4px;
+  color: darkgray;
+}
+
+.summary {
+  padding-left: 10px;
+}
+
+.emoji {
+  font-size: xx-large;
+  margin: 0;
+}
+
+.right-area {
+  width: 68%;
+}
+
+.actions-card {
+  margin: 20px;
+  width: 100%;
+}

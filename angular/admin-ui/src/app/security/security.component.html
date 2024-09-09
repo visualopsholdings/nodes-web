@@ -1,0 +1,40 @@
+<mat-card class="security-card">
+  <mat-card-header>
+    <mat-card-title>Security</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p *ngIf="hasAdmin()" class="mat-card-subtitle">Policy: <a href="#/policies/{{policy}}">{{policy}}</a></p>
+    <mat-divider inset></mat-divider>
+    <div class="policy" *ngFor="let policy of policies">
+      <span class="context-icon"><mat-icon>{{policy.context == "group" ? "group" : "person"}}</mat-icon></span>
+      <span class="policy-name"><a href="#/{{policy.context == 'group' ? 'team' : 'user'}}s/{{policy.id}}">{{policy.name}}</a></span>
+      <span class="policy-role" *ngIf="policy.viewPath">
+        <mat-icon *ngIf="isMirror">visibility</mat-icon>
+        <a *ngIf="!isMirror" (click)="removeRole('view', policy)"><mat-icon>visibility</mat-icon></a>
+        <b *ngIf="policy.viewRemoved">-</b>
+        <b *ngIf="policy.viewPath == '*'">*</b>
+      </span>
+      <span class="policy-role" *ngIf="policy.editPath">
+        <mat-icon *ngIf="isMirror">edit</mat-icon>
+        <a *ngIf="!isMirror" (click)="removeRole('edit', policy)"><mat-icon>edit</mat-icon></a>
+        <b *ngIf="policy.editRemoved">-</b>
+        <b *ngIf="policy.editPath == '*'">*</b>
+      </span>
+      <span class="policy-role" *ngIf="showExec() && policy.execPath">
+        <mat-icon *ngIf="isMirror">play_arrow</mat-icon>
+        <a *ngIf="!isMirror" (click)="removeRole('exec', policy)"><mat-icon>play_arrow</mat-icon></a>
+        <b *ngIf="policy.execRemoved">-</b>
+        <b *ngIf="policy.execPath == '*'">*</b>
+      </span>
+      <mat-divider inset></mat-divider>
+    </div>
+    {{message}}
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="addUserPolicy();">ADD USER</button>
+    <button mat-raised-button (click)="addGroupPolicy();">ADD TEAM</button>
+    <button mat-raised-button [disabled]="!policySave" (click)="savePolicy();">SAVE POLICY</button>
+    <button mat-raised-button [disabled]="!policySave" (click)="savePolicyWithId();">SAVE WITH ID</button>
+    <button mat-raised-button (click)="usePolicyId();">USE POLICY ID</button>
+  </mat-card-actions>
+</mat-card>

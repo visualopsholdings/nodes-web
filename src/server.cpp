@@ -97,6 +97,9 @@ status_t getrawuser(Server *server, const req_t& req, params_t );
 status_t putuser(Server *server, const req_t& req, params_t );
 status_t getgroups(Server *server, const req_t& req, params_t );
 status_t getgroupusers(Server *server, const req_t& req, params_t );
+status_t getrawstreams(Server *server, const req_t& req, params_t );
+status_t getrawstream(Server *server, const req_t& req, params_t );
+status_t getrawstreampolicy(Server *server, const req_t& req, params_t );
 
 };
 
@@ -140,6 +143,9 @@ auto Server::handler()
   router->http_put("/rest/1.0/users/:id", by(&nodes::putuser));
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groupusers", by(&nodes::getgroupusers));
+  router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
+  router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
+  router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
 
   return router;
 }

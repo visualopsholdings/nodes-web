@@ -8,12 +8,16 @@ import { UserDetailComponent } from './user-detail/user-detail.component';
 import { InfosComponent } from './infos/infos.component';
 import { NodesComponent } from './nodes/nodes.component';
 import { SiteDetailComponent } from './site-detail/site-detail.component';
+import { StreamsComponent } from './streams/streams.component';
+import { StreamDetailComponent } from './stream-detail/stream-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/infos', pathMatch: 'full' },
   { path: 'users', component: UsersComponent },
   { path: 'users', component: UsersComponent },
   { path: 'users/:id', component: UserDetailComponent },
+  { path: 'streams', component: StreamsComponent },
+  { path: 'streams/:id', component: StreamDetailComponent },
   { path: 'teams', component: TeamsComponent },
   { path: 'teams/:id', component: TeamDetailComponent },
   { path: 'infos', component: InfosComponent },
