@@ -43,25 +43,42 @@ This port is also used to "ask" for things of the Nodes system such as login etc
 The development process for all of this code used a normal Linux environment with the BOOST
 libraries and a C++ compiler.
 
-So on your Linux (or mac using Homebrew etc), get all you need: (These steps have been tested
-on Ubuntu 24.04 on a Pi5 and in a TG4 in AWS):
+### Prerequisites
+
+The best way to get started is to take a look at:
+
+https://github.com/visualopsholdings/nodes-devops
+
+And then find your particular OS and run those steps to get a basic binary-only build running 
+for your platform. Once you have that you can come back in here and setup all the development
+tools you might need.
+
+Ok your back!!!!
+
+No this project can be found as the folder nodes-web in the thing you just setup. The next step
+is to remove that folder and pull the SOURCE from git with:
+
+```
+git clone https://github.com/visualopsholdings/nodes-web.git
+```
+
+Then depending on your platform, add in necessary development tools:
+
+On Ubuntu 24.04:
 
 ```
 sudo apt-get update
 sudo apt-get -y install g++ gcc make cmake ruby-rubygems npm
 ```
 
-### Prerequisites
-
-We rely on https://github.com/visualopsholdings/nodes being built first, so do that, and then
-in your shell, define a variable to point to that:
+On the maxc OS:
 
 ```
-export NODES_HOME=/where/nodes/went
+brew install cmake npm
 ```
 
 For convenience, do all these inside a folder you can remove, they take a lot of disk space
-but aren't used once instsalled.
+but aren't used once installed.
 
 ```
 mkdir working
@@ -77,10 +94,14 @@ need to build it from source:
 
 #### ZMQ
 
-If you can get zeromq 4.3.5 or later, then use that otherwise you will need to build it
+If you can get zeromq 4.1.5 or later, then use that otherwise you will need to build it
 all from source.
 
 [Instructions](https://github.com/visualopsholdings/nodes-devops/blob/main/dev/ZMQ.md)
+
+We use 4.1.5 which is an earlier version because that's what we have tested with. 4.3.5
+also seems to work perfectly on the mac but 4.3.5 doesn't build with CURVE by default on
+some platforms which needs to be sorted out.
 
 #### Restinio
 
@@ -92,6 +113,14 @@ git clone https://github.com/stiffstream/restinio.git
 cd restinio
 ```
 
+To clarify, your directory tree would look this this:
+
+- My dev place
+-- nodes
+-- nodes-devops
+-- nodes-web
+-- restinio
+
 Now if you have ruby 3.2.0 or later, you need to fix a script, otherwise
 just skip these steps.
 
@@ -99,7 +128,7 @@ just skip these steps.
 ruby -v
 ```
 
-If you have this later version, then do something like:
+If this says anything later than 3.2.0, then do something like:
 
 ```
 sudo nano /var/lib/gems/3.2.0/gems/Mxx_ru-1.6.14.10/lib/mxx_ru/externals.rb
@@ -107,6 +136,8 @@ sudo nano /var/lib/gems/3.2.0/gems/Mxx_ru-1.6.14.10/lib/mxx_ru/externals.rb
 
 And then Ctrl+W and type "exists?" and then everywhere you see one change to "exist?" (no
 plural).
+
+The point is that you need to change the ruby method "exists?" to "exist?" in that ruby script.
 
 Now the rest will work.
 
@@ -123,12 +154,6 @@ You will need this in your .bashrc or equivalent
 
 ```
 export RESTINIO_HOME=/where/restinio/went
-```
-
-### This project
-
-```
-git clone https://github.com/visualopsholdings/nodes-web.git
 ```
 
 ## Web client
@@ -179,30 +204,37 @@ If you know the name of a single test, you can just run that with:
 ## Development and debugging
 
 To develop and debug the various code bases, you can run them up after making changes. Run
-them up in a different terminal window.
+them up in different terminal windows.
 
 Firstly, you can populate the MongoDB with one of the tests, or for manual testing and general operation, 
 run the "manual" test:
 
 ```
-bundle exec cucumber features/manual.feature
+./test.sh features/manual.feature
 ```
 
-Build and run nodes:
+If you are doing development on nodes as well (it's easier to work it all out this way), 
+build and run nodes (in one terminal window):
 
 ```
 cd nodes/build
 make && ./nodes --test --logLevel=trace
 ```
 
-Build and run this http backend:
+But you could just run nodes with:
+
+```
+nodes/scripts/start.sh
+```
+
+Build and run this project in another terminal window:
 
 ```
 cd nodes-web/build
 make && ./nodes-web --logLevel=trace
 ```
 
-And then for the angular chat front end.
+And then for the angular chat front end (in another terminal window):
 
 ```
 cd nodes-web/angular/chat-ui
@@ -214,6 +246,9 @@ Then visit here with your browser:
 http://localhost:8081/login/?username=tracy
 
 Then you can edit the TypeScript code for chat and it will deploy instantly with each change.
+
+If you need to change the C++ code, just make your changes, quit and rerun the nodes-web
+command and it will rebuild and on success re-run ready to go again.
 
 ## Testing dependencies
 
