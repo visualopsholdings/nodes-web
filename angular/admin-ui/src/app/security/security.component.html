@@ -3,7 +3,7 @@
     <mat-card-title>Security</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p *ngIf="hasAdmin()" class="mat-card-subtitle">Policy: <a href="#/policies/{{policy}}">{{policy}}</a></p>
+    <p *ngIf="hasAdmin()" class="mat-mdc-card-subtitle">Policy: <a href="#/policies/{{policy}}">{{policy}}</a></p>
     <mat-divider inset></mat-divider>
     <div class="policy" *ngFor="let policy of policies">
       <span class="context-icon"><mat-icon>{{policy.context == "group" ? "group" : "person"}}</mat-icon></span>

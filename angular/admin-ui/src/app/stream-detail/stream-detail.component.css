@@ -6,7 +6,7 @@
 
 .field {
   display: block;
-  width: 300px;
+  width: 240px;
 }
 
 button {
@@ -36,4 +36,10 @@ button {
 .actions-card {
   margin: 20px;
   width: 100%;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
 }
