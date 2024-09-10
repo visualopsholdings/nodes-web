@@ -1,8 +1,8 @@
 /*
-  getuser.cpp
+  deletestream.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
-  Date: 26-Jul-2024
+  Date: 10-Sep-2024
     
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
@@ -19,24 +19,26 @@
 
 namespace nodes {
 
-status_t getrawuser(Server *server, const req_t& req, params_t params)
-{
-  if (!server->isAdmin(req)) {
+status_t deletestream(Server *server, const req_t& req, params_t params) {
+
+  auto session = server->getSession(req);
+  if (!session) {
     return server->unauthorised(req);
   }
-  
+
   const auto id = restinio::cast_to<string>(params["id"]);
-  if (id == "undefined") {
-    return server->returnEmptyObj(req);
-  }
-  server->send({ 
-    { "type", "user" },
-    { "user", id }
-  });
-  return server->receiveObject(req, "user");
+  
+	server->send({
+	  { "type", "deletestream" },
+	  { "id",  id },
+    { "me", session.value()->userid() }
+	});
+  json j = server->receive();
+  
+//  BOOST_LOG_TRIVIAL(trace) << j;
+  
+  return server->checkErrorsReturnEmptyObj(req, j, "deletestream");
 
 }
 
 };
-
-

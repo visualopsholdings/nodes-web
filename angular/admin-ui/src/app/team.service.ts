@@ -68,4 +68,31 @@ export class TeamService extends BackendService {
       catchError(this.handleError<TeamMember>('removeTeamMember'))
     );
   }
+
+  updateTeam (admin: boolean, team: Team): Observable<any> {
+    const url = `${admin ? this.admTeamsUrl : this.teamsUrl}/${team._id}`;
+    return this.http.put(url, team, { headers: this.httpHeaders() }).pipe(
+//      tap(_ => this.log(`updated team id=${team._id}`)),
+      catchError(this.handleError<any>('updateTeam'))
+    );
+  }
+
+  addTeam (team: Team): Observable<Team> {
+    return this.http.post<Team>(this.teamsUrl, team, { headers: this.httpHeaders() })
+    .pipe(
+//      tap((team: Team) => this.log(`added team w/ id=${team._id}`)),
+      catchError(this.handleError<Team>('addTeam'))
+    );
+  }
+
+  deleteTeam (team: Team | string): Observable<Team> {
+    const id = typeof team === 'string' ? team : team._id;
+    const url = `${this.teamsUrl}/${id}`;
+
+    return this.http.delete<Team>(url, { headers: this.httpHeaders() }).pipe(
+//      tap(_ => this.log(`deleted team id=${id}`)),
+      catchError(this.handleError<Team>('deleteTeam'))
+    );
+  }
+
 }

@@ -139,5 +139,21 @@ BOOST_AUTO_TEST_CASE( badObject )
 
 }
 
-
-
+BOOST_AUTO_TEST_CASE( fixIds )
+{
+  cout << "=== fixIds ===" << endl;
+  
+  boost::json::array j = {
+    { 
+      { "id", "aaaaa" },
+      { "other", "yyyy" }
+    },
+    { 
+      { "id", "bbbb" },
+      { "other", "zzzz" }
+    }
+  };
+  auto fixed = Json::fixIds(j);
+  cout << fixed << endl;
+  
+}

@@ -1,3 +1,4 @@
+@interactive
 Feature: Manual
 
    @javascript

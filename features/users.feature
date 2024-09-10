@@ -11,7 +11,7 @@ Feature: Users
 	Scenario: A user can be set to admin
       When "tracy" logs into admin
  	   And she clicks "Users"
-      And eventually table has 2 rows
+      And eventually table has 5 rows
       And she clicks button named "edit" in row with text "Leanne"
       And she sets material checkbox 1
       And eventually a modal dialog appears

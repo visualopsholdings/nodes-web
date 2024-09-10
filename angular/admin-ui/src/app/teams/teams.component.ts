@@ -12,6 +12,7 @@ import { MeService }  from '../me.service';
 import { Me }  from '../me';
 import { InfoService }  from '../info.service';
 import { Info }  from '../info';
+import { AddTeamDialogComponent } from '../add-team-dialog/add-team-dialog.component';
 
 @Component({
   selector: 'app-teams',
@@ -68,6 +69,34 @@ export class TeamsComponent implements OnInit {
 
   getIcon(item: any): string {
     return this.iconService.getIcon({ icon: "internal:group" });
+  }
+
+  add(): void {
+    this.dialog.open(AddTeamDialogComponent).afterClosed().subscribe(result => {
+      if (result) {
+        if (result._id == '') {
+          result._id = undefined;
+        }
+        this.teamService.addTeam(result as Team).subscribe(() => {
+          this.getItems(0);
+        });
+      }
+    });
+  }
+
+  delete(item: Team): void {
+    this.dialog.open(ConfirmComponent, {
+        width: '400px',
+        data: { title: "Delete Team", description: "Are you sure you want to remove the team permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.teamService.deleteTeam(item).subscribe(success => {
+          if (success) {
+            this.items = this.items.filter(t => t !== item);
+          }
+        });
+      }
+    });
   }
 
 }

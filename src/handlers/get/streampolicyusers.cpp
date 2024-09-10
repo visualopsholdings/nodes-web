@@ -52,26 +52,8 @@ status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
     { "type", "policyusers" },
     { "policy", policy.value() }
   });
-  j = server->receive();
-  auto users = Json::getArray(j, "users");
-  if (!users) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "policyusers missing users";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
+  return server->receiveArray(req, "users");
 
-  boost::json::array newusers;
-  for (auto s: users.value()) {
-    s.as_object()["_id"] = Json::getString(s, "id").value();
-    newusers.push_back(s);
-  }
-
-  auto resp = server->init_resp( req->create_response() );
-  stringstream ss;
-  ss << newusers;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

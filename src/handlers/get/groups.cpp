@@ -28,27 +28,8 @@ status_t getgroups(Server *server, const req_t& req, params_t params)
     { "type", "groups" },
     { "me", session.value()->userid() }
   });
-  json j = server->receive();
-  auto groups = Json::getArray(j, "groups");
-  
-  if (!groups) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "groups missing groups ";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
+  return server->receiveArray(req, "groups");
 
-  auto resp = server->init_resp( req->create_response() );
-
-  boost::json::array newgroups;
-  for (auto s: groups.value()) {
-    s.as_object()["_id"] = Json::getString(s, "id").value();
-    newgroups.push_back(s);
-  }
-  stringstream ss;
-  ss << newgroups;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

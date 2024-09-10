@@ -32,26 +32,8 @@ status_t getrawgroupusers(Server *server, const req_t& req, params_t params)
     { "type", "members" },
     { "group", id }
   });
-  json j = server->receive();
-  auto members = Json::getArray(j, "members");
-  if (!members) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "members missing members";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
+  return server->receiveArray(req, "members");
 
-  auto resp = server->init_resp( req->create_response() );
-
-  boost::json::array newmembers;
-  for (auto s: members.value()) {
-    s.as_object()["_id"] = Json::getString(s, "user").value();
-    newmembers.push_back(s);
-  }
-  stringstream ss;
-  ss << newmembers;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

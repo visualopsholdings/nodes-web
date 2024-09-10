@@ -7,38 +7,14 @@ export class IconService {
 
   getIconByString(icon: string): string {
 
-    if (icon == "internal:org") {
-      return "assets/org-button.svg";
-    }
-    else if (icon == "internal:project") {
-      return "assets/project-button.svg";
-    }
-    else if (icon == "internal:stream") {
+    if (icon == "internal:stream") {
       return "assets/stream-button.svg";
-    }
-    else if (icon == "internal:queue") {
-      return "assets/queue-button.svg";
     }
     else if (icon == "internal:group") {
       return "assets/group-icon.svg";
     }
-    else if (icon == "internal:media") {
-      return "assets/media-button.svg";
-    }
-    else if (icon == "internal:sequence") {
-      return "assets/sequence-button.svg";
-    }
     else if (icon == "internal:user") {
       return "assets/user-icon.svg";
-    }
-    else if (icon == "internal:task") {
-      return "assets/task-button.svg";
-    }
-    else if (icon == "internal:conversation") {
-      return "assets/message-button.svg";
-    }
-    else if (icon == "internal:site") {
-      return "assets/site-button.svg";
     }
     else {
       // it's an url. Should always be absolute but it's not.

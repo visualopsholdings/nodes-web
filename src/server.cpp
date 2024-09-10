@@ -56,8 +56,8 @@ using traits_t =
     boost_logger_t,
     router_t >;
 
-Server::Server(int reqPort, int subPort): 
-    _context(1), _req(_context, ZMQ_REQ) {
+Server::Server(int reqPort, int subPort, bool test): 
+    _context(1), _req(_context, ZMQ_REQ), _test(test) {
     
   _req.connect("tcp://127.0.0.1:" + to_string(reqPort));
   
@@ -67,8 +67,7 @@ Server::Server(int reqPort, int subPort):
 
 namespace nodes {
 
-status_t getroot(Server *server, const req_t& req, params_t );
-status_t getfonts(Server *server, const req_t& req, params_t );
+status_t getchat(Server *server, const req_t& req, params_t );
 status_t getrawusers(Server *server, const req_t& req, params_t );
 status_t getstreams(Server *server, const req_t& req, params_t );
 status_t getstream(Server *server, const req_t& req, params_t );
@@ -79,12 +78,9 @@ status_t getlogin(Server *server, const req_t& req, params_t );
 status_t postlogin(Server *server, const req_t& req, params_t );
 status_t getlogout(Server *server, const req_t& req, params_t );
 status_t getuser(Server *server, const req_t& req, params_t );
-status_t postideas(Server *server, const req_t& req, params_t );
 status_t posttyping(Server *server, const req_t& req, params_t );
 status_t getinfos(Server *server, const req_t& req, params_t );
-status_t postinfos(Server *server, const req_t& req, params_t );
 status_t getrawsites(Server *server, const req_t& req, params_t );
-status_t putsites(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
 status_t getrawgroups(Server *server, const req_t& req, params_t );
@@ -94,12 +90,92 @@ status_t getusers(Server *server, const req_t& req, params_t );
 status_t postgroupusers(Server *server, const req_t& req, params_t );
 status_t deletegroupusers(Server *server, const req_t& req, params_t );
 status_t getrawuser(Server *server, const req_t& req, params_t );
-status_t putuser(Server *server, const req_t& req, params_t );
 status_t getgroups(Server *server, const req_t& req, params_t );
 status_t getgroupusers(Server *server, const req_t& req, params_t );
 status_t getrawstreams(Server *server, const req_t& req, params_t );
 status_t getrawstream(Server *server, const req_t& req, params_t );
 status_t getrawstreampolicy(Server *server, const req_t& req, params_t );
+status_t getrawgrouppolicy(Server *server, const req_t& req, params_t );
+status_t deletestream(Server *server, const req_t& req, params_t );
+status_t deletegroup(Server *server, const req_t& req, params_t );
+
+status_t getroot(Server *server, const req_t& req, params_t params)
+{
+  auto resp = req->create_response(restinio::status_found());
+	resp.append_header("Location", "/apps/chat/#/");
+  return resp.done();
+  
+}
+
+status_t servefile(const req_t& req, const string &filename, optional<string> type = nullopt) {
+
+  BOOST_LOG_TRIVIAL(trace) << filename;
+
+  auto resp = req->create_response();
+  resp.set_body(restinio::sendfile(filename));
+  if (type) {
+    resp.append_header("Content-Type", type.value());
+  }
+  
+  return resp.done();
+
+}
+
+string getmime(const string &file) {
+
+  if (file.find(".js") != string::npos) {
+    return "application/javascript";
+  }
+  else if (file.find(".css") != string::npos) {
+    return "text/css";
+  }
+  else if (file.find(".svg") != string::npos) {
+    return "image/svg+xml";
+  }
+  else {
+    return "text/text";
+  }
+
+}
+
+status_t getfonts(Server *server, const req_t& req, params_t params)
+{
+  const auto file = restinio::cast_to<string>( params[ "file" ] );
+
+  string filename;
+  if (!server->_test) {
+    filename = "../";
+  }
+  filename += "frontend/fonts/" + file;
+  return servefile(req, filename);
+
+}
+
+status_t getappindex(Server *server, const req_t& req, params_t params)
+{
+  const auto app = restinio::cast_to<string>( params[ "app" ] );
+
+  return servefile(req, "frontend/apps/" + app + "/index.html");
+
+}
+
+status_t getappfile(Server *server, const req_t& req, params_t params)
+{
+  const auto app = restinio::cast_to<string>( params[ "app" ] );
+  const auto file = restinio::cast_to<string>( params[ "file" ] );
+
+  return servefile(req, "frontend/apps/" + app + "/" + file, getmime(file));
+
+}
+
+status_t getappasset(Server *server, const req_t& req, params_t params)
+{
+  const auto app = restinio::cast_to<string>(params["app"]);
+  const auto file = restinio::cast_to<string>(params["file"]);
+
+  return servefile(req, "frontend/apps/" + app + "/assets/" + file, getmime(file));
+
+}
 
 };
 
@@ -115,7 +191,16 @@ auto Server::handler()
   router->http_get("", by(&nodes::getroot));
   router->http_get("/", by(&nodes::getroot));
   router->http_get("/fonts/:file", by(&nodes::getfonts));
-  router->http_get("/login", by(&nodes::getlogin));
+  
+  if (_test) {
+    // we don't install these handlers during production. Nginx takes
+    // care of all this.
+    router->http_get("/login", by(&nodes::getlogin));
+    router->http_get("/apps/:app/", by(&nodes::getappindex));
+    router->http_get("/apps/:app/:file", by(&nodes::getappfile));
+    router->http_get("/apps/:app/assets/:file", by(&nodes::getappasset));
+  }
+  
   router->http_get("/logout", by(&nodes::getlogout));
   router->http_post("/login", by(&nodes::postlogin));
   router->http_get("/rest/1.0/rawusers", by(&nodes::getrawusers));
@@ -125,12 +210,18 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams", by(&nodes::getstreams));
   router->http_get("/rest/1.0/conversations/:id", by(&nodes::getconversation));
   router->http_get("/rest/1.0/streams/:id/policy/users", by(&nodes::getstreampolicyusers));
-  router->http_post("/rest/1.0/ideas", by(&nodes::postideas));
+  router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "message");
+  });
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
-  router->http_post("/rest/1.0/infos", by(&nodes::postinfos));
+  router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setinfo");
+  });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
-  router->http_put("/rest/1.0/sites", by(&nodes::putsites));
+  router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setsite");
+  });
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
   router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
@@ -140,12 +231,29 @@ auto Server::handler()
   router->http_post("/rest/1.0/groups/:id/users", by(&nodes::postgroupusers));
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
-  router->http_put("/rest/1.0/users/:id", by(&nodes::putuser));
+  router->http_put("/rest/1.0/users/:id", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setuser");
+  });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groupusers", by(&nodes::getgroupusers));
   router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
+  router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
+  router->http_post("/rest/1.0/streams", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "addstream", false);
+  });
+  router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
+  router->http_post("/rest/1.0/groups", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "addgroup", false);
+  });
+  router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setgroup", false);
+  });
+  router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setstream", false);
+  });
+  router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
 
   return router;
 }
@@ -251,6 +359,21 @@ status_t Server::fatal(const req_t& req, const string &msg) {
   return resp.done();
 }
 
+status_t Server::warning(const req_t& req, const string &msg) {
+
+  BOOST_LOG_TRIVIAL(error) << "warning " << msg;
+
+  auto resp = init_resp(req->create_response(restinio::status_bad_request()));
+  json err = {
+    { "status", 400 },
+    { "err", msg }
+  };
+  stringstream ss;
+  ss << err;
+  resp.set_body(ss.str());
+  return resp.done();
+}
+
 status_t Server::returnEmptyObj(const req_t& req) {
 
   auto resp = req->create_response();
@@ -269,17 +392,35 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
   }
   if (rettype.value() == "err") {
     auto msg = Json::getString(j, "msg");
-    return fatal(req, msg.value());
+    auto level = Json::getString(j, "level");
+    if (level.value() == "warning") {
+      return warning(req, msg.value());
+    }
   }
   
   return returnEmptyObj(req);
 
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin) {
+
+  auto session = getSession(req);
+  if (!session) {
+    return unauthorised(req);
+  }
 
   json j = boost::json::parse(req->body());
 //  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
+
+  if (admin) {
+    // TBD: This has no end to end test.
+    if (!session.value()->isAdmin()) {
+      return unauthorised(req);
+    }
+  }
+  else {
+    j.as_object()["me"] = session.value()->userid();
+  }
 
   if (!j.is_object()) {
     return fatal(req, "body is not object");
@@ -297,6 +438,54 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type) {
 //  BOOST_LOG_TRIVIAL(trace) << j;
   
   return checkErrorsReturnEmptyObj(req, j, type);
+
+}
+
+status_t Server::receiveArray(const req_t& req, const string &field) {
+
+  json j = receive();
+
+  auto result = Json::getArray(j, field);
+  
+  if (!result) {
+    // send fatal error
+    BOOST_LOG_TRIVIAL(error) << field << " missing";
+    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+  }
+
+//  BOOST_LOG_TRIVIAL(debug) << result.value();
+
+  auto resp = init_resp( req->create_response() );
+
+  stringstream ss;
+  ss << Json::fixIds(result.value());
+  resp.set_body(ss.str());
+
+  return resp.done();
+
+}
+
+status_t Server::receiveObject(const req_t& req, const string &field) {
+
+  json j = receive();
+
+  auto result = Json::getObject(j, field);
+  
+  if (!result) {
+    // send fatal error
+    BOOST_LOG_TRIVIAL(error) << field << " missing";
+    return init_resp(req->create_response(restinio::status_internal_server_error())).done();
+  }
+
+//  BOOST_LOG_TRIVIAL(debug) << result.value();
+
+  auto resp = init_resp( req->create_response() );
+
+  stringstream ss;
+  ss << Json::fixObject(result.value());
+  resp.set_body(ss.str());
+
+  return resp.done();
 
 }
 

@@ -113,4 +113,44 @@ optional<bool> Json::getBool(json &j, const string &name) {
 
 }
 
+json Json::fixObject(const json &j) {
 
+  if (j.is_object()) {
+    boost::json::object newobject;
+    for (auto i: j.as_object()) {
+      if (i.value().is_object()) {
+        newobject[i.key()] = Json::fixObject(i.value());
+        continue;
+      }
+      if (i.value().is_array()) {
+        newobject[i.key()] = Json::fixIds(i.value().as_array());
+        continue;
+      }
+      if (i.key() == "id") {
+        newobject["_id"] = i.value();
+        continue;
+      }
+      newobject[i.key()] = i.value();
+    }
+    return newobject;
+  }
+
+  return {};
+  
+}
+
+boost::json::array Json::fixIds(boost::json::array &arr) {
+
+    boost::json::array newarray;
+    
+    // copy array, recursing into sub objects.
+    transform(arr.begin(), arr.end(), back_inserter(newarray), [](auto e) {
+      if (e.is_object()) {
+        return Json::fixObject(e); 
+      }
+      return e;
+    });
+    
+    return newarray;
+
+}

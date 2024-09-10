@@ -33,24 +33,8 @@ status_t getrawgroup(Server *server, const req_t& req, params_t params)
     { "type", "group" },
     { "group", id }
   });
-  json j = server->receive();
-  auto group = Json::getObject(j, "group");
-  if (!group) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "group missing group";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
+  return server->receiveObject(req, "group");
 
-  json newgroup = group.value();
-  newgroup.as_object()["_id"] = Json::getString(newgroup, "id").value();
-
-  auto resp = server->init_resp( req->create_response() );
-
-  stringstream ss;
-  ss << newgroup;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

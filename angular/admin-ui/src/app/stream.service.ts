@@ -42,7 +42,7 @@ export class StreamService extends BackendService {
 
   updateStream (admin: boolean, stream: Stream): Observable<any> {
     const url = `${admin ? this.admStreamsUrl : this.streamsUrl}/${stream._id}`;
-    return this.http.patch(url, stream, { headers: this.httpHeaders() }).pipe(
+    return this.http.put(url, stream, { headers: this.httpHeaders() }).pipe(
 //      tap(_ => this.log(`updated stream id=${stream._id}`)),
       catchError(this.handleError<any>('updateStream'))
     );

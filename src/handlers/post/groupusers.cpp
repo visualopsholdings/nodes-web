@@ -21,9 +21,11 @@ namespace nodes {
 
 status_t postgroupusers(Server *server, const req_t& req, params_t params) {
 
-  if (!server->isAdmin(req)) {
+  auto session = server->getSession(req);
+  if (!session) {
     return server->unauthorised(req);
   }
+
   const auto id = restinio::cast_to<string>(params["id"]);
   
   json j = boost::json::parse(req->body());
@@ -40,7 +42,8 @@ status_t postgroupusers(Server *server, const req_t& req, params_t params) {
 	server->send({
 	  { "type", "newmember" },
 	  { "group",  id },
-	  { "id",  j.at("_id").as_string() }
+	  { "id",  j.at("_id").as_string() },
+    { "me", session.value()->userid() }
 	});
   j = server->receive();
   

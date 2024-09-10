@@ -31,7 +31,11 @@ status_t getlogin(Server *server, const req_t& req, params_t params)
     }
     BOOST_LOG_TRIVIAL(trace) << "sending response with cookie " << id.value();  
     auto resp = req->create_response(restinio::status_found());
-	  resp.append_header("Location", "/#/");
+    string app = "chat";
+    if (qp.has("app")) {
+      app = restinio::cast_to<string>(qp["app"]);
+    }
+	  resp.append_header("Location", "/apps/" + app + "/#/");
 	  resp.append_header("Set-Cookie", "ss-id=" + id.value() + "; Path=/; Secure; HttpOnly");
 	  resp.append_header("Cache-Control", "nocache");
     return resp.done();

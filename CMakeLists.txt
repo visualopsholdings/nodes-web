@@ -52,8 +52,6 @@ set(UTILS
   src/cookie.cpp
 )
 set(HANDLERS
-  src/handlers/get/root.cpp
-  src/handlers/get/fonts.cpp
   src/handlers/get/rawusers.cpp
   src/handlers/get/streams.cpp
   src/handlers/get/conversation.cpp
@@ -64,12 +62,9 @@ set(HANDLERS
   src/handlers/get/streampolicyusers.cpp
   src/handlers/get/user.cpp
   src/handlers/post/login.cpp
-  src/handlers/post/ideas.cpp
   src/handlers/post/typing.cpp
   src/handlers/get/infos.cpp
-  src/handlers/post/infos.cpp
   src/handlers/get/rawsites.cpp
-  src/handlers/put/sites.cpp
   src/handlers/post/users.cpp
   src/handlers/get/websocket.cpp
   src/handlers/sendWS.cpp
@@ -80,12 +75,14 @@ set(HANDLERS
   src/handlers/post/groupusers.cpp
   src/handlers/delete/groupusers.cpp
   src/handlers/get/rawuser.cpp
-  src/handlers/put/user.cpp
   src/handlers/get/groups.cpp
   src/handlers/get/groupusers.cpp
   src/handlers/get/rawstreams.cpp
   src/handlers/get/rawstream.cpp
   src/handlers/get/rawstreampolicy.cpp
+  src/handlers/get/rawgrouppolicy.cpp
+  src/handlers/delete/stream.cpp
+  src/handlers/delete/group.cpp
 )
 
 include_directories(include)

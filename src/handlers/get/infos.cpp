@@ -28,22 +28,8 @@ status_t getinfos(Server *server, const req_t& req, params_t params)
   server->send({ 
     { "type", "infos" }
   });
-  json j = server->receive();
-  auto infos = Json::getArray(j, "infos");
-  
-  if (!infos) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "infos missing infos";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
+  return server->receiveArray(req, "infos");
 
-  auto resp = server->init_resp( req->create_response() );
-
-  stringstream ss;
-  ss << infos.value();
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

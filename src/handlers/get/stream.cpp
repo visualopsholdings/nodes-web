@@ -34,24 +34,8 @@ status_t getstream(Server *server, const req_t& req, params_t params)
     { "me", session.value()->userid() },
     { "stream", id }
   });
-  json j = server->receive();
-  auto stream = Json::getObject(j, "stream");
+  return server->receiveObject(req, "stream");
 
-  if (!stream) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "stream missing stream";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
-
-  json newstream = stream.value();
-  newstream.as_object()["_id"] = Json::getString(newstream, "id").value();
-
-  auto resp = server->init_resp( req->create_response() );
-  stringstream ss;
-  ss << newstream;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

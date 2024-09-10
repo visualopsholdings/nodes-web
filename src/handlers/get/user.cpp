@@ -33,6 +33,7 @@ status_t getuser(Server *server, const req_t& req, params_t params)
     { "type", "user" },
     { "user", id }
   });
+  
   json j = server->receive();
   auto user = Json::getObject(j, "user");
   if (!user) {

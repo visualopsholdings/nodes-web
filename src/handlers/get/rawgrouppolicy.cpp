@@ -1,8 +1,8 @@
 /*
-  putsites.cpp
+  getrawgrouppolicy.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
-  Date: 14-Aug-2024
+  Date: 9-Sep-2024
     
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
@@ -15,17 +15,29 @@
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
+#include <restinio/core.hpp>
 
 namespace nodes {
 
-status_t putsites(Server *server, const req_t& req, params_t params) {
-
+status_t getrawgrouppolicy(Server *server, const req_t& req, params_t params)
+{
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }
   
-  return server->sendBodyReturnEmptyObj(req, "setsite");
-  
+  const auto id = restinio::cast_to<string>(params["id"]);
+  if (id == "undefined") {
+    return server->returnEmptyObj(req);
+  }
+  server->send({ 
+    { "type", "policy" },
+    { "objtype", "group" },
+    { "id", id }
+  });
+  return server->receiveArray(req, "policy");
+
 }
 
 };
+
+

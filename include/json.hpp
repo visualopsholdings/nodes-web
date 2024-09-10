@@ -29,6 +29,8 @@ public:
   static optional<boost::json::array> getArray(json &reply, const string &name);
   static optional<json> getObject(json &j, const string &name);
   static optional<bool> getBool(json &j, const string &name);
+  static boost::json::array fixIds(boost::json::array &arr);
+  static json fixObject(const json &j);
 
 };
 

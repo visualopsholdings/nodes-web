@@ -26,24 +26,8 @@ status_t getrawsites(Server *server, const req_t& req, params_t params)
   }
   
   server->send({ { "type", "site" } });
-  json j = server->receive();
-  auto site = Json::getObject(j, "site");
-  
-  if (!site) {
-    BOOST_LOG_TRIVIAL(trace) << "no site";
-    return server->returnEmptyObj(req);
-  }
+  return server->receiveObject(req, "site");
 
-  json newsite = site.value();
-  newsite.as_object()["_id"] = Json::getString(newsite, "id").value();
-
-  auto resp = server->init_resp( req->create_response() );
-
-  stringstream ss;
-  ss << newsite;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

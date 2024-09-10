@@ -337,5 +337,11 @@ back from.
 ### 9 Sep 2024
 - Use local.visualops.com as cert.
 
+### 10 Sep 2024
+- Add support for adding, deleting and editing team and streams.
+- Speed up cucumber an order of magnitude by directly serving the angular built 
+stuff rather than using ng serve.
+
+
 
 

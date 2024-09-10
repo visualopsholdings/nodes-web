@@ -21,16 +21,19 @@ namespace nodes {
 
 status_t deletegroupusers(Server *server, const req_t& req, params_t params) {
 
-  if (!server->isAdmin(req)) {
+  auto session = server->getSession(req);
+  if (!session) {
     return server->unauthorised(req);
   }
+
   const auto id = restinio::cast_to<string>(params["id"]);
   const auto user = restinio::cast_to<string>(params["user"]);
   
 	server->send({
 	  { "type", "deletemember" },
 	  { "group",  id },
-	  { "id",  user }
+	  { "id",  user },
+    { "me", session.value()->userid() }
 	});
   json j = server->receive();
   

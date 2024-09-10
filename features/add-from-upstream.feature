@@ -19,7 +19,7 @@ Feature: Add From Upstream
 	Scenario: A user can be added from upstream
       When "tracy" logs into admin
  	   And she clicks "Users"
-      And eventually table has 2 rows
+      And eventually table has 5 rows
  	   And she clicks "ADD FROM UPSTREAM"
       And a modal dialog appears
       And she enters "Paul" in "email"
@@ -31,5 +31,5 @@ Feature: Add From Upstream
       And she clicks "Ok"
       And eventually the modal dialog disappears
       Then eventually the page contains "Discovery complete"
-      And eventually table has 3 rows
+      And eventually table has 6 rows
       And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB

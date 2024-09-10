@@ -45,7 +45,7 @@ class ZMQClient;
 class Server {
 
 public:
-  Server(int reqPort, int subPort);
+  Server(int reqPort, int subPort, bool test);
     
   void run(int httpPort);
   auto handler();
@@ -54,11 +54,14 @@ public:
   optional<string> finishlogin(const string &password);
   status_t unauthorised(const req_t& req);
   status_t fatal(const req_t& req, const string &msg);
+  status_t warning(const req_t& req, const string &msg);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
   status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
-  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type);
+  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin=true);
   status_t returnEmptyObj(const req_t& req);
+  status_t receiveArray(const req_t& req, const string &field);
+  status_t receiveObject(const req_t& req, const string &field);
   void sendWS(uint64_t &id, const json &json);
   void sendAllWS(const json &json);
   shared_ptr<rws::ws_t> createWS(const req_t& req);
@@ -76,6 +79,7 @@ public:
 	}
 
   map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
+  bool _test;
 
 private:
   zmq::context_t _context;

@@ -1,5 +1,5 @@
 /*
-  getrawstream.cpp
+  getrawstreampolicy.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
   Date: 9-Sep-2024
@@ -34,21 +34,8 @@ status_t getrawstreampolicy(Server *server, const req_t& req, params_t params)
     { "objtype", "stream" },
     { "id", id }
   });
-  json j = server->receive();
-  auto policy = Json::getArray(j, "policy");
-  if (!policy) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "policy missing policy";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
+  return server->receiveArray(req, "policy");
 
-  auto resp = server->init_resp( req->create_response() );
-
-  stringstream ss;
-  ss << policy.value();
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

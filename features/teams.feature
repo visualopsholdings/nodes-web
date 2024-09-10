@@ -26,8 +26,52 @@ Feature: Teams
       And "tracy" logs into admin
       And eventually the page contains "Welcome Tracy"
 	   And she clicks "Teams"
-      And eventually table has 3 rows
+      And eventually table has 4 rows
 
+	@javascript
+	Scenario: A new team can be created
+	   When she clicks "ADD"
+      And a modal dialog appears
+      And she enters "Team 4" in "name"
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually there is a group "Team 4" in the DB
+      And eventually table has 5 rows
+	   And she clicks "ADD"
+      And a modal dialog appears
+      And she enters "Team 5" in "name"
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually there is a group "Team 5" in the DB
+      And eventually table has 6 rows
+
+	@javascript
+	Scenario: A team name can be edited
+      And she clicks button named "edit" in row with text "Team 1"
+      And she enters "x" in "name"
+	   And she clicks "SAVE"
+      Then eventually there is a group "x" in the DB
+
+   @javascript
+	Scenario: A non-empty team cant be deleted
+      And she clicks button named "delete" in row with text "Team 1"
+      And a modal dialog appears
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually a modal dialog appears
+      And she clicks "Ok"
+      Then eventually the modal dialog disappears
+      And eventually table has 4 rows
+      
+   @javascript
+	Scenario: An empty team can be deleted
+      And she clicks button named "delete" in row with text "Team 3"
+      And a modal dialog appears
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually table has 3 rows
+      And eventually there are 3 groups in the DB
+      
 	@javascript
 	Scenario: An user can be added to a team
       And she clicks button named "edit" in row with text "Team 2"

@@ -33,6 +33,7 @@ int main(int argc, char *argv[]) {
   int reqPort;
   int subPort;
   string logLevel;
+  bool test;
   
   po::options_description desc("Allowed options");
   desc.add_options()
@@ -40,6 +41,7 @@ int main(int argc, char *argv[]) {
     ("subPort", po::value<int>(&subPort)->default_value(3012), "ZMQ Sub port.")
     ("reqPort", po::value<int>(&reqPort)->default_value(3013), "ZMQ Req port.")
     ("logLevel", po::value<string>(&logLevel)->default_value("info"), "Logging level [trace, debug, warn, info].")
+    ("test", po::bool_switch(&test), "We are testing so serve local content without nginx.")
     ("help", "produce help message")
     ;
   po::positional_options_description p;
@@ -78,7 +80,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_TRIVIAL(info) << version;
 	BOOST_LOG_TRIVIAL(info) << "Connect to ZMQ as Local REQ on " << reqPort;
 
-  Server server(reqPort, subPort);
+  Server server(reqPort, subPort, test);
   server.run(httpPort);
   
 }

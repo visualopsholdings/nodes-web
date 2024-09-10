@@ -1,5 +1,5 @@
 
-<div fxLayout="row" fxLayoutAlign="start" *ngIf="team">
+<div class="flex-row" *ngIf="team">
   <mat-card class="team-card">
     <mat-card-header>
       <img mat-card-avatar src="{{getIcon(team)}}">
@@ -7,10 +7,19 @@
       <mat-card-subtitle>{{team._id}}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <mat-form-field class="field">
+        <mat-label>Name</mat-label>
+        <input matInput name="name" [(ngModel)]="team.name" placeholder="Name">
+      </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
+      <button mat-raised-button (click)="save();">SAVE</button>
     </mat-card-actions>
   </mat-card>
+  <div *ngIf="team" class="right-area">
+    <app-security [obj]="'groups'" [exec]="false" [policy]="team.policy"></app-security>
+  </div>
+</div>
 <mat-card class="members-card">
   <mat-card-header>
     <mat-card-title>Members</mat-card-title>

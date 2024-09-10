@@ -90,6 +90,11 @@ export class TeamDetailComponent implements OnInit {
     });
   }
 
+  save(): void {
+    this.teamService.updateTeam(false, this.team)
+      .subscribe(() => {});
+  }
+
   getIcon(item: any): string {
     return this.iconService.getIcon({ icon: "internal:group" });
   }

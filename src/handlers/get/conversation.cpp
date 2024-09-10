@@ -35,27 +35,8 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
     { "type", "ideas" },
     { "stream", id }
   });
-  json j = server->receive();
-  auto ideas = Json::getArray(j, "ideas");
+  return server->receiveArray(req, "ideas");
 
-  if (!ideas) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "conversation missing ideas";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-  }
-
-  boost::json::array newideas;
-  for (auto s: ideas.value()) {
-    s.as_object()["_id"] = Json::getString(s, "id").value();
-    newideas.push_back(s);
-  }
-
-  auto resp = server->init_resp( req->create_response() );
-  stringstream ss;
-  ss << newideas;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

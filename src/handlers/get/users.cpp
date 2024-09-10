@@ -31,24 +31,7 @@ status_t getusers(Server *server, const req_t& req, params_t params)
       { "type", "searchusers" },
       { "q", q }
     });
-    json j = server->receive();
-    auto result = Json::getArray(j, "result");
-    if (!result) {
-      // send fatal error
-      BOOST_LOG_TRIVIAL(error) << "searchusers missing result";
-      return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
-    }
-    auto resp = server->init_resp( req->create_response() );
-    boost::json::array newsresult;
-    for (auto s: result.value()) {
-      s.as_object()["_id"] = Json::getString(s, "id").value();
-      newsresult.push_back(s);
-    }
-    stringstream ss;
-    ss << newsresult;
-    resp.set_body(ss.str());
-    
-    return resp.done();
+    return server->receiveArray(req, "result");
   }
   
   BOOST_LOG_TRIVIAL(error) << "only understand query.";

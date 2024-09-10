@@ -2,15 +2,15 @@ require 'json'
 require 'capybara'
 
 When('{string} logs into chat') do |name|
-  visit("http://localhost:8081/login/?username=" + name)
+  visit("http://localhost:8081/login/?username=" + name + "&app=chat")
 end
 
 When('{string} logs into admin') do |name|
-  visit("http://localhost:8082/login/?username=" + name)
+  visit("http://localhost:8081/login/?username=" + name + "&app=admin")
 end
 
 Given('{string} log into app {string}') do |name, app|
-  visit("http://localhost:8082/login/?username=" + name)
+  visit("http://localhost:8081/login/?username=" + name + "&app=" + app)
 end
 
 When('eventually there are {int} streams') do |count|
@@ -68,7 +68,6 @@ end
 When('nodes is reloaded') do
    result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace --cmd=reload`)
    expect(result["type"]).to eq("ack")
-   sleep(5)
 end
 
 Given("she clicks button named {string} in row with text {string}") do |name, text|
