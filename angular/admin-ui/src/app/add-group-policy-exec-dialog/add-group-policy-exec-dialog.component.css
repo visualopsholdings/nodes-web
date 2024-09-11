@@ -1,0 +1,23 @@
+
+table {
+  width: 100%;
+}
+
+.field {
+  display: block;
+  width: 300px;
+}
+
+.modal-dialog {
+  width: 600px;
+}
+
+.team-card {
+  width: 150px;
+  height: 100px;
+}
+
+.policy-icon {
+  width: 24px;
+  height: 24px;
+}

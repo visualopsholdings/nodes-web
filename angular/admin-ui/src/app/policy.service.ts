@@ -38,7 +38,7 @@ export class PolicyService extends BackendService {
 
   updatePolicy(obj: string, id: string, changes: any): Observable<any> {
     const url = `${this.baseUrl}/${obj}/${id}/policy`;
-    return this.http.patch(url, changes, httpOptions).pipe(
+    return this.http.put(url, changes, httpOptions).pipe(
       catchError(this.handleError<any>('updatePolicy'))
     );
   }

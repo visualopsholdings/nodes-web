@@ -58,7 +58,7 @@ public:
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
   status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
-  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin=true);
+  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin, optional<string> id=nullopt);
   status_t returnEmptyObj(const req_t& req);
   status_t receiveArray(const req_t& req, const string &field);
   status_t receiveObject(const req_t& req, const string &field);

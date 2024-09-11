@@ -191,11 +191,11 @@ auto Server::handler()
   router->http_get("", by(&nodes::getroot));
   router->http_get("/", by(&nodes::getroot));
   router->http_get("/fonts/:file", by(&nodes::getfonts));
+  router->http_get("/login", by(&nodes::getlogin));
   
   if (_test) {
     // we don't install these handlers during production. Nginx takes
     // care of all this.
-    router->http_get("/login", by(&nodes::getlogin));
     router->http_get("/apps/:app/", by(&nodes::getappindex));
     router->http_get("/apps/:app/:file", by(&nodes::getappfile));
     router->http_get("/apps/:app/assets/:file", by(&nodes::getappasset));
@@ -211,16 +211,16 @@ auto Server::handler()
   router->http_get("/rest/1.0/conversations/:id", by(&nodes::getconversation));
   router->http_get("/rest/1.0/streams/:id/policy/users", by(&nodes::getstreampolicyusers));
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "message");
+    return sendBodyReturnEmptyObj(req, "message", true);
   });
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setinfo");
+    return sendBodyReturnEmptyObj(req, "setinfo", true);
   });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setsite");
+    return sendBodyReturnEmptyObj(req, "setsite", true);
   });
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
@@ -232,26 +232,31 @@ auto Server::handler()
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
   router->http_put("/rest/1.0/users/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setuser");
+    return sendBodyReturnEmptyObj(req, "setuser", true, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groupusers", by(&nodes::getgroupusers));
+
   router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
-  router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
+  router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setstreampolicy", true, restinio::cast_to<string>(params["id"]));
+  });
   router->http_post("/rest/1.0/streams", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "addstream", false);
   });
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
+
+  router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
   router->http_post("/rest/1.0/groups", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "addgroup", false);
   });
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setgroup", false);
+    return sendBodyReturnEmptyObj(req, "setgroup", false, restinio::cast_to<string>(params["id"]));
   });
   router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setstream", false);
+    return sendBodyReturnEmptyObj(req, "setstream", false, restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
 
@@ -396,13 +401,14 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
     if (level.value() == "warning") {
       return warning(req, msg.value());
     }
+    return fatal(req, msg.value());
   }
   
   return returnEmptyObj(req);
 
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin) {
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin, optional<string> id) {
 
   auto session = getSession(req);
   if (!session) {
@@ -430,6 +436,10 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bo
   if (j.as_object().if_contains("_id")) {
     j.as_object()["id"] = Json::getString(j, "_id").value();
     j.as_object().erase("_id");
+  }
+  
+  if (id) {
+    j.as_object()["id"] = id.value();
   }
   
 	send(j);

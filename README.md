@@ -342,6 +342,9 @@ back from.
 - Speed up cucumber an order of magnitude by directly serving the angular built 
 stuff rather than using ng serve.
 
+### 11 Sep 2024
+- Allow security policies to be edited for streams.
+
 
 
 

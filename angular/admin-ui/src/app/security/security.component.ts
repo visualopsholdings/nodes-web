@@ -71,9 +71,9 @@ export class SecurityComponent implements OnInit {
         this.policies = [];
         var hasExec = false;
         policies.forEach(e => {
-          let line = _.find(this.policies, e2 => e.id == e2.id);
+          let line = _.find(this.policies, e2 => e._id == e2._id);
           if (!line) {
-            line = { id: e.id, name: e.name, context: e.context } as PolicyLine;
+            line = { _id: e._id, name: e.name, context: e.context } as PolicyLine;
             this.policies.push(line);
           }
           if (e.type == "view") {
@@ -111,7 +111,7 @@ export class SecurityComponent implements OnInit {
     let dialogRef = exec ? this.dialog.open(AddUserPolicyExecDialogComponent) : this.dialog.open(AddUserPolicyDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        let line = { id: result.user._id, name: result.user.fullname, context: "user" } as PolicyLine;
+        let line = { _id: result.user._id, name: result.user.fullname, context: "user" } as PolicyLine;
         if (result.role == "view") {
           line.viewPath = "*";
         }
@@ -140,7 +140,7 @@ export class SecurityComponent implements OnInit {
     let dialogRef = exec? this.dialog.open(AddGroupPolicyExecDialogComponent) : this.dialog.open(AddGroupPolicyDialogComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        let line = { id: result.team._id, name: result.team.name, context: "group" } as PolicyLine;
+        let line = { _id: result.team._id, name: result.team.name, context: "group" } as PolicyLine;
         if (result.role == "view") {
           line.viewPath = "*";
         }
@@ -207,13 +207,13 @@ export class SecurityComponent implements OnInit {
     let changes = { add: [], remove: [] };
     this.policies.forEach(e => {
       if (e.editPath == '*') {
-        changes.add.push({ _id: e.id, context: e.context, type: "edit" });
+        changes.add.push({ _id: e._id, context: e.context, type: "edit" });
       }
       if (e.viewPath == '*') {
-        changes.add.push({ _id: e.id, context: e.context, type: "view" });
+        changes.add.push({ _id: e._id, context: e.context, type: "view" });
       }
       if (e.execPath == '*') {
-        changes.add.push({ _id: e.id, context: e.context, type: "exec" });
+        changes.add.push({ _id: e._id, context: e.context, type: "exec" });
       }
       if (e.editRemoved) {
         changes.remove.push(e.editPath);
@@ -225,8 +225,7 @@ export class SecurityComponent implements OnInit {
         changes.remove.push(e.execPath);
       }
     });
-    this.policyService.updatePolicy(this.secObj(), this.id, changes)
-      .subscribe(() => {
+    this.policyService.updatePolicy(this.secObj(), this.id, changes).subscribe(() => {
         this.message = "Policy saved.";
         this.getPolicies();
       });
@@ -238,13 +237,13 @@ export class SecurityComponent implements OnInit {
         let changes = { _id: result._id, add: [], remove: [] };
         this.policies.forEach(e => {
           if (e.editPath == '*') {
-            changes.add.push({ _id: e.id, context: e.context, type: "edit" });
+            changes.add.push({ _id: e._id, context: e.context, type: "edit" });
           }
           if (e.viewPath == '*') {
-            changes.add.push({ _id: e.id, context: e.context, type: "view" });
+            changes.add.push({ _id: e._id, context: e.context, type: "view" });
           }
           if (e.execPath == '*') {
-            changes.add.push({ _id: e.id, context: e.context, type: "exec" });
+            changes.add.push({ _id: e._id, context: e.context, type: "exec" });
           }
           if (e.editRemoved) {
             changes.remove.push(e.editPath);

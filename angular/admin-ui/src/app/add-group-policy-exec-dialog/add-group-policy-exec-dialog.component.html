@@ -1,1 +1,57 @@
-<p>add-group-policy-exec-dialog works!</p>
+<form [formGroup]="form" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Team Search</h1>
+  <mat-dialog-content>
+    <mat-form-field>
+      <input matInput #searchBox name="query" id="search-box" (keyup)="search(searchBox.value)" placeholder="Team Query"/>
+    </mat-form-field>
+    <table mat-table [dataSource]="teams$ | async">
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>NAME</th>
+        <td mat-cell *matCellDef="let item">{{item.name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="view">
+        <th mat-header-cell *matHeaderCellDef>VIEW</th>
+        <td mat-cell *matCellDef="let item">
+            <button mat-icon-button (click)="addRole('view', item);">
+              <mat-icon>visibility</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef>EDIT</th>
+        <td mat-cell *matCellDef="let item">
+            <button mat-icon-button (click)="addRole('edit', item);">
+              <mat-icon>edit</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="exec">
+        <th mat-header-cell *matHeaderCellDef>EXEC</th>
+        <td mat-cell *matCellDef="let item">
+            <button mat-icon-button (click)="addRole('exec', item);">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="all">
+        <th mat-header-cell *matHeaderCellDef>ALL</th>
+        <td mat-cell *matCellDef="let item">
+            <button mat-icon-button (click)="addRole('view+edit+exec', item);">
+              <mat-icon>check</mat-icon>
+            </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+  </mat-dialog-actions>
+</form>

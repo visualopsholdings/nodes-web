@@ -73,3 +73,7 @@ end
 Given("she clicks button named {string} in row with text {string}") do |name, text|
    find(:xpath, "//table/tbody/tr/td[text()='#{text}']/..").find("button[name='#{name}']").click()
 end
+
+When("eventually {int} row appears") do |count|
+   eventually { expect(find('tbody')).to have_selector('tr', count: count.to_i) }
+end

@@ -2,7 +2,7 @@
 export class Policy {
 
   context: string;
-  id: string;
+  _id: string;
   name: string;
   email: string;
   path: string;

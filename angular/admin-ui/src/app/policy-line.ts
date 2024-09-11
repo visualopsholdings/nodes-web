@@ -3,7 +3,7 @@ export class PolicyLine {
   context: string;
   email: string;
   name: string;
-  id: string;
+  _id: string;
   editPath: string;
   editRemoved = false;
   viewPath: string;

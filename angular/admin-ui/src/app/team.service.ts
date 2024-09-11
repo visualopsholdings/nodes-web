@@ -95,4 +95,15 @@ export class TeamService extends BackendService {
     );
   }
 
+  searchTeams(admin: boolean, term: string): Observable<Team[]> {
+    if (!term.trim()) {
+      // if not search term, return empty team array.
+      return of([]);
+    }
+    return this.http.get<Team[]>(`${admin ? this.admTeamsUrl : this.teamsUrl}/?q=${term}`).pipe(
+//      tap(_ => this.log(`found heroes matching "${term}"`)),
+      catchError(this.handleError<Team[]>('searchTeams', []))
+    );
+  }
+
 }
