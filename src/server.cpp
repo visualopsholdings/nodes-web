@@ -249,6 +249,9 @@ auto Server::handler()
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
 
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
+  router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
+    return sendBodyReturnEmptyObj(req, "setgrouppolicy", true, restinio::cast_to<string>(params["id"]));
+  });
   router->http_post("/rest/1.0/groups", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "addgroup", false);
   });

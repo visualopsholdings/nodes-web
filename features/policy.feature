@@ -33,7 +33,7 @@ Feature: Policy
          | Local           | lightgreen      |
  
 	@javascript
-	Scenario: Alice can be added to a policy
+	Scenario: Alice can be added to a policy in streams
       When "tracy" log into app "admin"
 	   And she clicks "Streams"
       And she clicks button named "edit" in row with text "BugBase"
@@ -47,6 +47,4 @@ Feature: Policy
       And eventually the page contains "saved"
       And eventually the page contains "Group 1"
       And eventually the page contains "Alice"
-     
-      
    
