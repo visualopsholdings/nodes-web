@@ -57,6 +57,8 @@ public:
   status_t warning(const req_t& req, const string &msg);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
+  optional<status_t> checkErrors(const req_t& req, json &j, const string &type);
+  status_t returnObj(const req_t& req, json &j);
   status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin, optional<string> id=nullopt);
   status_t returnEmptyObj(const req_t& req);

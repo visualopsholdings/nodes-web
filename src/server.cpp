@@ -73,6 +73,7 @@ status_t getstreams(Server *server, const req_t& req, params_t );
 status_t getstream(Server *server, const req_t& req, params_t );
 status_t getconversation(Server *server, const req_t& req, params_t );
 status_t getstreampolicyusers(Server *server, const req_t& req, params_t );
+status_t getstreampolicygroups(Server *server, const req_t& req, params_t );
 status_t getme(Server *server, const req_t& req, params_t );
 status_t getlogin(Server *server, const req_t& req, params_t );
 status_t postlogin(Server *server, const req_t& req, params_t );
@@ -98,6 +99,7 @@ status_t getrawstreampolicy(Server *server, const req_t& req, params_t );
 status_t getrawgrouppolicy(Server *server, const req_t& req, params_t );
 status_t deletestream(Server *server, const req_t& req, params_t );
 status_t deletegroup(Server *server, const req_t& req, params_t );
+status_t getstreamsharelink(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -210,6 +212,8 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams", by(&nodes::getstreams));
   router->http_get("/rest/1.0/conversations/:id", by(&nodes::getconversation));
   router->http_get("/rest/1.0/streams/:id/policy/users", by(&nodes::getstreampolicyusers));
+  router->http_get("/rest/1.0/streams/:id/policy/groups", by(&nodes::getstreampolicygroups));
+  router->http_get("/rest/1.0/streams/:id/sharelink", by(&nodes::getstreamsharelink));
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "message", true);
   });
@@ -390,7 +394,17 @@ status_t Server::returnEmptyObj(const req_t& req) {
   
 }
 
-status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type) {
+status_t Server::returnObj(const req_t& req, json &j) {
+
+  auto resp = req->create_response();
+  stringstream ss;
+  ss << j;
+  resp.set_body(ss.str());
+  return resp.done();
+  
+}
+
+optional<status_t> Server::checkErrors(const req_t& req, json &j, const string &type) {
 
   // test for an error...
   auto rettype = Json::getString(j, "type");
@@ -405,6 +419,17 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
       return warning(req, msg.value());
     }
     return fatal(req, msg.value());
+  }
+
+  return nullopt;
+  
+}
+
+status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type) {
+
+  auto resp = checkErrors(req, j, type);
+  if (resp) {
+    return resp.value();
   }
   
   return returnEmptyObj(req);
@@ -458,6 +483,11 @@ status_t Server::receiveArray(const req_t& req, const string &field) {
 
   json j = receive();
 
+  auto resp1 = checkErrors(req, j, "array");
+  if (resp1) {
+    return resp1.value();
+  }
+
   auto result = Json::getArray(j, field);
   
   if (!result) {
@@ -482,6 +512,11 @@ status_t Server::receiveObject(const req_t& req, const string &field) {
 
   json j = receive();
 
+  auto resp1 = checkErrors(req, j, "object");
+  if (resp1) {
+    return resp1.value();
+  }
+  
   auto result = Json::getObject(j, field);
   
   if (!result) {

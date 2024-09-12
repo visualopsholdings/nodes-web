@@ -32,6 +32,7 @@ import { StreamFlags } from '../../../../shared-ui/streamflags';
 import { UpService }  from '../up.service';
 import { UserListService } from '../user-list.service';
 import { Site }  from '../site';
+import { ShareStreamDialogComponent } from '../share-stream-dialog/share-stream-dialog.component';
 
 @Component({
   selector: 'app-conversation',
@@ -550,6 +551,10 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
   showStreams(): void {
     this.streamOpenService.open([]);
+  }
+
+  share(stream: Stream): void {
+    this.dialog.open(ShareStreamDialogComponent, { data: { stream: stream._id, streamflags: this.streamflags }}).afterClosed().subscribe(result => {});
   }
 
 }

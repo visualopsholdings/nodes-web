@@ -108,7 +108,6 @@ export class StreamsComponent implements OnInit, OnDestroy {
             this.onResize(null);
           }
           else {
-            this.selectedStream = null;
             this.getStreams();
           }
         }

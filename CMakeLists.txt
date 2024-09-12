@@ -60,6 +60,7 @@ set(HANDLERS
   src/handlers/get/me.cpp
   src/handlers/get/stream.cpp
   src/handlers/get/streampolicyusers.cpp
+  src/handlers/get/streampolicygroups.cpp
   src/handlers/get/user.cpp
   src/handlers/post/login.cpp
   src/handlers/post/typing.cpp
@@ -83,6 +84,7 @@ set(HANDLERS
   src/handlers/get/rawgrouppolicy.cpp
   src/handlers/delete/stream.cpp
   src/handlers/delete/group.cpp
+  src/handlers/get/streamsharelink.cpp
 )
 
 include_directories(include)

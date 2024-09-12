@@ -21,13 +21,14 @@
   .security::-webkit-scrollbar,
   .parent::-webkit-scrollbar,
   .focus::-webkit-scrollbar,
-  .add-message::-webkit-scrollbar, .more::-webkit-scrollbar, .less::-webkit-scrollbar {
+  .add-message::-webkit-scrollbar, .more::-webkit-scrollbar, .less::-webkit-scrollbar,
+  .share::-webkit-scrollbar {
   display: none;
 }
 
 .footer, .outer, .back, .paginator, .security,
   .focus, .parent,
-  .add-message, .more, .less {
+  .add-message, .more, .less, .share {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -60,7 +61,12 @@
   width: 14px;
 }
 
-.back .mat-icon  {
+.share {
+  position: absolute;
+  background-color: transparent;
+}
+
+.back .mat-icon, .share .mat-icon  {
   font-size: 22px;
   width: 22px;
 }
@@ -167,6 +173,10 @@
 
 /* Common */
 
+.share {
+  top: -6px;
+}
+
 .back {
   top: -4px;
 }
@@ -174,9 +184,17 @@
 
 @media (min-width: 650px) {
 
+.share {
+  right: 530px;
+}
+
 }
 
 @media (max-width: 651px) {
+
+.share {
+  left: 76px;
+}
 
 }
 

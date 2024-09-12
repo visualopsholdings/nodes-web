@@ -3,6 +3,12 @@
     Showing a single idea.
     <a (click)="cancelFocus()">Click <mat-icon>arrow_back</mat-icon> to return to the entire stream.</a>
   </div>
+  <button class="back" mat-icon-button name="back" (click)="showStreams()">
+    <mat-icon>forum</mat-icon>
+  </button>
+  <button class="share" mat-icon-button name="share" (click)="share(stream)">
+    <mat-icon>share</mat-icon>
+  </button>
   <mat-paginator #paginator *ngIf="stream" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
     (page)="onPage($event)" class="paginator"
     [style.display]="displayPaginator()" [hidePageSize]="hidePageSize()">

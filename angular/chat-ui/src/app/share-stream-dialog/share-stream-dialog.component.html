@@ -1,0 +1,44 @@
+<form [formGroup]="form" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Share Stream</h1>
+  <mat-dialog-content>
+    <mat-form-field *ngIf="data.streamflags.shareWithNewUsers && teams && teams.length > 0">
+      <mat-select placeholder="Select a team for the new user" [(value)]="team">
+        <mat-option [value]="''" >
+          None
+        </mat-option>
+        <mat-option *ngFor="let team of teams" [value]="team._id">
+          {{team.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="data.streamflags.shareWithNewUsers">
+      <mat-label>Expiry in hours</mat-label>
+      <input matInput name="expires" [(ngModel)]="expires"
+        [ngModelOptions]="{standalone: true}" (ngModelChange)="generateLink()"
+        placeholder="Number of hours till the link expires">
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="showLink" [ngModelOptions]="{standalone: true}">Show the
+    link</mat-checkbox>
+    <mat-form-field *ngIf="showLink">
+      <textarea matInput name="link" [(ngModel)]="link"
+        [ngModelOptions]="{standalone: true}"
+        cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1">
+      </textarea>
+    </mat-form-field>
+    <p class="mat-form-field">The share stream link has been copied to your clipboard.
+    Paste the link into a message or email and send it to the people you want to
+    invite to this stream.</p>
+    <p *ngIf="data.streamflags.shareWithNewUsers" class="mat-form-field">This stream is
+    set to allow new users to the platform.</p>
+    <p *ngIf="data.streamflags.shareWithNewUsers" class="mat-form-field">New users will
+    be able to use the login page to get a new VID.</p>
+    <p *ngIf="!data.streamflags.shareWithNewUsers" class="mat-form-field">This stream is
+    set to NOT ALLOW new users.</p>
+    <p *ngIf="!data.streamflags.shareWithNewUsers" class="mat-form-field">The people you
+    invite must already be on the platform in order to see this stream.</p>
+    <br/>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</form>

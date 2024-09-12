@@ -28,6 +28,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -51,6 +52,7 @@ import { JustNowPipe } from './just-now.pipe';
 import { UserListService }  from './user-list.service';
 import { UserService }  from './user.service';
 import { SiteService }  from './site.service';
+import { ShareStreamDialogComponent } from './share-stream-dialog/share-stream-dialog.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,8 @@ import { SiteService }  from './site.service';
     IdeaComponent,
     EditIdeaDialogComponent,
     ChooseStreamDialogComponent,
-    JustNowPipe
+    JustNowPipe,
+    ShareStreamDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -99,7 +102,8 @@ import { SiteService }  from './site.service';
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSelectModule
   ],
   providers: [IconService, MeService, StreamService, IdeaService, UserListService, UserService, SiteService],
   bootstrap: [AppComponent]

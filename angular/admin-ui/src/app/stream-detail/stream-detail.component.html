@@ -11,6 +11,12 @@
         <mat-label>Name</mat-label>
         <input matInput name="name" [(ngModel)]="stream.name" placeholder="Name">
       </mat-form-field>
+      <div *ngIf="hasAdmin()">
+        <mat-checkbox class="field" [(ngModel)]="streamflags.shareWithNewUsers" (ngModelChange)="streamChange()">Allow stream to be shared with new users</mat-checkbox>
+
+        <p>Bits: {{streamflags.bits()}}</p>
+        <button mat-raised-button (click)="setStreamBits();">SET STREAM BITS</button>
+      </div>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button (click)="editEmoji();">EDIT EMOJI</button>

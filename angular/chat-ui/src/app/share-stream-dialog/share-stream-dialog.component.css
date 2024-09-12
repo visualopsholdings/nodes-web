@@ -1,0 +1,13 @@
+
+.modal-dialog {
+  width: 300px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.heading {
+  margin-top: 8px;
+  margin-bottom: 2px;
+}

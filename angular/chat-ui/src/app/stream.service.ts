@@ -11,6 +11,7 @@ import { Idea } from './idea';
 import { User } from './user';
 import { UpService }  from './up.service';
 import { RestErrorComponent } from './rest-error/rest-error.component';
+import { Team } from './team';
 
 @Injectable()
 export class StreamService extends BackendService {
@@ -74,6 +75,22 @@ export class StreamService extends BackendService {
 
     return this.get<User[]>(`${this.streamsUrl}/${stream}/policy/users`, "getStreamUsers");
 
+  }
+
+  getStreamTeams(stream: string): Observable<Team[]> {
+
+    return this.get<Team[]>(`${this.streamsUrl}/${stream}/policy/groups`, "getStreamTeams");
+
+  }
+
+  getShareLink(id: string, group: string, expires: string): Observable<any> {
+    var url = `${this.streamsUrl}/${id}/sharelink?group=${group}&expires=${expires}`;
+    let cachebuster = Math.round(new Date().getTime() / 1000);
+    url += "&cb=" + cachebuster;
+
+    return this.http.get<any>(url).pipe(
+      catchError(this.handleError<any>(`getShareLink id=${id}`)),
+    );
   }
 
 }

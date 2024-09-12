@@ -13,6 +13,7 @@ import { InfoService }  from '../info.service';
 import { SetEmojiDialogComponent } from '../set-emoji-dialog/set-emoji-dialog.component';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { StreamFlags } from '../../../../shared-ui/streamflags';
+import { SetUibitsDialogComponent } from '../set-uibits-dialog/set-uibits-dialog.component';
 
 @Component({
   selector: 'app-stream-detail',
@@ -83,7 +84,7 @@ export class StreamDetailComponent implements OnInit {
   }
 
   save(): void {
-    this.streamService.updateStream(false, this.stream)
+    this.streamService.updateStream(false, { _id: this.stream._id, name: this.stream.name, streambits: this.stream.streambits} as Stream)
       .subscribe(() => {});
   }
 
@@ -91,11 +92,24 @@ export class StreamDetailComponent implements OnInit {
     return this.iconService.getIcon(stream);
   }
 
-   streamChange(): void {
+  streamChange(): void {
     var stream = { _id: this.stream._id } as Stream;
     stream.streambits = this.streamflags.bits();
     this.streamService.updateStream(false, stream).subscribe(() => {
       this.stream.streambits = stream.streambits;
+    });
+  }
+
+  setStreamBits(): void {
+    let dialogRef = this.dialog.open(SetUibitsDialogComponent, { data: {
+      title: "Set Stream Bits",
+      uibits: this.stream.streambits
+    } });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.streamflags.update(result.uibits);
+        this.streamChange();
+      }
     });
   }
 

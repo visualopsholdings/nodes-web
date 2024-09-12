@@ -77,3 +77,12 @@ end
 When("eventually {int} row appears") do |count|
    eventually { expect(find('tbody')).to have_selector('tr', count: count.to_i) }
 end
+
+When(/^she clicks button named "([^"]*)"$/) do |name|
+   find("button[name='#{name}']").click()
+end
+
+When("the clipboard contains {string}") do |str|
+   clip_text = page.evaluate_async_script("navigator.clipboard.readText().then(arguments[0])")
+   expect(clip_text).to have_content(str)
+end

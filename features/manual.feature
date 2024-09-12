@@ -1,4 +1,3 @@
-@interactive
 Feature: Manual
 
    @javascript
@@ -8,9 +7,9 @@ Feature: Manual
       When there is default security
 
       And there are streams:
-         | name               | policy |
-         | My Conversation 1  | p1     |
-         | My Conversation 2  | p1     |
+         | name               | policy | streambits   |
+         | My Conversation 1  | p1     | 2048         |
+         | My Conversation 2  | p1     | 0            |
 
       And there are ideas:
          | name         | stream             | policy | by     |
