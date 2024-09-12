@@ -345,6 +345,8 @@ stuff rather than using ng serve.
 ### 11 Sep 2024
 - Allow security policies to be edited for streams.
 
+### 12 Sep 2024
+- Allow streams to be shared with other users.
 
 
 
