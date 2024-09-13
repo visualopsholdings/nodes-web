@@ -21,4 +21,5 @@ Feature: Share
 	   And she clicks button named "share"
       And eventually a modal dialog appears
       And eventually the page contains "Team 1"
-      And the clipboard contains "google"
+      And the clipboard contains "https://localhost/apps/conversations/#/streams/"
+      And the clipboard contains "?token="
