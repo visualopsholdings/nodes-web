@@ -3,6 +3,10 @@ Feature: Share
    Background:
       And the server has id "6eae665a-f376-472d-87e5-5159c2e0b389"
       When there is default security
+      And the server has infos:
+         | type      | text                                     |
+         | tokenKey  | 90B21444AC1A2C9146FFA34C72BF787F76E7B0EDD236F0508571264153E58A787B82729268EF67DFCCC6B1F113721B0D752DA65DA6BC82BCA9A1C73E58DAAFF7 |
+         | tokenIV   | D764E7CAE16C361A4546873B |
 
       And there are streams:
          | name               | policy | streambits   |
