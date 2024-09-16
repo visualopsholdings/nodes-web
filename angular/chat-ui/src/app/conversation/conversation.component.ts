@@ -73,6 +73,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
   private onKeySubject: Subject<boolean> = new Subject();
   private onClickSubject: Subject<boolean> = new Subject();
   private subscriptions: Subscription[] = [];
+  private token: string;
   private ideaToLoad: string;
   private streamToLoad: string;
 
@@ -120,6 +121,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
       if (originalURL) {
         window.history.replaceState({}, originalURL, originalURL);
       }
+      this.token = params['token'];
       if (this.stream) {
         this.getStream(this.stream._id, true);
       }
@@ -289,7 +291,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
       this.paginator.pageIndex = 0;
     }
     this.loading = true;
-    this.streamService.getStream(stream).subscribe(stream => {
+    this.streamService.getStream(stream, this.token).subscribe(stream => {
 
         this.loading = false;
         this.stream = stream;
@@ -315,7 +317,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
     }
 
     this.loading = true;
-    this.ideaService.getIdea(id).subscribe(idea => {
+    this.ideaService.getIdea(id, this.token).subscribe(idea => {
       this.loading = false;
       this.focusIdea = true;
       this.focusIdeaStream = idea.stream;

@@ -50,7 +50,12 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     server->send(j);
     j = server->receive();
     
-    BOOST_LOG_TRIVIAL(trace) << j;
+    auto resp = server->checkErrors(req, j, "query");
+    if (resp) {
+      return resp.value();
+    }
+  
+//    BOOST_LOG_TRIVIAL(trace) << j;
     
     return server->returnEmptyObj(req);
   }
@@ -71,7 +76,12 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     server->send(j);
     j = server->receive();
     
-    BOOST_LOG_TRIVIAL(trace) << j;
+    auto resp = server->checkErrors(req, j, "newuser");
+    if (resp) {
+      return resp.value();
+    }
+  
+//    BOOST_LOG_TRIVIAL(trace) << j;
     
     return server->returnEmptyObj(req);
   }

@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
   usernameCtrl = new FormControl("", []);
   passwordCtrl = new FormControl("", []);
   fullnameCtrl = new FormControl("", []);
+  app: string;
+  stream: string;
+  idea: string;
   token: string;
   msg = "";
   errmsg = "";
@@ -40,6 +43,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private userService: UserService,
     @Inject(WINDOW) private window: Window
   ) {
+    route.queryParams.subscribe(params => {
+      this.app = params['app'];
+      this.stream = params['stream'];
+      this.idea = params['idea'];
+      this.token = params['token'];
+      console.log("got token on url", this.token);
+    });
   }
 
   ngOnInit() {
@@ -48,6 +58,26 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.usernameCtrl.disable();
     this.usernameCtrl.setValue("VID");
 
+    if (this.token) {
+      console.log("Has token", this.token);
+      this.userService.canRegister(this.token).subscribe(result => {
+        if (result.newVopsID) {
+          this.userService.newUser({ vopsidtoken: this.token } as User).subscribe(result => {
+            if (result) {
+              var vopsid = result.vopsid;
+              this.clipboard.copy(vopsid);
+              this.dialog.open(CopyVopsidDialogComponent, { data: { vopsid: vopsid, fullname: result.fullname }}).afterClosed().subscribe(result => {
+                this.passwordCtrl.setValue(vopsid);
+                this.login(vopsid);
+              });
+            }
+          });
+        }
+        else {
+          this.canRegister = result.canRegister;
+        }
+      });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -89,7 +119,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private login(password: string) {
 
-    this.loginService.login({ name: "", password: password } as Login).subscribe(result => {
+    this.loginService.login({ name: "", password: password, insecure: !this.isVopsID(password) } as Login).subscribe(result => {
       if (result) {
         if (result.redirect) {
           this.window.history.back();
@@ -99,7 +129,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
           if (this.window.location.port) {
             url += ":" + this.window.location.port;
           }
-          this.window.location.href = "/apps/chat";
+          url += "/apps/";
+          if (this.app) {
+            url += this.app;
+            if (this.idea) {
+              url += "/#/ideas/" + this.idea;
+            }
+            else if (this.stream) {
+              url += "/#/streams/" + this.stream;
+            }
+          }
+          else {
+            url += "chat";
+          }
+          this.window.location.href = url;
         }
       }
     });

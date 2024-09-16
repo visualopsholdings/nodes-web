@@ -86,3 +86,9 @@ When("the clipboard contains {string}") do |str|
    clip_text = page.evaluate_async_script("navigator.clipboard.readText().then(arguments[0])")
    expect(clip_text).to have_content(str)
 end
+
+When('she navigates to url on clipboard') do
+   clip_text = page.evaluate_async_script("navigator.clipboard.readText().then(arguments[0])")
+   visit("http://localhost:8081/logout")
+   visit(clip_text)
+end

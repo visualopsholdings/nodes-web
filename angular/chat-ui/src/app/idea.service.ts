@@ -32,7 +32,7 @@ export class IdeaService extends BackendService {
     return (error: any): Observable<Idea> => {
 
       if (error.status == 401) {
-        var url = "/apps/login/#/login?app=conversations&idea=" + idea;
+        var url = "/apps/login/#/login?app=chat&idea=" + idea;
         if (token) {
           url += "&token=" + token;
         }

@@ -64,6 +64,7 @@ public:
   status_t returnEmptyObj(const req_t& req);
   status_t receiveArray(const req_t& req, const string &field);
   status_t receiveObject(const req_t& req, const string &field);
+  status_t receiveRawObject(const req_t& req);
   void sendWS(uint64_t &id, const json &json);
   void sendAllWS(const json &json);
   shared_ptr<rws::ws_t> createWS(const req_t& req);

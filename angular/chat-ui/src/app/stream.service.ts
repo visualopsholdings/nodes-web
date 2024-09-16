@@ -34,11 +34,14 @@ export class StreamService extends BackendService {
 
   }
 
-  private handleSecurityError<Stream> (stream: string) {
+  private handleSecurityError<Stream> (stream: string, token: string) {
     return (error: any): Observable<Stream> => {
 
       if (error.status == 401) {
-        var url = "/apps/login/#/login?app=conversations&stream=" + stream;
+        var url = "/apps/login/#/login?app=chat&stream=" + stream;
+        if (token) {
+          url += "&token=" + token;
+        }
         window.location.href = url;
       }
       else if (error.status == 0 || error.status == 504) {
@@ -57,10 +60,10 @@ export class StreamService extends BackendService {
     };
   }
 
-  getStream(id: string): Observable<Stream> {
-    var url = `${this.streamsUrl}/${id}`;
+  getStream(id: string, token: string = null): Observable<Stream> {
+    var url = `${this.streamsUrl}/${id}?v=security`;
     return this.http.get<Stream>(url).pipe(
-      catchError(this.handleSecurityError<Stream>(id)),
+      catchError(this.handleSecurityError<Stream>(id, token)),
     );
   }
 

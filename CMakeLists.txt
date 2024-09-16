@@ -66,6 +66,7 @@ set(HANDLERS
   src/handlers/post/typing.cpp
   src/handlers/get/infos.cpp
   src/handlers/get/rawsites.cpp
+  src/handlers/post/newuser.cpp
   src/handlers/post/users.cpp
   src/handlers/get/websocket.cpp
   src/handlers/sendWS.cpp
@@ -85,6 +86,7 @@ set(HANDLERS
   src/handlers/delete/stream.cpp
   src/handlers/delete/group.cpp
   src/handlers/get/streamsharelink.cpp
+  src/handlers/get/canreg.cpp
 )
 
 include_directories(include)

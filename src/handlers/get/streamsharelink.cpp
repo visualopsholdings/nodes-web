@@ -47,14 +47,7 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
     { "expires", expires },
     { "me", session.value()->userid() }
   });
-  json j = server->receive();
-
-  auto resp = server->checkErrors(req, j, "streamsharelink");
-  if (resp) {
-    return resp.value();
-  }
-
-  return server->returnObj(req, j);
+  return server->receiveRawObject(req);
 
 }
 

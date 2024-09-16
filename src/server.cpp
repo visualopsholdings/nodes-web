@@ -82,6 +82,7 @@ status_t getuser(Server *server, const req_t& req, params_t );
 status_t posttyping(Server *server, const req_t& req, params_t );
 status_t getinfos(Server *server, const req_t& req, params_t );
 status_t getrawsites(Server *server, const req_t& req, params_t );
+status_t postnewuser(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
 status_t getrawgroups(Server *server, const req_t& req, params_t );
@@ -100,6 +101,7 @@ status_t getrawgrouppolicy(Server *server, const req_t& req, params_t );
 status_t deletestream(Server *server, const req_t& req, params_t );
 status_t deletegroup(Server *server, const req_t& req, params_t );
 status_t getstreamsharelink(Server *server, const req_t& req, params_t );
+status_t getcanreg(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -226,6 +228,7 @@ auto Server::handler()
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "setsite", true);
   });
+  router->http_post("/rest/1.0/users/new", by(&nodes::postnewuser));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
   router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
@@ -266,6 +269,7 @@ auto Server::handler()
     return sendBodyReturnEmptyObj(req, "setstream", false, restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
+  router->http_get("/rest/1.0/users/canreg/:token", by(&nodes::getcanreg));
 
   return router;
 }
@@ -476,6 +480,19 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bo
 //  BOOST_LOG_TRIVIAL(trace) << j;
   
   return checkErrorsReturnEmptyObj(req, j, type);
+
+}
+
+status_t Server::receiveRawObject(const req_t& req) {
+
+  json j = receive();
+
+  auto resp = checkErrors(req, j, "rawobj");
+  if (resp) {
+    return resp.value();
+  }
+
+  return returnObj(req, j);
 
 }
 

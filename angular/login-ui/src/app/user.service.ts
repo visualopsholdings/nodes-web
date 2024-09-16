@@ -42,4 +42,10 @@ export class UserService extends BackendService {
     );
   }
 
+  canRegister(token: string): Observable<any> {
+    return this.http.get<any>(`${this.usersUrl}/canreg/${token}`).pipe(
+      catchError(this.handleError<any>(`canRegister`))
+    );
+  }
+
 }

@@ -354,5 +354,9 @@ stuff rather than using ng serve.
 ### 12 Sep 2024
 - Allow streams to be shared with other users.
 
+### 16 Sep 2024
+- Start creating new invited users.
+
+
 
 
