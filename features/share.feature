@@ -32,7 +32,7 @@ Feature: Share
       And she clicks "Login"
       And eventually the page contains "Please wait while we generate your Vops ID"
       And eventually a modal dialog appears
-      And eventually the page contains "Cant create new Salt"
+      And eventually the page contains "Save your VID"
 #       And eventually the page contains "Welcome Bob"
 # 	   And she navigates to url on clipboard
 #       And a modal dialog appears

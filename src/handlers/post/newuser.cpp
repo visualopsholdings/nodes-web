@@ -36,15 +36,7 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
       { "vopsidtoken", vopsidtoken.value() },
       { "fullname", fullname.value() }
   });
-  j = server->receive();
-    
-  auto resp = server->checkErrors(req, j, "newuser");
-  if (resp) {
-    return resp.value();
-  }
-//  BOOST_LOG_TRIVIAL(trace) << j;
-    
-  return server->returnEmptyObj(req);
+  return server->receiveRawObject(req);
 
 }
 
