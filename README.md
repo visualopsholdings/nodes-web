@@ -357,6 +357,9 @@ stuff rather than using ng serve.
 ### 16 Sep 2024
 - Start creating new invited users.
 
+### 17 Sep 2024
+- Invitations working except for testing expiry.
+
 
 
 

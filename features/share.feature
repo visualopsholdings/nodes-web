@@ -27,13 +27,14 @@ Feature: Share
       And eventually the page contains "Team 1"
       And the clipboard contains "http://localhost:8081/apps/chat/#/streams/"
       And the clipboard contains "?token="
-	   And she navigates to url on clipboard
+      And the clipboard contents is saved
+	   And she navigates to login url that was on clipboard
       And she enters "Bob" in "fullname"
       And she clicks "Login"
       And eventually the page contains "Please wait while we generate your Vops ID"
       And eventually a modal dialog appears
       And eventually the page contains "Save your VID"
-#       And eventually the page contains "Welcome Bob"
-# 	   And she navigates to url on clipboard
-#       And a modal dialog appears
-#       Then eventually the page contains "Token invalid"
+      And she clicks "Continue"
+      And eventually the modal dialog disappears
+      And eventually the page contains "Welcome Bob"
+	   And eventually there are 1 streams

@@ -5,6 +5,7 @@
       a text file on your computer and you can use it to login at any time.</p>
     <br/>
     <mat-checkbox [(ngModel)]="showVID" [ngModelOptions]="{standalone: true}">Show your VID</mat-checkbox>
+    <br/>
     <mat-form-field *ngIf="showVID">
       <textarea matInput name="vopsid" [(ngModel)]="data.vopsid" [ngModelOptions]="{standalone: true}"
         cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1">

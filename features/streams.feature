@@ -12,9 +12,9 @@ Feature: Streams
          | Conversation 3  | p1     |
          | Conversation 4  | p3     |
          
-     When "tracy" log into app "admin"
-     And she clicks "Streams"
-   And eventually table has 4 rows
+      When "tracy" log into app "admin"
+      And she clicks "Streams"
+      And eventually table has 4 rows
 
 	@javascript
 	Scenario: A stream name can be edited

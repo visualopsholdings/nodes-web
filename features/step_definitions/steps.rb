@@ -1,6 +1,8 @@
 require 'json'
 require 'capybara'
 
+saved_clip_text = ""
+
 When('{string} logs into chat') do |name|
   visit("http://localhost:8081/login/?username=" + name + "&app=chat")
 end
@@ -87,8 +89,12 @@ When("the clipboard contains {string}") do |str|
    expect(clip_text).to have_content(str)
 end
 
-When('she navigates to url on clipboard') do
-   clip_text = page.evaluate_async_script("navigator.clipboard.readText().then(arguments[0])")
+When('the clipboard contents is saved') do
+   saved_clip_text = page.evaluate_async_script("navigator.clipboard.readText().then(arguments[0])")
+   puts saved_clip_text
+end
+
+When('she navigates to login url that was on clipboard') do
    visit("http://localhost:8081/logout")
-   visit(clip_text)
+   visit(saved_clip_text)
 end

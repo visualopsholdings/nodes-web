@@ -36,7 +36,35 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
       { "vopsidtoken", vopsidtoken.value() },
       { "fullname", fullname.value() }
   });
-  return server->receiveRawObject(req);
+//  return server->returnObj(req, j);
+  
+  j = server->receive();
+
+  auto resp1 = server->checkErrors(req, j, "postnewuser");
+  if (resp1) {
+    return resp1.value();
+  }
+  
+  json user;
+  auto id = Json::getString(j, "id");
+  fullname = Json::getString(j, "fullname");
+  if (!id && !fullname) {
+    return server->fatal(req, "no id and fullname in response");
+  }
+  
+  // create a login session.
+  string session = Sessions::instance()->create({
+    { "id", id.value() },
+    { "fullname", fullname.value() },
+  });
+  
+  // return what we got back from nodes and set the session if.
+  auto resp = req->create_response();
+  stringstream ss;
+  ss << j;
+  resp.set_body(ss.str());
+  resp.append_header("Set-Cookie", "ss-id=" + session + "; Path=/; Secure; HttpOnly");
+  return resp.done();
 
 }
 

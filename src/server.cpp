@@ -390,6 +390,21 @@ status_t Server::warning(const req_t& req, const string &msg) {
   return resp.done();
 }
 
+status_t Server::security(const req_t& req) {
+
+  BOOST_LOG_TRIVIAL(error) << "security";
+
+  auto resp = init_resp(req->create_response(restinio::status_unauthorized()));
+  json err = {
+    { "status", 401 },
+    { "err", "Unauthorized" }
+  };
+  stringstream ss;
+  ss << err;
+  resp.set_body(ss.str());
+  return resp.done();
+}
+
 status_t Server::returnEmptyObj(const req_t& req) {
 
   auto resp = req->create_response();
@@ -421,6 +436,9 @@ optional<status_t> Server::checkErrors(const req_t& req, json &j, const string &
     auto level = Json::getString(j, "level");
     if (level.value() == "warning") {
       return warning(req, msg.value());
+    }
+    else if (level.value() == "security") {
+      return security(req);
     }
     return fatal(req, msg.value());
   }

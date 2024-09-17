@@ -55,6 +55,7 @@ public:
   status_t unauthorised(const req_t& req);
   status_t fatal(const req_t& req, const string &msg);
   status_t warning(const req_t& req, const string &msg);
+  status_t security(const req_t& req);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
   optional<status_t> checkErrors(const req_t& req, json &j, const string &type);
