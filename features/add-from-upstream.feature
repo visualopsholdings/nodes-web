@@ -14,13 +14,14 @@ Feature: Add From Upstream
          | Test            | lightgreen      |
 
       And nodes is reloaded
+      And she waits 5 seconds
       
- 	@javascript
-	Scenario: A user can be added from upstream
+  @javascript
+  Scenario: A user can be added from upstream
       When "tracy" logs into admin
- 	   And she clicks "Users"
+      And she clicks "Users"
       And eventually table has 5 rows
- 	   And she clicks "ADD FROM UPSTREAM"
+      And she clicks "ADD FROM UPSTREAM"
       And a modal dialog appears
       And she enters "Paul" in "email"
       And she clicks "Ok"

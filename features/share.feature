@@ -17,18 +17,18 @@ Feature: Share
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
 
-	@javascript
-	Scenario: A stream can be shared with new users
+  @javascript
+  Scenario: A stream can be shared with new users
       When "tracy" logs into chat
-	   And eventually there are 2 streams
+      And eventually there are 2 streams
       And she clicks "Conversation 1"
-	   And she clicks button named "share"
+      And she clicks button named "share"
       And eventually a modal dialog appears
       And eventually the page contains "Team 1"
       And the clipboard contains "http://localhost:8081/apps/chat/#/streams/"
       And the clipboard contains "?token="
       And the clipboard contents is saved
-	   And she navigates to login url that was on clipboard
+      And she navigates to login url that was on clipboard
       And she enters "Bob" in "fullname"
       And she clicks "Login"
       And eventually the page contains "Please wait while we generate your Vops ID"
@@ -37,4 +37,4 @@ Feature: Share
       And she clicks "Continue"
       And eventually the modal dialog disappears
       And eventually the page contains "Welcome Bob"
-	   And eventually there are 1 streams
+      And eventually there are 2 streams

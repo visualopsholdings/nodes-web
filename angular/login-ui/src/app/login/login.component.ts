@@ -140,7 +140,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
             }
           }
           else {
-            url += "chat";
+            url += "chat/";
           }
           this.window.location.href = url;
         }

@@ -82,6 +82,7 @@ status_t getuser(Server *server, const req_t& req, params_t );
 status_t posttyping(Server *server, const req_t& req, params_t );
 status_t getinfos(Server *server, const req_t& req, params_t );
 status_t getrawsites(Server *server, const req_t& req, params_t );
+status_t getsites(Server *server, const req_t& req, params_t );
 status_t postnewuser(Server *server, const req_t& req, params_t );
 status_t postusers(Server *server, const req_t& req, params_t );
 status_t websocket(Server *server, const req_t& req, params_t );
@@ -228,6 +229,7 @@ auto Server::handler()
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "setsite", true);
   });
+  router->http_get("/rest/1.0/sites", by(&nodes::getsites));
   router->http_post("/rest/1.0/users/new", by(&nodes::postnewuser));
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
@@ -546,6 +548,8 @@ status_t Server::receiveArray(const req_t& req, const string &field) {
 status_t Server::receiveObject(const req_t& req, const string &field) {
 
   json j = receive();
+
+//	BOOST_LOG_TRIVIAL(debug) << j;
 
   auto resp1 = checkErrors(req, j, "object");
   if (resp1) {

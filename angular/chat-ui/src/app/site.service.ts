@@ -16,7 +16,7 @@ const httpOptions = {
 @Injectable()
 export class SiteService extends BackendService {
 
-  private sitesUrl = '/rest/1.0/rawsites';
+  private sitesUrl = '/rest/1.0/sites';
 
   constructor(
     dialog: MatDialog,

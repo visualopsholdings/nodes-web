@@ -66,6 +66,7 @@ set(HANDLERS
   src/handlers/post/typing.cpp
   src/handlers/get/infos.cpp
   src/handlers/get/rawsites.cpp
+  src/handlers/get/sites.cpp
   src/handlers/post/newuser.cpp
   src/handlers/post/users.cpp
   src/handlers/get/websocket.cpp
