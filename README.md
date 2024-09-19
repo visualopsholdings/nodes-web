@@ -191,6 +191,10 @@ nodes-web/scripts/stop.sh
 The end to end tests use cucumber (Ruby) with capybara and selenium to run end to end tests
 from the browser, to get that going:
 
+You will need a machine with a display for this, so don't try to run it headless (for now). It
+also probably won't run in Windows with the WSL since you will need to run all of the tests
+from the Windows side and install Ruby etc there.
+
 ```
 bundle install
 ```
