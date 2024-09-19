@@ -420,7 +420,6 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
     if (this.message.length > 0) {
       let message = new Idea();
-      message.user = this.me._id;
       message.needsSend = true;
       message.text = this.message;
       this.finishAddMessage(message);
