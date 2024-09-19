@@ -61,7 +61,8 @@ public:
   optional<status_t> checkErrors(const req_t& req, json &j, const string &type);
   status_t returnObj(const req_t& req, json &j);
   status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
-  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin, optional<string> id=nullopt);
+  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, optional<string> id=nullopt);
+  status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const string &type, optional<string> id=nullopt);
   status_t returnEmptyObj(const req_t& req);
   status_t receiveArray(const req_t& req, const string &field);
   status_t receiveObject(const req_t& req, const string &field);
@@ -89,6 +90,8 @@ private:
   zmq::context_t _context;
   zmq::socket_t _req;
   shared_ptr<ZMQClient> _zmq;
+  
+  status_t sendBody(json &j, const req_t& req, const string &type, optional<string> id);
   
 };
 

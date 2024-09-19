@@ -218,16 +218,16 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams/:id/policy/groups", by(&nodes::getstreampolicygroups));
   router->http_get("/rest/1.0/streams/:id/sharelink", by(&nodes::getstreamsharelink));
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "message", true);
+    return sendBodyReturnEmptyObj(req, "message");
   });
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setinfo", true);
+    return sendBodyReturnEmptyObjAdmin(req, "setinfo");
   });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setsite", true);
+    return sendBodyReturnEmptyObjAdmin(req, "setsite");
   });
   router->http_get("/rest/1.0/sites", by(&nodes::getsites));
   router->http_post("/rest/1.0/users/new", by(&nodes::postnewuser));
@@ -241,7 +241,7 @@ auto Server::handler()
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
   router->http_put("/rest/1.0/users/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setuser", true, restinio::cast_to<string>(params["id"]));
+    return sendBodyReturnEmptyObjAdmin(req, "setuser", restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groupusers", by(&nodes::getgroupusers));
@@ -250,25 +250,25 @@ auto Server::handler()
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setstreampolicy", true, restinio::cast_to<string>(params["id"]));
+    return sendBodyReturnEmptyObjAdmin(req, "setstreampolicy", restinio::cast_to<string>(params["id"]));
   });
   router->http_post("/rest/1.0/streams", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "addstream", false);
+    return sendBodyReturnEmptyObj(req, "addstream");
   });
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
 
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
   router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setgrouppolicy", true, restinio::cast_to<string>(params["id"]));
+    return sendBodyReturnEmptyObjAdmin(req, "setgrouppolicy", restinio::cast_to<string>(params["id"]));
   });
   router->http_post("/rest/1.0/groups", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "addgroup", false);
+    return sendBodyReturnEmptyObj(req, "addgroup");
   });
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setgroup", false, restinio::cast_to<string>(params["id"]));
+    return sendBodyReturnEmptyObj(req, "setgroup", restinio::cast_to<string>(params["id"]));
   });
   router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setstream", false, restinio::cast_to<string>(params["id"]));
+    return sendBodyReturnEmptyObj(req, "setstream", restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
   router->http_get("/rest/1.0/users/canreg/:token", by(&nodes::getcanreg));
@@ -460,7 +460,20 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
 
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bool admin, optional<string> id) {
+status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const string &type, optional<string> id) {
+
+  if (!isAdmin(req)) {
+    return unauthorised(req);
+  }
+
+  json j = boost::json::parse(req->body());
+//  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
+
+  return sendBody(j, req, type, id);
+
+}
+
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, optional<string> id) {
 
   auto session = getSession(req);
   if (!session) {
@@ -470,15 +483,13 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, bo
   json j = boost::json::parse(req->body());
 //  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
 
-  if (admin) {
-    // TBD: This has no end to end test.
-    if (!session.value()->isAdmin()) {
-      return unauthorised(req);
-    }
-  }
-  else {
-    j.as_object()["me"] = session.value()->userid();
-  }
+  j.as_object()["me"] = session.value()->userid();
+
+  return sendBody(j, req, type, id);
+  
+}
+
+status_t Server::sendBody(json &j, const req_t& req, const string &type, optional<string> id) {
 
   if (!j.is_object()) {
     return fatal(req, "body is not object");

@@ -38,3 +38,9 @@ Feature: Share
       And eventually the modal dialog disappears
       And eventually the page contains "Welcome Bob"
       And eventually there are 2 streams
+ 	   When she clicks "Conversation 1"
+ 	   And eventually there are 0 items
+      And she enters "Hi there" in "newText"
+      And she clicks "add-message"
+ 	   Then eventually there are 1 items
+ 	   And eventually there are 1 ideas in the DB
