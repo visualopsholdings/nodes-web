@@ -137,12 +137,16 @@ export class StreamsComponent implements OnInit, OnDestroy {
     return this.selectedStream && stream._id == this.selectedStream._id;
   }
 
+  private isSmall(): boolean {
+    return this.breakpointObserver.isMatched("(max-width: 960px)");
+  }
+
   private shouldShowAtAll(): boolean {
     return this.me != null;
   }
 
   private shouldShowAtStart(): boolean {
-    return this.me != null;
+    return this.me != null && this.isSmall();
   }
 
   selectStream(stream: Stream) {
@@ -201,15 +205,20 @@ export class StreamsComponent implements OnInit, OnDestroy {
 
   onResize(event: any) {
 
-    this.opened = this.shouldShowAtAll();
-
-    let fullheight = window.innerHeight-68;
-    if (this.selectedStream) {
-      this.listheight = (fullheight - 24) + "px";
+   if (this.shouldShowAtAll()) {
+      // never open in the market place.
+      this.opened = true;
+      if (this.shouldShowAtStart()) {
+        this.opened = this.opened && this.selectedStream == null;
+      }
     }
     else {
-      this.listheight = (fullheight - 42) + "px";
+      this.opened = false;
     }
+
+    let fullheight = window.innerHeight-68;
+    this.listheight = (fullheight-40) + "px";
+
   }
 
   close() {

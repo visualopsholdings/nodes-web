@@ -1,0 +1,108 @@
+
+:host \/::ng-deep\/ .mat-list-item-content {
+  padding: 0!important;
+}
+
+.outer {
+  position: absolute;
+  width: 300px;
+  top: 0px;
+  background-color: white;
+  border: 1px solid lightgray;
+  padding: 2px;
+  right: 0px;
+  z-index: 2;
+}
+
+.list {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.outer {
+  z-index: 2;
+}
+
+.call-indicator {
+  position: absolute;
+  font-size: large;
+  top: 0px;
+  left: 0px;
+}
+
+/* Small format */
+
+@media (max-width: 1201px) {
+
+.outer {
+  width: 240px;
+}
+
+}
+
+@media (max-width: 1080px) {
+
+.outer {
+  width: 200px;
+}
+
+}
+
+@media (max-width: 960px) {
+
+.outer {
+  width: 300px;
+}
+
+}
+
+/* Large format */
+
+@media (min-width: 961px) {
+
+}
+
+/* Common */
+
+mat-toolbar {
+  height: 40px;
+}
+
+.people {
+  padding-top: 10px;
+  width: 100%;
+}
+
+.user, .image {
+	height: 40px;
+}
+
+.user {
+  position: relative;
+}
+
+.image {
+  width: 40px;
+  object-fit: contain;
+}
+
+.name {
+  display: inline-block;
+  width: 200px;
+  padding-left: 5px;
+  vertical-align: super;
+  line-height: 32px;
+}
+
+.trim-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+}

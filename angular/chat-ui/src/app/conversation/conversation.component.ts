@@ -76,6 +76,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
   private token: string;
   private ideaToLoad: string;
   private streamToLoad: string;
+  private peopleOpened = false;
 
   constructor(
     public dialog: MatDialog,
@@ -420,6 +421,9 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
     if (this.message.length > 0) {
       let message = new Idea();
+      // not needed when sending, but needed on the client
+      // side
+      message.user = this.me._id;
       message.needsSend = true;
       message.text = this.message;
       this.finishAddMessage(message);
@@ -439,6 +443,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
   onResize(event: any) {
 //    console.log("onResize");
     this.height = (window.innerHeight-(this.isSmall() ? 40 : 64)) + "px";
+    this.peopleOpened = !this.isSmall();
   }
 
   footerWidth(): string {
@@ -557,5 +562,15 @@ export class ConversationComponent implements OnInit, OnDestroy {
   share(stream: Stream): void {
     this.dialog.open(ShareStreamDialogComponent, { data: { stream: stream._id, streamflags: this.streamflags }}).afterClosed().subscribe(result => {});
   }
+
+	peopleOpen(): boolean {
+	  return this.peopleOpened;
+	}
+  showPeople(): void {
+    this.peopleOpened = true;
+  }
+	hidePeople(): void {
+    this.peopleOpened = false;
+	}
 
 }

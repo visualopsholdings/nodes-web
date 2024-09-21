@@ -1,1 +1,16 @@
-<p>people works!</p>
+<div class="outer" (window:resize)="onResize($event)" [style.display]="peopleOpen() ? 'block': 'none'">
+  <mat-toolbar>
+    <span class="title">People</span>
+    <button mat-icon-button class="close" name="closepeople" (click)="close()"><mat-icon>close</mat-icon></button>
+  </mat-toolbar>
+  <div [style.height]="listheight">
+    <div *ngIf="me" class="list mat-typography">
+      <div *ngFor="let u of users" class="user">
+        <img class="image" src="{{getIcon(u)}}">
+        <div class="name">
+          <div class="trim-name">{{u.fullname}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

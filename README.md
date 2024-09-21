@@ -364,6 +364,10 @@ stuff rather than using ng serve.
 ### 17 Sep 2024
 - Invitations working except for testing expiry.
 
+### 21 Sep 2024
+- Add people panel to chat.
+
+
 
 
 

@@ -9,6 +9,9 @@
   <button class="share" mat-icon-button name="share" (click)="share(stream)">
     <mat-icon>share</mat-icon>
   </button>
+  <button *ngIf="!peopleOpen()" class="people" mat-icon-button name="people" (click)="showPeople()">
+    <mat-icon>people</mat-icon>
+  </button>
   <mat-paginator #paginator *ngIf="stream" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
     (page)="onPage($event)" class="paginator"
     [style.display]="displayPaginator()" [hidePageSize]="hidePageSize()">
@@ -61,4 +64,5 @@
     <div class="flex-spacer" [style.background-color]="streamBgColor()"></div>
   </div>
   <div *ngIf="isSmall()" class="flex-fixed" [style.height]="'14px'"></div>
+  <app-people [parent]="this" [stream]="stream"></app-people>
 </div>

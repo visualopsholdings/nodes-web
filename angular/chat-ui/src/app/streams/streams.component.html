@@ -3,8 +3,8 @@
     <span class="title">{{tabTitle()}}</span>
     <button mat-icon-button *ngIf="canClose()" class="close" name="closestreams" (click)="close()"><mat-icon>close</mat-icon></button>
   </mat-toolbar>
-  <div [style.height]="listheight" fxLayout='column'>
-    <mat-nav-list class="list" fxFlex="1 1 auto">
+  <div [style.height]="listheight">
+    <mat-nav-list class="list">
       <a mat-list-item class="stream" [routerLink]="[]" queryParamsHandling="preserve"
         [ngClass]="{ 'selected': isSelected(stream) }" (click)="selectStream(stream)" *ngFor="let stream of streams | sortStream : me">
         <p class="hidden">{{stream._id}}</p>
