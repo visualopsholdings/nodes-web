@@ -57,6 +57,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
   private focusIdeaStream: string;
 
   private mutationObserver: MutationObserver;
+  private onUpdate = new EventEmitter<any>();
   private lastInFront = null;
 
   length = 0;
@@ -156,6 +157,11 @@ export class ConversationComponent implements OnInit, OnDestroy {
       }
     }));
 
+    this.subscriptions.push(this.onUpdate.subscribe(data => {
+      this._onUpdate(data);
+    }));
+    this.socketService.registerUpdate(this.onUpdate);
+
     this.subscriptions.push(this.onKeySubject.pipe(
       throttleTime(3000)
     ).subscribe(() => {
@@ -237,6 +243,23 @@ export class ConversationComponent implements OnInit, OnDestroy {
     this.mutationObserver.observe(this.scrollable.getElementRef().nativeElement, { childList: true });
 
   }
+
+  private _onUpdate(data: any) {
+//    console.log("conversation", "onUpdate", data);
+    if (this.stream && this.stream._id && data.objtype == "stream" && data.id == this.stream._id) {
+      if (data.idea) {
+        if (!this.hasIdea(data.idea)) {
+          this.ideaService.getIdea(data.idea, this.token).subscribe(idea => {
+            this._addItem("idea", idea, idea.modifyDate);
+          });
+        }
+      }
+      else {
+        this._itemsChanged();
+      }
+    }
+  }
+
 
   public breakAt(size: number): boolean {
     return this.breakpointObserver.isMatched("(max-width: " + size + "px)");

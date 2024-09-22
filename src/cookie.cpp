@@ -13,9 +13,12 @@
 
 #include <vector>
 #include <boost/algorithm/string.hpp>
+#include <boost/log/trivial.hpp>
 
 optional<string> Cookie::parseCookie(const string &cookie) {
 
+//  BOOST_LOG_TRIVIAL(trace) << cookie;
+  
   vector<string> cookies;
   boost::split(cookies, cookie, boost::is_any_of(";"));
   

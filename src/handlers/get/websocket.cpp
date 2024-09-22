@@ -37,9 +37,6 @@ status_t websocket(Server *server, const req_t& req, params_t params)
     ss << j;
     wsh->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
 
-    // save ID:    
-    server->_registry.emplace(wsh->connection_id(), wsh);
-
     return restinio::request_accepted();
   }
 

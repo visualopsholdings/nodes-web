@@ -36,7 +36,11 @@ status_t getlogin(Server *server, const req_t& req, params_t params)
       app = restinio::cast_to<string>(qp["app"]);
     }
 	  resp.append_header("Location", "/apps/" + app + "/#/");
-	  resp.append_header("Set-Cookie", "ss-id=" + id.value() + "; Path=/; Secure; HttpOnly");
+	  string cookie = "ss-id=" + id.value() + "; Path=/; HttpOnly";
+	  if (!server->_test) {
+	    cookie += "; Secure";
+	  }
+	  resp.append_header("Set-Cookie", cookie);
 	  resp.append_header("Cache-Control", "nocache");
     return resp.done();
   }

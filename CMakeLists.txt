@@ -88,6 +88,7 @@ set(HANDLERS
   src/handlers/delete/group.cpp
   src/handlers/get/streamsharelink.cpp
   src/handlers/get/canreg.cpp
+  src/handlers/sendIdeaWS.cpp
 )
 
 include_directories(include)
@@ -108,6 +109,6 @@ add_executable(TestJson test/testjson.cpp src/json.cpp)
 add_test(TestJson TestJson)
 
 add_executable(TestCookie test/testcookie.cpp src/cookie.cpp)
-  target_link_libraries(TestCookie ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+  target_link_libraries(TestCookie ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestCookie TestCookie)

@@ -53,6 +53,7 @@ import { UserListService }  from './user-list.service';
 import { UserService }  from './user.service';
 import { SiteService }  from './site.service';
 import { ShareStreamDialogComponent } from './share-stream-dialog/share-stream-dialog.component';
+import { SocketService }  from './socket.service';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { ShareStreamDialogComponent } from './share-stream-dialog/share-stream-d
     MatProgressSpinnerModule,
     MatSelectModule
   ],
-  providers: [IconService, MeService, StreamService, IdeaService, UserListService, UserService, SiteService],
+  providers: [IconService, MeService, StreamService, IdeaService, UserListService, UserService,
+      SiteService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

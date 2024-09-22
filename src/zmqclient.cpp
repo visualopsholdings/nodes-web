@@ -20,6 +20,7 @@ namespace nodes {
 
 // messages
 void sendWS(ZMQClient *client, json &json);
+void sendIdeaWS(ZMQClient *client, json &json);
 
 };
 
@@ -39,6 +40,7 @@ ZMQClient::ZMQClient(Server *server, int subPort) :
   // expect these being published
   _submessages["queryResult"] = bind(&nodes::sendWS, this, placeholders::_1);
   _submessages["status"] = bind(&nodes::sendWS, this, placeholders::_1);
+  _submessages["idea"] = bind(&nodes::sendIdeaWS, this, placeholders::_1);
 
 }
 

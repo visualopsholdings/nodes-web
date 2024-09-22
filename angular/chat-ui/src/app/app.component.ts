@@ -6,6 +6,7 @@ import { Me }  from './me';
 import { MeService }  from './me.service';
 import { BootstrapService } from './bootstrap.service';
 import { Site }  from './site';
+import { SocketService }  from './socket.service';
 
 @Component({
   selector: 'app-root',
@@ -20,11 +21,14 @@ export class AppComponent {
   title = 'chat-ui';
   convName = "Chat";
 
+  private onSocket = new EventEmitter<any>();
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
     private meService: MeService,
     private bootstrapService: BootstrapService,
+    private socketService: SocketService,
   ) {
   }
 
@@ -34,6 +38,10 @@ export class AppComponent {
 
       if (me) {
         [this.me, this.site] = me;
+        this.onSocket.subscribe(s => {
+  //          this.status = s;
+        });
+        this.socketService.start(this.me, console, this.onSocket);
         this.onResize();
       }
 

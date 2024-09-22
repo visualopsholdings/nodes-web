@@ -5,7 +5,7 @@
   <mat-card-content>
     <p *ngIf="hasAdmin()" class="mat-mdc-card-subtitle">Policy: {{policy}}</p>
     <mat-divider inset></mat-divider>
-    <div class="policy" *ngFor="let policy of policies">
+    <div class="policy mat-typography" *ngFor="let policy of policies">
       <span class="context-icon"><mat-icon>{{policy.context == "group" ? "group" : "person"}}</mat-icon></span>
       <span class="policy-name"><a href="#/{{policy.context == 'group' ? 'team' : 'user'}}s/{{policy._id}}">{{policy.name}}</a></span>
       <span class="policy-role" *ngIf="policy.viewPath">

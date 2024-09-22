@@ -289,14 +289,25 @@ void Server::run(int httpPort) {
 
 shared_ptr<rws::ws_t> Server::createWS(const req_t& req) {
 
-  return rws::upgrade< traits_t >(
-      *req,
-      rws::activation_t::immediate,
-      [](shared_ptr<rws::ws_t> wsh, shared_ptr<rws::message_t> m){
-      
+  auto ws = rws::upgrade< traits_t >(
+    *req,
+    rws::activation_t::immediate,
+    [this](shared_ptr<rws::ws_t> wsh, shared_ptr<rws::message_t> m){
+    
+      if( rws::opcode_t::connection_close_frame == m->opcode() ) {
+        BOOST_LOG_TRIVIAL(trace) << "closing " <<wsh->connection_id();
+        _registry.erase(wsh->connection_id());
+      }
+      else {
         BOOST_LOG_TRIVIAL(trace) << "got " << m->payload();;
-        
-      } );
+      }
+      
+  });
+
+  // save ID:    
+  _registry.emplace(ws->connection_id(), ws);
+
+  return ws;
 
 }
 
@@ -319,6 +330,28 @@ void Server::sendAllWS(const json &json) {
   stringstream ss;
   ss << json;
   for (auto i: _registry) {
+    try {
+      i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+    }
+    catch (...) {
+      BOOST_LOG_TRIVIAL(error) << "failed send_message on socket";      
+    }
+  }
+  
+}
+
+void Server::sendAllWSExcept(const json &json, const string &socketid) {
+
+  BOOST_LOG_TRIVIAL(trace) << "sendAllWSExcept " << json << " not " << socketid;
+
+  long sock = stol(socketid);
+  
+  stringstream ss;
+  ss << json;
+  for (auto i: _registry) {
+    if (i.first == sock) {
+      continue;
+    }
     try {
       i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
     }
@@ -505,6 +538,12 @@ status_t Server::sendBody(json &j, const req_t& req, const string &type, optiona
     j.as_object()["id"] = id.value();
   }
   
+  // if we have a socket id, then send it on.
+  if (req->header().has_field("socketid")) {
+    BOOST_LOG_TRIVIAL(trace) << "setting socket id from header";
+    j.as_object()["socketid"] = req->header().value_of("socketid");
+  }
+
 	send(j);
   j = receive();
   

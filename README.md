@@ -367,6 +367,9 @@ stuff rather than using ng serve.
 ### 21 Sep 2024
 - Add people panel to chat.
 
+### 22 Sep 2024
+- Get websockets working in chat.
+
 
 
 

@@ -69,6 +69,7 @@ public:
   status_t receiveRawObject(const req_t& req);
   void sendWS(uint64_t &id, const json &json);
   void sendAllWS(const json &json);
+  void sendAllWSExcept(const json &json, const string &socketid);
   shared_ptr<rws::ws_t> createWS(const req_t& req);
   
 	template < typename RESP >
@@ -83,13 +84,13 @@ public:
 		return resp;
 	}
 
-  map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
   bool _test;
 
 private:
   zmq::context_t _context;
   zmq::socket_t _req;
   shared_ptr<ZMQClient> _zmq;
+  map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
   
   status_t sendBody(json &j, const req_t& req, const string &type, optional<string> id);
   
