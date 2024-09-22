@@ -1,3 +1,5 @@
+#!/bin/bash
+# 
 # deploy a simple nginx conf
 
 if [ "$#" -lt 3 ]; 

@@ -1,3 +1,5 @@
+#!/bin/bash
+# 
 # extract an SSL cert downloaded from the upstream
 
 if [ "$#" -ne 3 ]; then

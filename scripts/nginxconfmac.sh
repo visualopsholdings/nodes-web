@@ -1,4 +1,6 @@
-# deploy a simple nginx conf
+#!/bin/bash
+# 
+# deploy a simple nginx conf but on the mac.
 
 if [ "$#" -ne 4 ]; then
 	echo "usage: $0 HOSTNAME PORT HPORT FOLDER"
