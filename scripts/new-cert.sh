@@ -9,6 +9,6 @@ then
 fi
 
 HOST=$1
-EMAIL=$1
+EMAIL=$2
 
 sudo certbot --nginx --non-interactive --agree-tos --domains $HOST --email $EMAIL
