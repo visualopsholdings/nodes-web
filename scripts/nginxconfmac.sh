@@ -1,7 +1,7 @@
 # deploy a simple nginx conf
 
-if [ "$#" -ne 3 ]; then
-	echo "usage: $0 HOSTNAME PORT HPORT"
+if [ "$#" -ne 4 ]; then
+	echo "usage: $0 HOSTNAME PORT HPORT FOLDER"
 	exit 1
 fi
 
