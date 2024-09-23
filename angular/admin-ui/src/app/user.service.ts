@@ -53,6 +53,15 @@ export class UserService extends BackendService {
     );
   }
 
+  deleteUser (user: User | string): Observable<User> {
+    const id = typeof user === 'string' ? user : user._id;
+    const url = `${this.adminUsersUrl}/${id}`;
+
+    return this.http.delete<User>(url, { headers: this.httpHeaders() }).pipe(
+      catchError(this.handleError<User>('deleteUser'))
+    );
+  }
+
   searchUsers(term: string): Observable<User[]> {
     if (!term.trim()) {
       // if not search term, return empty user array.

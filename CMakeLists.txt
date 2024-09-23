@@ -89,6 +89,7 @@ set(HANDLERS
   src/handlers/get/streamsharelink.cpp
   src/handlers/get/canreg.cpp
   src/handlers/sendIdeaWS.cpp
+  src/handlers/delete/rawuser.cpp
 )
 
 include_directories(include)

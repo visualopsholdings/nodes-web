@@ -370,6 +370,9 @@ stuff rather than using ng serve.
 ### 22 Sep 2024
 - Get websockets working in chat.
 
+### 23 Sep 2024
+- Add delete user.
+
 
 
 

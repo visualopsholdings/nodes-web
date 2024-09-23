@@ -13,6 +13,7 @@ import { InfoService }  from '../info.service';
 import { Info }  from '../info';
 import { AddUpstreamUserDialogComponent } from '../add-upstream-user-dialog/add-upstream-user-dialog.component';
 import { SocketService }  from '../socket.service';
+import { ConfirmComponent } from '../confirm/confirm.component';
 
 @Component({
   selector: 'app-users',
@@ -26,7 +27,7 @@ export class UsersComponent implements OnInit {
   pageSizeOptions = [9, 36, 72];
   pageSize = 9;
   total: number = 0;
-  displayedColumns: string[] = [ "icon", "id", "name", "actions" ];
+  displayedColumns: string[] = [ "icon", "id", "name", "active", "upstream", "actions" ];
   hasUpstream = false;
 
   private onStatus = new EventEmitter<any>();
@@ -85,6 +86,22 @@ export class UsersComponent implements OnInit {
 
   getIcon(item: any): string {
     return this.iconService.getIcon({ icon: "internal:user" });
+  }
+
+  delete(item: any): void {
+    this.dialog.open(ConfirmComponent, {
+        width: '400px',
+        data: { title: "Delete User", description: "Are you sure you want to remove the user? " +
+          "If the user is upstream, it will only be removed from this node." }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.userService.deleteUser(item).subscribe(success => {
+          if (success) {
+            this.items = this.items.filter(t => t !== item);
+          }
+        });
+      }
+    });
   }
 
   queryUpstream(): void {
