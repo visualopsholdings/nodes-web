@@ -10,8 +10,8 @@
       <input matInput name="fullname" [(ngModel)]="user.fullname" placeholder="Full Name">
     </mat-form-field>
     <mat-form-field class="field">
-      <mat-label>Username</mat-label>
-      <input matInput name="name" [(ngModel)]="user.name" placeholder="Username (used by external systems lice IRC)">
+      <mat-label>Username (used by external systems like IRC)</mat-label>
+      <input matInput name="name" [(ngModel)]="user.name" placeholder="Username (used by external systems like IRC)">
     </mat-form-field>
     <hr/>
     <p *ngIf="user.hash && user.hash.length > 0">User has a password set.</p>
