@@ -6,4 +6,6 @@ export class User {
   admin?: boolean;
   active?:boolean;
   hash?:string;
+  upstream?: boolean;
+
 }

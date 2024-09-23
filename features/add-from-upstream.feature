@@ -21,6 +21,8 @@ Feature: Add From Upstream
       When "tracy" logs into admin
       And she clicks "Users"
       And eventually table has 5 rows
+      
+      # add Paul
       And she clicks "ADD FROM UPSTREAM"
       And a modal dialog appears
       And she enters "Paul" in "email"
@@ -34,3 +36,18 @@ Feature: Add From Upstream
       Then eventually the page contains "Discovery complete"
       And eventually table has 6 rows
       And eventually the user fullname "Paul Hamilton" with salt and hash appears in the DB
+
+      # add Marvin
+      And she clicks "ADD FROM UPSTREAM"
+      And a modal dialog appears
+      And she enters "Marvin" in "email"
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually a modal dialog appears
+      And eventually the page contains "Marvin Avilez"
+      And she checks the first list option
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      Then eventually the page contains "Discovery complete"
+      And eventually table has 7 rows
+      And eventually the user fullname "Marvin Avilez" with salt and hash appears in the DB
