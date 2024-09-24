@@ -18,6 +18,11 @@ cmake ..
 make -j4
 popd
 
+if [ "$1" == "noangular" ]; then
+  echo "skipping angular"
+	exit 0
+fi
+
 pushd nodes-web/angular/login-ui
 npm install
 ./build.sh
