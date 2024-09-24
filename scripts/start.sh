@@ -17,5 +17,5 @@ fi
 
 
 $LIBS ./nodes-web/build/nodes-web \
-  --logLevel=trace \
+  --logLevel=debug \
   > nodes-web.log 2>&1 &
