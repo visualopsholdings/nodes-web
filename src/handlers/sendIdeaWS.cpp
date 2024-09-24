@@ -32,7 +32,7 @@ void sendIdeaWS(ZMQClient *client, json &j) {
     return;
   }
 
-  auto socketid = Json::getString(j, "socketid");
+  auto corr = Json::getString(j, "corr");
   
   j = { 
     { "type", "update" },
@@ -42,8 +42,8 @@ void sendIdeaWS(ZMQClient *client, json &j) {
   };
 
   // send to everybody 
-  if (socketid) {
-    client->_server->sendAllWSExcept(j, socketid.value());
+  if (corr) {
+    client->_server->sendAllWSExcept(j, corr.value());
   }
   else {
     client->_server->sendAllWS(j);

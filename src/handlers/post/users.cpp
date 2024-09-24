@@ -45,7 +45,7 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
       { "type", "query" },
       { "objtype", "user" },      
       { "email", email.value() },
-      { "socketid", socketid }
+      { "corr", socketid }
     };
     server->send(j);
     j = server->receive();

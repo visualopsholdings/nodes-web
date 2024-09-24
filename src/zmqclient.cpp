@@ -68,7 +68,7 @@ void ZMQClient::receive() {
 //    BOOST_LOG_TRIVIAL(trace) << "sub events " << items[0].revents;
 
     if (items[0].revents & ZMQ_POLLIN) {
-      BOOST_LOG_TRIVIAL(debug) << "got _sub message";
+      BOOST_LOG_TRIVIAL(trace) << "got _sub message";
       zmq::message_t reply;
       try {
 #if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
@@ -94,7 +94,7 @@ void ZMQClient::handle_reply(const zmq::message_t &reply, map<string, msgHandler
   string r((const char *)reply.data(), reply.size());
   json doc = boost::json::parse(r);
 
-  BOOST_LOG_TRIVIAL(debug) << "got reply " << doc;
+  BOOST_LOG_TRIVIAL(debug) << "<-* " << doc;
 
   // switch the handler based on the message type.
   auto type = Json::getString(doc, "type");

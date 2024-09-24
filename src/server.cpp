@@ -540,10 +540,10 @@ status_t Server::sendBody(json &j, const req_t& req, const string &type, optiona
     j.as_object()["id"] = id.value();
   }
   
-  // if we have a socket id, then send it on.
+  // if we have a socket id, then send it on as the correlation id.
   if (req->header().has_field("socketid")) {
     BOOST_LOG_TRIVIAL(trace) << "setting socket id from header";
-    j.as_object()["socketid"] = req->header().value_of("socketid");
+    j.as_object()["corr"] = req->header().value_of("socketid");
   }
 
 	send(j);

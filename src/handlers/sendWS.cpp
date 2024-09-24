@@ -20,15 +20,15 @@ namespace nodes {
 
 void sendWS(ZMQClient *client, json &json) {
   
-  auto socketid = Json::getString(json, "socketid");
-  if (!socketid) {
+  auto corr = Json::getString(json, "corr");
+  if (!corr) {
     // send to all sockets.
     client->_server->sendAllWS(json);
     return;
   }
 
   // send to the one socket.
-  uint64_t id = stol(socketid.value());
+  uint64_t id = stol(corr.value());
   client->_server->sendWS(id, json);
   
 }

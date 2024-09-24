@@ -373,7 +373,8 @@ stuff rather than using ng serve.
 ### 23 Sep 2024
 - Add delete user.
 
-
+### 24 Sep 2024
+- Nodes uses "corr" (correlation id) instead of "socketid".
 
 
 
