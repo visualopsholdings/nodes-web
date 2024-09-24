@@ -346,7 +346,12 @@ void Server::sendAllWSExcept(const json &json, const string &socketid) {
 
   BOOST_LOG_TRIVIAL(trace) << "sendAllWSExcept " << json << " not " << socketid;
 
-  long sock = stol(socketid);
+  long sock = 0;
+  try {
+    sock = stol(socketid);
+  } catch(...) {
+    BOOST_LOG_TRIVIAL(trace) << "skipping socketid, not a number";      
+  }
   
   stringstream ss;
   ss << json;
