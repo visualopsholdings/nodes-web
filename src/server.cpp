@@ -522,12 +522,8 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
   if (resp) {
     return resp.value();
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return not_modified(req);
-  }
   
-  return returnEmptyObj(req, etag);
+  return returnEmptyObj(req, ETag::none());
 
 }
 
@@ -536,15 +532,11 @@ status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const string &typ
   if (!isAdmin(req)) {
     return unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return not_modified(req);
-  }
 
   json j = boost::json::parse(req->body());
 //  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
 
-  return sendBody(req, etag, j, type, id);
+  return sendBody(req, ETag::none(), j, type, id);
 
 }
 
@@ -554,17 +546,13 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, op
   if (!session) {
     return unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return not_modified(req);
-  }
 
   json j = boost::json::parse(req->body());
 //  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
 
   j.as_object()["me"] = session.value()->userid();
 
-  return sendBody(req, etag, j, type, id);
+  return sendBody(req, ETag::none(), j, type, id);
   
 }
 
@@ -653,6 +641,11 @@ status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, c
     return resp.value();
   }
   
+  // some etags don't use the result so they just always return false.
+  if (etag->resultModified(j, field)) {
+    return not_modified(req);
+  }
+
   auto result = Json::getObject(j, field);
   
   if (!result) {

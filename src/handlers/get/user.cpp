@@ -24,21 +24,24 @@ status_t getuser(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::simpleTime(req, session.value());
-  if (!etag) {
-    return server->not_modified(req);
-  }
   
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    return server->returnEmptyObj(req, etag);
+    return server->returnEmptyObj(req, ETag::none());
   }
-  server->send({ 
+  json msg = { 
     { "type", "user" },
     { "user", id }
-  });
+  };
+  auto etag = ETag::modifyDate(req, session.value(), &msg);
+  server->send(msg);
   
   json j = server->receive();
+
+  if (etag->resultModified(j, "user")) {
+    return server->not_modified(req);
+  }
+
   auto user = Json::getObject(j, "user");
   if (!user) {
     // send fatal error
@@ -48,7 +51,8 @@ status_t getuser(Server *server, const req_t& req, params_t params)
   // return a subset of the user.
   json newuser = {
     { "_id", Json::getString(user.value(), "id").value() },
-    { "fullname", Json::getString(user.value(), "fullname").value() }
+    { "fullname", Json::getString(user.value(), "fullname").value() },
+    { "modifyDate", Json::getString(user.value(), "modifyDate").value() }
   };
   
   return server->returnObj(req, etag, newuser);

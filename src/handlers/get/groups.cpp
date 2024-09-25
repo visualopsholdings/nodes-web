@@ -24,16 +24,12 @@ status_t getgroups(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
 
   server->send({ 
     { "type", "groups" },
     { "me", session.value()->userid() }
   });
-  return server->receiveArray(req, etag, "groups");
+  return server->receiveArray(req, ETag::none(), "groups");
 
 }
 

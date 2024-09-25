@@ -17,9 +17,6 @@
 
 #include <boost/log/trivial.hpp>
 #include <base64.hpp>
-#include <boost/json.hpp>
-
-using json = boost::json::value;
 
 class ETagSimpleTime: public ETagHandler {
 
@@ -28,6 +25,7 @@ public:
   
 protected:
   virtual void setHeaders(response_builder_t &resp);
+  virtual bool resultModified(json &j, const string &field) { return false; }
 
 private:
   std::shared_ptr<Session> _session;
@@ -36,17 +34,32 @@ private:
 class ETagNone: public ETagHandler {
 
 protected:
-  virtual void setHeaders(response_builder_t &resp) {
-  }
+  virtual void setHeaders(response_builder_t &resp) {}
+  virtual bool resultModified(json &j, const string &field) { return false; }
 
 };
 
-shared_ptr<ETagHandler> ETag::none(const req_t& req) {
+class ETagModifyDate: public ETagHandler {
+
+public:
+  ETagModifyDate(std::shared_ptr<Session> session): _session(session) {}
+
+protected:
+  
+  virtual void setHeaders(response_builder_t &resp);
+  virtual bool resultModified(json &j, const string &field);
+
+private:
+  std::shared_ptr<Session> _session;
+  string _time;
+  
+};
+
+shared_ptr<ETagHandler> ETag::none() {
 
   return shared_ptr<ETagHandler>(new ETagNone());
   
 }
-
 
 shared_ptr<ETagHandler> ETag::simpleTime(const req_t& req, std::shared_ptr<Session> session) {
 
@@ -55,15 +68,15 @@ shared_ptr<ETagHandler> ETag::simpleTime(const req_t& req, std::shared_ptr<Sessi
   // test the etag.
   if (req->header().has_field("If-None-Match")) {
     auto etag = req->header().get_field("If-None-Match");
-    BOOST_LOG_TRIVIAL(trace) << "sts: " << etag;
+    BOOST_LOG_TRIVIAL(trace) << etag;
     string s = base64::from_base64(etag);
     json j = boost::json::parse(s);
-    BOOST_LOG_TRIVIAL(trace) << "sts: " << j;
-    auto id = Json::getString(j, "_id");
-    auto sts = Json::getNumber(j, "sts");
+    BOOST_LOG_TRIVIAL(trace) << j;
+    auto user = Json::getString(j, "user");
+    auto time = Json::getNumber(j, "time");
     long now = Date::now();
-    if (id.value() == session->userid() && now <= (sts.value() + 1000)) {
-      BOOST_LOG_TRIVIAL(trace) << "sts: same";
+    if (user.value() == session->userid() && now <= (time.value() + 1000)) {
+      BOOST_LOG_TRIVIAL(trace) << "same";
       return 0;
     }
   }
@@ -75,8 +88,8 @@ shared_ptr<ETagHandler> ETag::simpleTime(const req_t& req, std::shared_ptr<Sessi
 void ETagSimpleTime::setHeaders(response_builder_t &resp) {
 
   json j = {
-    { "_id", _session->userid() },
-    { "sts", Date::now() }
+    { "user", _session->userid() },
+    { "time", Date::now() }
   };
   BOOST_LOG_TRIVIAL(trace) << "setting headers: " << j;
 
@@ -88,3 +101,55 @@ void ETagSimpleTime::setHeaders(response_builder_t &resp) {
   
 }
  
+shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, std::shared_ptr<Session> session, json *msg) {
+
+  BOOST_LOG_TRIVIAL(trace) << "modifyDate";
+
+  // get the JSON out of the etag
+  if (req->header().has_field("If-None-Match")) {
+    auto etag = req->header().get_field("If-None-Match");
+    BOOST_LOG_TRIVIAL(trace) << "modifyDate: " << etag;
+    (*msg).as_object()["test"] = boost::json::parse(base64::from_base64(etag));
+  }
+  
+  return shared_ptr<ETagHandler>(new ETagModifyDate(session));
+  
+}
+
+bool ETagModifyDate::resultModified(json &j, const string &field) {
+
+  auto test = Json::getObject(j, "test", true);
+  if (test) {
+    auto latest = Json::getBool(test.value(), "latest", true);
+    if (latest && latest.value()) {
+      return true;
+    }
+  }
+
+  auto obj = Json::getObject(j, field);
+  if (!obj) {
+    BOOST_LOG_TRIVIAL(trace) << "missing " << field;
+    return false;
+  }
+  
+  // remember the time.
+  _time = Json::getString(obj.value(), "modifyDate").value();
+//  BOOST_LOG_TRIVIAL(trace) << _time;
+  
+  return false;
+}
+
+void ETagModifyDate::setHeaders(response_builder_t &resp) {
+
+  json j = {
+    { "time", _time }
+  };
+  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << j;
+
+  stringstream ss;
+  ss << j;
+  string etag = base64::to_base64(ss.str());
+  BOOST_LOG_TRIVIAL(trace) << "setting Etag " << etag;
+  resp.append_header("Etag", etag);
+
+}

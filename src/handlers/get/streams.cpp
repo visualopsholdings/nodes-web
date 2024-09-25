@@ -25,16 +25,11 @@ status_t getstreams(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
   
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
-  
   server->send({ 
     { "type", "streams" },
     { "me", session.value()->userid() }
   });
-  return server->receiveArray(req, etag, "streams");
+  return server->receiveArray(req, ETag::none(), "streams");
 
 }
 

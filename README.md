@@ -378,7 +378,6 @@ stuff rather than using ng serve.
 
 ### 25 Sep 2024
 - Implement framework for Etags.
-- We have a "none" and a "simpleTime" etag for now.
-
+- We have a "none", "simpleTime", and "modifyDate" etags for now.
 
 

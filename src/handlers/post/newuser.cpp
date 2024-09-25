@@ -22,10 +22,7 @@ namespace nodes {
 
 status_t postnewuser(Server *server, const req_t& req, params_t params) {
 
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
+  auto etag = ETag::none();
 
   json j = boost::json::parse(req->body());
   BOOST_LOG_TRIVIAL(trace) << j;

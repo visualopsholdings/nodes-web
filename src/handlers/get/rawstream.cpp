@@ -20,22 +20,24 @@ namespace nodes {
 
 status_t getrawstream(Server *server, const req_t& req, params_t params)
 {
-  if (!server->isAdmin(req)) {
+  auto session = server->getSession(req);
+  if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
+  if (!session.value()->isAdmin()) {
+    return server->unauthorised(req);
   }
   
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    return server->returnEmptyObj(req, etag);
+    return server->returnEmptyObj(req, ETag::none());
   }
-  server->send({ 
+  json msg = { 
     { "type", "stream" },
     { "stream", id }
-  });
+  };
+  auto etag = ETag::modifyDate(req, session.value(), &msg);
+  server->send(msg);
   return server->receiveObject(req, etag, "stream");
 
 }

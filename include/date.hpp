@@ -29,6 +29,7 @@ class Date {
 public:
 
   static string toISODate(long y);
+  static long fromISODate(const string &d);
   static long now();
 
 };

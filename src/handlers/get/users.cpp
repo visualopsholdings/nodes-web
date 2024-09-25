@@ -23,10 +23,7 @@ status_t getusers(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
+  auto etag = ETag::none();
 
   const auto qp = restinio::parse_query(req->header().query());
   if (qp.has("q")) {

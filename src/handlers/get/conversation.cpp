@@ -24,10 +24,6 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
   
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
@@ -39,7 +35,7 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
     { "type", "ideas" },
     { "stream", id }
   });
-  return server->receiveArray(req, etag, "ideas");
+  return server->receiveArray(req, ETag::none(), "ideas");
 
 }
 

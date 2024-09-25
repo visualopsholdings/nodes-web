@@ -21,11 +21,7 @@ namespace nodes {
 
 status_t posttyping(Server *server, const req_t& req, params_t params) {
 
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
-  return server->returnEmptyObj(req, etag);
+  return server->returnEmptyObj(req, ETag::none());
 
 }
 

@@ -24,22 +24,22 @@ status_t getstreampolicygroups(Server *server, const req_t& req, params_t params
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
-
+  
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    auto resp = server->init_resp( req->create_response() );
-    resp.set_body("[]");
-    return resp.done();
+    return server->returnEmptyArray(req, ETag::none());
   }
-  server->send({ 
+  json msg = { 
     { "type", "stream" },
     { "stream", id }
-  });
+  };
+  auto etag = ETag::modifyDate(req, session.value(), &msg);
+  server->send(msg);
+
   json j = server->receive();
+  if (etag->resultModified(j, "stream")) {
+    return server->not_modified(req);
+  }
   auto stream = Json::getObject(j, "stream");
   if (!stream) {
     return server->fatal(req, "stream missing stream");

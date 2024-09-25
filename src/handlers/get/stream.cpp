@@ -24,20 +24,19 @@ status_t getstream(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
 
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    return server->returnEmptyObj(req, etag);
+    return server->returnEmptyObj(req, ETag::none());
   }
-  server->send({ 
+  
+  json msg = { 
     { "type", "stream" },
     { "me", session.value()->userid() },
     { "stream", id }
-  });
+  };
+  auto etag = ETag::modifyDate(req, session.value(), &msg);
+  server->send(msg);
   return server->receiveObject(req, etag, "stream");
 
 }

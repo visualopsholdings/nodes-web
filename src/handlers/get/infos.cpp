@@ -24,15 +24,11 @@ status_t getinfos(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto etag = ETag::none(req);
-  if (!etag) {
-    return server->not_modified(req);
-  }
 
   server->send({ 
     { "type", "infos" }
   });
-  return server->receiveArray(req, etag, "infos");
+  return server->receiveArray(req, ETag::none(), "infos");
 
 }
 
