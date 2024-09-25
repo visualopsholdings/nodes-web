@@ -12,9 +12,8 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
 namespace nodes {
@@ -25,6 +24,11 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
     auto resp = server->init_resp( req->create_response() );
@@ -35,7 +39,7 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
     { "type", "ideas" },
     { "stream", id }
   });
-  return server->receiveArray(req, "ideas");
+  return server->receiveArray(req, etag, "ideas");
 
 }
 

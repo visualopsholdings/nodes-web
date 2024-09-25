@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -23,6 +24,10 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
 
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);
+  }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
   }
   
   json j = boost::json::parse(req->body());
@@ -57,7 +62,7 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   
 //    BOOST_LOG_TRIVIAL(trace) << j;
     
-    return server->returnEmptyObj(req);
+    return server->returnEmptyObj(req, etag);
   }
   
   // add an upstream user
@@ -83,7 +88,7 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   
 //    BOOST_LOG_TRIVIAL(trace) << j;
     
-    return server->returnEmptyObj(req);
+    return server->returnEmptyObj(req, etag);
   }
 
   return server->fatal(req, "only understand query or upstream.");  

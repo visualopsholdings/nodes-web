@@ -12,9 +12,8 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
 namespace nodes {
@@ -25,9 +24,14 @@ status_t getuser(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
+  auto etag = ETag::simpleTime(req, session.value());
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    return server->returnEmptyObj(req);
+    return server->returnEmptyObj(req, etag);
   }
   server->send({ 
     { "type", "user" },
@@ -38,8 +42,7 @@ status_t getuser(Server *server, const req_t& req, params_t params)
   auto user = Json::getObject(j, "user");
   if (!user) {
     // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "user missing user";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->fatal(req, "user missing user");
   }
 
   // return a subset of the user.
@@ -48,13 +51,8 @@ status_t getuser(Server *server, const req_t& req, params_t params)
     { "fullname", Json::getString(user.value(), "fullname").value() }
   };
   
-  auto resp = server->init_resp( req->create_response() );
+  return server->returnObj(req, etag, newuser);
 
-  stringstream ss;
-  ss << newuser;
-  resp.set_body(ss.str());
-
-  return resp.done();
 }
 
 };

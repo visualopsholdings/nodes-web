@@ -10,10 +10,12 @@
 */
 
 #include "server.hpp"
+
 #include "json.hpp"
 #include "cookie.hpp"
 #include "session.hpp"
 #include "zmqclient.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/core.hpp>
@@ -402,6 +404,20 @@ status_t Server::unauthorised(const req_t& req) {
   return resp.done();
 }
 
+status_t Server::not_modified(const req_t& req) {
+
+  auto resp = init_resp(req->create_response(restinio::status_not_modified()));
+  json err = {
+    { "status", 403 },
+    { "err", "Not modified" }
+  };
+  stringstream ss;
+  ss << err;
+  resp.set_body(ss.str());
+  return resp.done();
+
+}
+
 status_t Server::fatal(const req_t& req, const string &msg) {
 
   BOOST_LOG_TRIVIAL(error) << "fatal " << msg;
@@ -447,20 +463,31 @@ status_t Server::security(const req_t& req) {
   return resp.done();
 }
 
-status_t Server::returnEmptyObj(const req_t& req) {
+status_t Server::returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag) {
 
   auto resp = req->create_response();
   resp.set_body("{}");
+  etag->setHeaders(resp);
   return resp.done();
   
 }
 
-status_t Server::returnObj(const req_t& req, json &j) {
+status_t Server::returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag) {
+
+  auto resp = req->create_response();
+  resp.set_body("[]");
+  etag->setHeaders(resp);
+  return resp.done();
+  
+}
+
+status_t Server::returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &j) {
 
   auto resp = req->create_response();
   stringstream ss;
   ss << j;
   resp.set_body(ss.str());
+  etag->setHeaders(resp);
   return resp.done();
   
 }
@@ -495,8 +522,12 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
   if (resp) {
     return resp.value();
   }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return not_modified(req);
+  }
   
-  return returnEmptyObj(req);
+  return returnEmptyObj(req, etag);
 
 }
 
@@ -505,11 +536,15 @@ status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const string &typ
   if (!isAdmin(req)) {
     return unauthorised(req);
   }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return not_modified(req);
+  }
 
   json j = boost::json::parse(req->body());
 //  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
 
-  return sendBody(j, req, type, id);
+  return sendBody(req, etag, j, type, id);
 
 }
 
@@ -519,17 +554,21 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, op
   if (!session) {
     return unauthorised(req);
   }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return not_modified(req);
+  }
 
   json j = boost::json::parse(req->body());
 //  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
 
   j.as_object()["me"] = session.value()->userid();
 
-  return sendBody(j, req, type, id);
+  return sendBody(req, etag, j, type, id);
   
 }
 
-status_t Server::sendBody(json &j, const req_t& req, const string &type, optional<string> id) {
+status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &j, const string &type, optional<string> id) {
 
   if (!j.is_object()) {
     return fatal(req, "body is not object");
@@ -556,11 +595,17 @@ status_t Server::sendBody(json &j, const req_t& req, const string &type, optiona
   
 //  BOOST_LOG_TRIVIAL(trace) << j;
   
-  return checkErrorsReturnEmptyObj(req, j, type);
+  auto resp = checkErrors(req, j, type);
+  if (resp) {
+    return resp.value();
+  }
+  
+  return returnEmptyObj(req, etag);
+//  return checkErrorsReturnEmptyObj(req, etag, j, type);
 
 }
 
-status_t Server::receiveRawObject(const req_t& req) {
+status_t Server::receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag) {
 
   json j = receive();
 
@@ -569,17 +614,17 @@ status_t Server::receiveRawObject(const req_t& req) {
     return resp.value();
   }
 
-  return returnObj(req, j);
+  return returnObj(req, etag, j);
 
 }
 
-status_t Server::receiveArray(const req_t& req, const string &field) {
+status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field) {
 
   json j = receive();
 
-  auto resp1 = checkErrors(req, j, "array");
-  if (resp1) {
-    return resp1.value();
+  auto resp = checkErrors(req, j, "array");
+  if (resp) {
+    return resp.value();
   }
 
   auto result = Json::getArray(j, field);
@@ -592,25 +637,20 @@ status_t Server::receiveArray(const req_t& req, const string &field) {
 
 //  BOOST_LOG_TRIVIAL(debug) << result.value();
 
-  auto resp = init_resp( req->create_response() );
-
-  stringstream ss;
-  ss << Json::fixIds(result.value());
-  resp.set_body(ss.str());
-
-  return resp.done();
+  j = Json::fixIds(result.value());
+  return returnObj(req, etag, j);
 
 }
 
-status_t Server::receiveObject(const req_t& req, const string &field) {
+status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field) {
 
   json j = receive();
 
 //	BOOST_LOG_TRIVIAL(debug) << j;
 
-  auto resp1 = checkErrors(req, j, "object");
-  if (resp1) {
-    return resp1.value();
+  auto resp = checkErrors(req, j, "object");
+  if (resp) {
+    return resp.value();
   }
   
   auto result = Json::getObject(j, field);
@@ -623,13 +663,8 @@ status_t Server::receiveObject(const req_t& req, const string &field) {
 
 //  BOOST_LOG_TRIVIAL(debug) << result.value();
 
-  auto resp = init_resp( req->create_response() );
-
-  stringstream ss;
-  ss << Json::fixObject(result.value());
-  resp.set_body(ss.str());
-
-  return resp.done();
+  j = Json::fixObject(result.value());
+  return returnObj(req, etag, j);
 
 }
 

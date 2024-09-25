@@ -11,9 +11,8 @@
 
 #include "server.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
 namespace nodes {
@@ -22,11 +21,16 @@ status_t getcanreg(Server *server, const req_t& req, params_t params)
 {
   const auto token = restinio::cast_to<string>(params["token"]);
 
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  
   server->send({ 
     { "type", "canreg" },
     { "token", token }
   });
-  return server->receiveRawObject(req);
+  return server->receiveRawObject(req, etag);
 
 }
 

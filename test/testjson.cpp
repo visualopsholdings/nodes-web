@@ -139,6 +139,18 @@ BOOST_AUTO_TEST_CASE( badObject )
 
 }
 
+BOOST_AUTO_TEST_CASE( badDate )
+{
+  cout << "=== badDate ===" << endl;
+  
+  json date = {
+    { "$xxx", 1719816879599 }
+  };
+
+  BOOST_CHECK_EQUAL(Json::toISODate(date), "bad_object");
+  
+}
+
 BOOST_AUTO_TEST_CASE( fixIds )
 {
   cout << "=== fixIds ===" << endl;

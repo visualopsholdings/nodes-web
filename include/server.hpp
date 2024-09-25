@@ -41,6 +41,7 @@ using params_t = restinio::router::route_params_t;
 
 class Session;
 class ZMQClient;
+class ETagHandler;
 
 class Server {
 
@@ -56,17 +57,22 @@ public:
   status_t fatal(const req_t& req, const string &msg);
   status_t warning(const req_t& req, const string &msg);
   status_t security(const req_t& req);
+  status_t not_modified(const req_t& req);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
   optional<status_t> checkErrors(const req_t& req, json &j, const string &type);
-  status_t returnObj(const req_t& req, json &j);
-  status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
+  
+  status_t returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &j);
+  status_t receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
+  status_t receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
+  status_t receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag);
+  status_t returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag);
+  status_t returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag);
+
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, optional<string> id=nullopt);
   status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const string &type, optional<string> id=nullopt);
-  status_t returnEmptyObj(const req_t& req);
-  status_t receiveArray(const req_t& req, const string &field);
-  status_t receiveObject(const req_t& req, const string &field);
-  status_t receiveRawObject(const req_t& req);
+  status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
+
   void sendWS(uint64_t &id, const json &json);
   void sendAllWS(const json &json);
   void sendAllWSExcept(const json &json, const string &socketid);
@@ -92,7 +98,7 @@ private:
   shared_ptr<ZMQClient> _zmq;
   map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
   
-  status_t sendBody(json &j, const req_t& req, const string &type, optional<string> id);
+  status_t sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &j, const string &type, optional<string> id);
   
 };
 

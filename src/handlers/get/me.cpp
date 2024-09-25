@@ -12,9 +12,9 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
+#include <restinio/core.hpp>
 
 namespace nodes {
 
@@ -24,8 +24,11 @@ status_t getme(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
-  auto resp = server->init_resp( req->create_response() );
-
+  auto etag = ETag::simpleTime(req, session.value());
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  
   json j = { 
     { "id", session.value()->userid() },
     { "_id", session.value()->userid() },
@@ -33,11 +36,9 @@ status_t getme(Server *server, const req_t& req, params_t params)
     { "fullname", session.value()->fullname() },
     { "admin", session.value()->admin() }
   };
-  stringstream ss;
-  ss << j;
-  resp.set_body(ss.str());
+  
+  return server->returnObj(req, etag, j);
 
-  return resp.done();
 }
 
 };

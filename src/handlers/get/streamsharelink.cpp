@@ -12,9 +12,8 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
 namespace nodes {
@@ -25,11 +24,14 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
+  auto etag = ETag::simpleTime(req, session.value());
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    auto resp = server->init_resp( req->create_response() );
-    resp.set_body("[]");
-    return resp.done();
+    return server->returnEmptyArray(req, etag);
   }
 
   const auto qp = restinio::parse_query(req->header().query());
@@ -47,7 +49,7 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
     { "expires", expires },
     { "me", session.value()->userid() }
   });
-  return server->receiveRawObject(req);
+  return server->receiveRawObject(req, etag);
 
 }
 

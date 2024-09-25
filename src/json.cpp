@@ -11,9 +11,8 @@
 
 #include "json.hpp"
 
-#include <sstream>
-#include <ctime>
-#include <iomanip>
+#include "date.hpp"
+
 #include <boost/log/trivial.hpp>
 
 string Json::toISODate(json &date) {
@@ -26,90 +25,93 @@ string Json::toISODate(json &date) {
     return "bad_object";
   }
   
-  time_t ts = date.at("$date").as_int64();
-
-  time_t tnum = ts / 1000;
-  int secs = ts - (tnum * 1000);
-
-  tm tm = *gmtime(&tnum);
-  stringstream ss;
-  ss << put_time(&tm, "%FT%T.");
-  ss << secs;
-  ss << "+00:00";
-
-  return ss.str();
+  return Date::toISODate(date.at("$date").as_int64());
   
 }
 
-optional<string> Json::getString(json &j, const string &name) {
+json Json::getMember(const json &j, const string &name, bool silent) {
 
   if (!j.is_object()) {
-    BOOST_LOG_TRIVIAL(error) << "json is not object";
+    if (!silent) {
+      BOOST_LOG_TRIVIAL(error) << "json is not object";
+    }
     return {};
   }
   if (!j.as_object().if_contains(name)) {
     return {};
   }
-  auto obj = j.at(name);
+  return j.at(name);
+  
+}
+
+bool Json::has(const json &j, const string &name) {
+
+  return j.is_object() && j.as_object().if_contains(name);
+
+}
+
+optional<string> Json::getString(const json &j, const string &name, bool silent) {
+
+  auto obj = getMember(j, name, silent);
   if (!obj.is_string()) {
-    BOOST_LOG_TRIVIAL(error) << "obj is not string";
+    if (!silent) {
+      BOOST_LOG_TRIVIAL(error) << "obj is not string " << j << " " << name;
+    }
     return {};
   }
   return boost::json::value_to<string>(obj);
 
 }
 
-optional<boost::json::array> Json::getArray(json &j, const string &name) {
+optional<boost::json::array> Json::getArray(json &j, const string &name, bool silent) {
 
-  if (!j.is_object()) {
-    BOOST_LOG_TRIVIAL(error) << "json is not object";
-    return {};
-  }
-  if (!j.as_object().if_contains(name)) {
-    return {};
-  }
-  auto obj = j.at(name);
+  auto obj = getMember(j, name, silent);
   if (!obj.is_array()) {
-    BOOST_LOG_TRIVIAL(error) << "obj is not array";
+    if (!silent) {
+      BOOST_LOG_TRIVIAL(error) << "obj is not array " << j << " " << name;
+    }
     return {};
   }
   return obj.as_array();
   
 }
 
-optional<json> Json::getObject(json &j, const string &name) {
+optional<json> Json::getObject(json &j, const string &name, bool silent) {
 
-  if (!j.is_object()) {
-    BOOST_LOG_TRIVIAL(error) << "json is not object";
-    return {};
-  }
-  if (!j.as_object().if_contains(name)) {
-    return {};
-  }
-  auto obj = j.at(name);
+  auto obj = getMember(j, name, silent);
   if (!obj.is_object()) {
-    BOOST_LOG_TRIVIAL(error) << "obj is not object";
+    if (!silent) {
+      BOOST_LOG_TRIVIAL(error) << "obj is not object " << j << " " << name;
+    }
     return {};
   }
   return obj;
   
 }
 
-optional<bool> Json::getBool(json &j, const string &name) {
+optional<bool> Json::getBool(const json &j, const string &name, bool silent) {
 
-  if (!j.is_object()) {
-    BOOST_LOG_TRIVIAL(error) << "json is not object";
-    return {};
-  }
-  if (!j.as_object().if_contains(name)) {
-    return {};
-  }
-  auto obj = j.at(name);
+  auto obj = getMember(j, name, silent);
   if (!obj.is_bool()) {
-    BOOST_LOG_TRIVIAL(error) << "obj is not bool";
+    if (!silent) {
+      BOOST_LOG_TRIVIAL(error) << "obj is not bool " << j << " " << name;
+    }
     return {};
   }
   return boost::json::value_to<bool>(obj);
+
+}
+
+optional<long> Json::getNumber(const json &j, const string &name, bool silent) {
+
+  auto obj = getMember(j, name, silent);
+  if (!obj.is_int64()) {
+    if (!silent) {
+      BOOST_LOG_TRIVIAL(error) << "obj is not number " << j << " " << name;
+    }
+    return {};
+  }
+  return boost::json::value_to<long>(obj);
 
 }
 

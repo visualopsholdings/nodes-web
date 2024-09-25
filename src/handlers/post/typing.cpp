@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -20,7 +21,11 @@ namespace nodes {
 
 status_t posttyping(Server *server, const req_t& req, params_t params) {
 
-  return server->returnEmptyObj(req);
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  return server->returnEmptyObj(req, etag);
 
 }
 

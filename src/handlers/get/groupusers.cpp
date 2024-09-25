@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "json.hpp"
 #include "session.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -25,9 +26,14 @@ status_t getgroupusers(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    return server->returnEmptyObj(req);
+    return server->returnEmptyObj(req, etag);
   }
   server->send({ 
     { "type", "members" },
@@ -37,9 +43,7 @@ status_t getgroupusers(Server *server, const req_t& req, params_t params)
   json j = server->receive();
   auto members = Json::getArray(j, "members");
   if (!members) {
-    // send fatal error
-    BOOST_LOG_TRIVIAL(error) << "members missing members";
-    return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
+    return server->fatal(req, "members missing members");
   }
 
   auto resp = server->init_resp( req->create_response() );
@@ -52,7 +56,8 @@ status_t getgroupusers(Server *server, const req_t& req, params_t params)
   stringstream ss;
   ss << newmembers;
   resp.set_body(ss.str());
-
+  etag->setHeaders(resp);
+  
   return resp.done();
 }
 

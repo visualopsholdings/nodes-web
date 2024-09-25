@@ -11,9 +11,8 @@
 
 #include "server.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
 #include <restinio/core.hpp>
 
 namespace nodes {
@@ -24,6 +23,11 @@ status_t getusers(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+
   const auto qp = restinio::parse_query(req->header().query());
   if (qp.has("q")) {
     const auto q = restinio::cast_to<string>(qp["q"]);
@@ -31,11 +35,10 @@ status_t getusers(Server *server, const req_t& req, params_t params)
       { "type", "searchusers" },
       { "q", q }
     });
-    return server->receiveArray(req, "result");
+    return server->receiveArray(req, etag, "result");
   }
   
-  BOOST_LOG_TRIVIAL(error) << "only understand query.";
-  return server->init_resp(req->create_response(restinio::status_internal_server_error())).done();
+  return server->fatal(req, "only understand query.");
 
 }
 

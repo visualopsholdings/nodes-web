@@ -45,11 +45,25 @@ if(NOT nodes-test_POPULATED)
   FetchContent_Populate(nodes-test)
 endif()
 
+FetchContent_Declare(
+  base64
+  GIT_REPOSITORY https://github.com/tobiaslocker/base64.git
+  GIT_TAG master
+)
+FetchContent_GetProperties(base64)
+
+if(NOT base64_POPULATED)
+  message(STATUS "Fetching base64...")
+  FetchContent_Populate(base64)
+  include_directories(${base64_SOURCE_DIR}/include)
+endif()
+
 set(LIBS zmq)
 set(BOOSTLIBS ${Boost_LOG_LIBRARY} ${Boost_JSON_LIBRARY})
 set(UTILS
   src/json.cpp
   src/cookie.cpp
+  src/date.cpp
 )
 set(HANDLERS
   src/handlers/get/rawusers.cpp
@@ -94,7 +108,7 @@ set(HANDLERS
 
 include_directories(include)
 
-add_executable(nodes-web src/nodes-web.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp  src/zmqclient.cpp)
+add_executable(nodes-web src/nodes-web.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp  src/zmqclient.cpp src/etag.cpp)
   target_link_libraries(nodes-web ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
   target_include_directories(nodes-web PUBLIC $ENV{RESTINIO_HOME}/dev $ENV{RESTINIO_HOME}/dev/nodejs/llhttp/include $ENV{RESTINIO_HOME}/dev/expected-lite/include $ENV{RESTINIO_HOME}/dev/fmt/include)
   target_compile_definitions(nodes-web  PUBLIC RESTINIO_USE_BOOST_ASIO=1)
@@ -104,7 +118,7 @@ add_executable(TestSession test/testsession.cpp src/session.cpp ${UTILS})
 
 add_test(TestSession TestSession)
 
-add_executable(TestJson test/testjson.cpp src/json.cpp)
+add_executable(TestJson test/testjson.cpp src/json.cpp src/date.cpp)
   target_link_libraries(TestJson ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestJson TestJson)
@@ -113,3 +127,8 @@ add_executable(TestCookie test/testcookie.cpp src/cookie.cpp)
   target_link_libraries(TestCookie ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestCookie TestCookie)
+
+add_executable(TestDate test/testdate.cpp src/date.cpp)
+  target_link_libraries(TestDate ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
+
+add_test(TestDate TestDate)

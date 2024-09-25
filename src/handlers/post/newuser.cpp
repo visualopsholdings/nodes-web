@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -21,6 +22,11 @@ namespace nodes {
 
 status_t postnewuser(Server *server, const req_t& req, params_t params) {
 
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+
   json j = boost::json::parse(req->body());
   BOOST_LOG_TRIVIAL(trace) << j;
 
@@ -28,7 +34,7 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
   auto vopsidtoken = Json::getString(j, "vopsidtoken");
   if (!fullname || !vopsidtoken) {
     // don't let on.
-    return server->returnEmptyObj(req);
+    return server->returnEmptyObj(req, etag);
   }
   
   server->send({
@@ -36,7 +42,6 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
       { "vopsidtoken", vopsidtoken.value() },
       { "fullname", fullname.value() }
   });
-//  return server->returnObj(req, j);
   
   j = server->receive();
 
@@ -64,6 +69,7 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
   ss << j;
   resp.set_body(ss.str());
   resp.append_header("Set-Cookie", "ss-id=" + session + "; Path=/; Secure; HttpOnly");
+  etag->setHeaders(resp);
   return resp.done();
 
 }

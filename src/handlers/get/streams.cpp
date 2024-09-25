@@ -12,9 +12,9 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
-#include <boost/log/trivial.hpp>
-#include <restinio/router/express.hpp>
+#include <restinio/core.hpp>
 
 namespace nodes {
 
@@ -24,11 +24,17 @@ status_t getstreams(Server *server, const req_t& req, params_t params)
   if (!session) {
     return server->unauthorised(req);
   }
+  
+  auto etag = ETag::none(req);
+  if (!etag) {
+    return server->not_modified(req);
+  }
+  
   server->send({ 
     { "type", "streams" },
     { "me", session.value()->userid() }
   });
-  return server->receiveArray(req, "streams");
+  return server->receiveArray(req, etag, "streams");
 
 }
 
