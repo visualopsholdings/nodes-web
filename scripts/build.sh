@@ -15,7 +15,7 @@ fi
 pushd nodes-web/build
 git pull
 cmake ..
-make -j
+make -j4
 popd
 
 if [ "$1" == "noangular" ]; then
