@@ -14,6 +14,10 @@ Feature: Chat
          | Message 1    | My Conversation 1  | p1     | tracy  |
          | Message 2    | My Conversation 1  | p1     | leanne |
  
+      And there are sites:
+         | headerTitle     | streamBgColor   |
+         | Local           | lightgreen      |
+
   @javascript
   Scenario: New messages can be created
       When "leanne" logs into chat

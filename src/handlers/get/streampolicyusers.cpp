@@ -33,10 +33,11 @@ status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
     { "type", "stream" },
     { "stream", id }
   };
-  auto etag = ETag::modifyDate(req, session.value(), &msg);
+  auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   
   json j = server->receive();
+  
   if (etag->resultModified(j, "stream")) {
     return server->not_modified(req);
   }

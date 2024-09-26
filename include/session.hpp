@@ -32,11 +32,13 @@ public:
   string name() { return _name; };
   string fullname() { return _fullname; };
   bool admin() { return _admin; };
+  string modifyDate() { return _modifyDate; };
 
 private:
   string _userid;
   string _name;
   string _fullname;
+  string _modifyDate;
   bool _admin;
   
 };

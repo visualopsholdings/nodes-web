@@ -57,7 +57,7 @@ public:
   static shared_ptr<ETagHandler> simpleTime(const req_t& req, std::shared_ptr<Session> session);
     // an etag that makes sure that a particular user get's the same request in under 1 second.
     
-  static shared_ptr<ETagHandler> modifyDate(const req_t& req, std::shared_ptr<Session> session, json *msg);
+  static shared_ptr<ETagHandler> modifyDate(const req_t& req, json *msg);
     // an etag that makes sure that the modify date for an object has changed
     
 };

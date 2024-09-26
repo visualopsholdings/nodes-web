@@ -36,7 +36,7 @@ status_t getrawstream(Server *server, const req_t& req, params_t params)
     { "type", "stream" },
     { "stream", id }
   };
-  auto etag = ETag::modifyDate(req, session.value(), &msg);
+  auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   return server->receiveObject(req, etag, "stream");
 

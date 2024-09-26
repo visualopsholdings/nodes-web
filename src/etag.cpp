@@ -42,7 +42,7 @@ protected:
 class ETagModifyDate: public ETagHandler {
 
 public:
-  ETagModifyDate(std::shared_ptr<Session> session): _session(session) {}
+  ETagModifyDate() {}
 
 protected:
   
@@ -50,7 +50,6 @@ protected:
   virtual bool resultModified(json &j, const string &field);
 
 private:
-  std::shared_ptr<Session> _session;
   string _time;
   
 };
@@ -101,7 +100,7 @@ void ETagSimpleTime::setHeaders(response_builder_t &resp) {
   
 }
  
-shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, std::shared_ptr<Session> session, json *msg) {
+shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, json *msg) {
 
   BOOST_LOG_TRIVIAL(trace) << "modifyDate";
 
@@ -112,7 +111,7 @@ shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, std::shared_ptr<Sessi
     (*msg).as_object()["test"] = boost::json::parse(base64::from_base64(etag));
   }
   
-  return shared_ptr<ETagHandler>(new ETagModifyDate(session));
+  return shared_ptr<ETagHandler>(new ETagModifyDate());
   
 }
 
@@ -133,8 +132,11 @@ bool ETagModifyDate::resultModified(json &j, const string &field) {
   }
   
   // remember the time.
-  _time = Json::getString(obj.value(), "modifyDate").value();
-//  BOOST_LOG_TRIVIAL(trace) << _time;
+  auto mod = Json::getString(obj.value(), "modifyDate", true);
+  if (mod) {
+    _time = mod.value();
+  //  BOOST_LOG_TRIVIAL(trace) << _time;
+  }
   
   return false;
 }

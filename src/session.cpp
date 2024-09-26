@@ -48,6 +48,11 @@ Session::Session(json json) {
     _admin = admin.value();
   }
   
+  auto modifyDate = Json::getString(json, "modifyDate");
+  if (modifyDate) {
+    _modifyDate = modifyDate.value();
+  }
+  
 }
 
 string Sessions::create(json json) {
