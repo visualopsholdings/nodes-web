@@ -27,15 +27,17 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
   
   const auto id = restinio::cast_to<string>(params["id"]);
   if (id == "undefined") {
-    auto resp = server->init_resp( req->create_response() );
-    resp.set_body("[]");
-    return resp.done();
+    return server->returnEmptyArray(req, ETag::none());
   }
-  server->send({ 
+  
+  json msg = { 
     { "type", "ideas" },
-    { "stream", id }
-  });
-  return server->receiveArray(req, ETag::none(), "ideas");
+    { "stream", id },
+    { "me", session.value()->userid() }
+  };
+  auto etag = ETag::collectionChanged(req, &msg);
+  server->send(msg);
+  return server->receiveArray(req, etag, "ideas");
 
 }
 
