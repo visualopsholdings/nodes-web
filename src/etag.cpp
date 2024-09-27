@@ -21,7 +21,7 @@
 class ETagSimpleTime: public ETagHandler {
 
 public:
-  ETagSimpleTime(std::shared_ptr<Session> session): _session(session) {}
+  ETagSimpleTime(std::shared_ptr<Session> session): ETagHandler(nullopt), _session(session) {}
   
 protected:
   virtual void setHeaders(response_builder_t &resp);
@@ -33,6 +33,9 @@ private:
 
 class ETagNone: public ETagHandler {
 
+public:
+  ETagNone(): ETagHandler(nullopt) {}
+
 protected:
   virtual void setHeaders(response_builder_t &resp) {}
   virtual bool resultModified(json &j, const string &field) { return false; }
@@ -42,7 +45,7 @@ protected:
 class ETagModifyDate: public ETagHandler {
 
 public:
-  ETagModifyDate() {}
+  ETagModifyDate(optional<string> origEtag): ETagHandler(origEtag) {}
 
 protected:
   
@@ -57,7 +60,7 @@ private:
 class ETagCollectionChanged: public ETagHandler {
 
 public:
-  ETagCollectionChanged() {}
+  ETagCollectionChanged(optional<string> origEtag): ETagHandler(origEtag) {}
 
 protected:
   
@@ -124,28 +127,14 @@ shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, json *msg) {
     auto etag = req->header().get_field("If-None-Match");
     BOOST_LOG_TRIVIAL(trace) << "modifyDate: " << etag;
     (*msg).as_object()["test"] = boost::json::parse(base64::from_base64(etag));
+    return shared_ptr<ETagHandler>(new ETagModifyDate(etag));
   }
   
-  return shared_ptr<ETagHandler>(new ETagModifyDate());
+  return shared_ptr<ETagHandler>(new ETagModifyDate(nullopt));
   
 }
 
 bool ETagModifyDate::resultModified(json &j, const string &field) {
-
-  auto obj = Json::getObject(j, field);
-  if (!obj) {
-    BOOST_LOG_TRIVIAL(trace) << "missing " << field;
-    return false;
-  }
-  
-  // remember the time always.
-  auto mod = Json::getString(obj.value(), "modifyDate");
-  if (!mod) {
-    BOOST_LOG_TRIVIAL(trace) << "missing modifyDate";
-    return false;
-  }
-  
-  _time = mod.value();
 
   auto test = Json::getObject(j, "test", true);
   if (test) {
@@ -155,12 +144,24 @@ bool ETagModifyDate::resultModified(json &j, const string &field) {
     }
   }
 
+  auto obj = Json::getObject(j, field);
+  if (!obj) {
+    BOOST_LOG_TRIVIAL(trace) << "missing " << field;
+    return false;
+  }
+  
+  // remember the time always.
+  auto mod = Json::getString(obj.value(), "modifyDate", true);
+  if (mod) {
+    _time = mod.value();
+    //  BOOST_LOG_TRIVIAL(trace) << _time;
+  }
+  
   return false;
 }
 
 void ETagModifyDate::setHeaders(response_builder_t &resp) {
 
-  // always called, even for not_modified
   json j = {
     { "time", _time }
   };
@@ -183,30 +184,28 @@ shared_ptr<ETagHandler> ETag::collectionChanged(const req_t& req, json *msg) {
     auto etag = req->header().get_field("If-None-Match");
     BOOST_LOG_TRIVIAL(trace) << "collectionChanged: " << etag;
     (*msg).as_object()["test"] = boost::json::parse(base64::from_base64(etag));
+    return shared_ptr<ETagHandler>(new ETagCollectionChanged(etag));
   }
   
-  return shared_ptr<ETagHandler>(new ETagCollectionChanged());
+  return shared_ptr<ETagHandler>(new ETagCollectionChanged(nullopt));
   
 }
 
 bool ETagCollectionChanged::resultModified(json &j, const string &field) {
 
   auto test = Json::getObject(j, "test", true);
-  if (!test) {
-    BOOST_LOG_TRIVIAL(trace) << "missing test";
-    return false;
+  if (test) {
+    auto latest = Json::getBool(test.value(), "latest", true);
+    if (latest && latest.value()) {
+      return true;
+    }
   }
 
-  // remember the time always.
+  // remember the time
   auto mod = Json::getNumber(test.value(), "time", true);
   if (mod) {
     _time = mod.value();
   //  BOOST_LOG_TRIVIAL(trace) << _time;
-  }
-  
-  auto latest = Json::getBool(test.value(), "latest", true);
-  if (latest && latest.value()) {
-    return true;
   }
 
   return false;
@@ -214,7 +213,6 @@ bool ETagCollectionChanged::resultModified(json &j, const string &field) {
 
 void ETagCollectionChanged::setHeaders(response_builder_t &resp) {
 
-  // always called, even for not_modified
   json j = {
     { "time", _time }
   };

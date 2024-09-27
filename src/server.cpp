@@ -408,7 +408,7 @@ status_t Server::unauthorised(const req_t& req) {
   return resp.done();
 }
 
-status_t Server::not_modified(const req_t& req, shared_ptr<ETagHandler> etag) {
+status_t Server::not_modified(const req_t& req, optional<string> etag) {
 
   auto resp = init_resp(req->create_response(restinio::status_not_modified()));
   json err = {
@@ -418,7 +418,9 @@ status_t Server::not_modified(const req_t& req, shared_ptr<ETagHandler> etag) {
   stringstream ss;
   ss << err;
   resp.set_body(ss.str());
-  etag->setHeaders(resp);
+  if (etag) {
+    resp.append_header("Etag", etag.value());
+  }
   return resp.done();
 
 }
@@ -622,7 +624,7 @@ status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, co
 
   // some etags don't use the result so they just always return false.
   if (etag->resultModified(j, field)) {
-    return not_modified(req, etag);
+    return not_modified(req, etag->origEtag());
   }
 
   auto result = Json::getArray(j, field);
@@ -653,7 +655,7 @@ status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, c
   
   // some etags don't use the result so they just always return false.
   if (etag->resultModified(j, field)) {
-    return not_modified(req, etag);
+    return not_modified(req, etag->origEtag());
   }
 
   auto result = Json::getObject(j, field);

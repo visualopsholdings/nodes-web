@@ -36,6 +36,8 @@ using response_builder_t = restinio::response_builder_t<restinio::restinio_contr
 class ETagHandler {
 
 public:
+  ETagHandler(optional<string> origEtag): _origEtag(origEtag) {}
+  
   virtual bool resultModified(json &j, const string &field) = 0;
     // for those messages that need "test", check the result we get back to see if it's the
     // latest. Otherwise jusyt igore this.
@@ -43,6 +45,12 @@ public:
   virtual void setHeaders(response_builder_t &resp) = 0;
     // finally set the ETag header. if we need to.
     
+  optional<string> origEtag() { return _origEtag; }
+    // Return the original etag.
+    
+private:
+  optional<string> _origEtag;
+  
 };
 
 class Session;
