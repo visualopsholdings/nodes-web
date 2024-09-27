@@ -11,14 +11,22 @@ https://github.com/visualopsholdings/nodes-devops
 
 This project communicate with Nodes using the ZMQ message queues.
 
-A PUB/SUB socket on port tcp://127.0.0.1:3012.
+### Nodes
 
-This is used to receive new messages from other nodes and users locally connected to this node.
+https://github.com/visualopsholdings/nodes
+
+### Request/Reply
 
 A REP/REQ socket on port tcp://127.0.0.1:3013.
 
 This is used to send messages to other nodes and users connected locally to this node. 
 This port is also used to "ask" for things of the Nodes system such as login etc.
+
+### Publish/Subscribe
+
+A PUB/SUB socket on port tcp://127.0.0.1:3012.
+
+This is used to receive new messages from other nodes and users locally connected to this node.
 
 [Here are the formats for the messages](https://github.com/visualopsholdings/nodes/blob/main/src/msg/README.md)
 
