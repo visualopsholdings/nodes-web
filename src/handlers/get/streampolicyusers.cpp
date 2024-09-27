@@ -39,7 +39,7 @@ status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
   json j = server->receive();
   
   if (etag->resultModified(j, "stream")) {
-    return server->not_modified(req);
+    return server->not_modified(req, etag);
   }
   auto stream = Json::getObject(j, "stream");
   if (!stream) {

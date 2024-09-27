@@ -132,6 +132,19 @@ shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, json *msg) {
 
 bool ETagModifyDate::resultModified(json &j, const string &field) {
 
+  auto obj = Json::getObject(j, field);
+  if (!obj) {
+    BOOST_LOG_TRIVIAL(trace) << "missing " << field;
+    return false;
+  }
+  
+  // remember the time always.
+  auto mod = Json::getString(obj.value(), "modifyDate", true);
+  if (mod) {
+    _time = mod.value();
+  //  BOOST_LOG_TRIVIAL(trace) << _time;
+  }
+  
   auto test = Json::getObject(j, "test", true);
   if (test) {
     auto latest = Json::getBool(test.value(), "latest", true);
@@ -140,24 +153,12 @@ bool ETagModifyDate::resultModified(json &j, const string &field) {
     }
   }
 
-  auto obj = Json::getObject(j, field);
-  if (!obj) {
-    BOOST_LOG_TRIVIAL(trace) << "missing " << field;
-    return false;
-  }
-  
-  // remember the time.
-  auto mod = Json::getString(obj.value(), "modifyDate", true);
-  if (mod) {
-    _time = mod.value();
-  //  BOOST_LOG_TRIVIAL(trace) << _time;
-  }
-  
   return false;
 }
 
 void ETagModifyDate::setHeaders(response_builder_t &resp) {
 
+  // always called, even for not_modified
   json j = {
     { "time", _time }
   };
@@ -194,23 +195,24 @@ bool ETagCollectionChanged::resultModified(json &j, const string &field) {
     return false;
   }
 
-  auto latest = Json::getBool(test.value(), "latest", true);
-  if (latest && latest.value()) {
-    return true;
-  }
-
-  // remember the time.
+  // remember the time always.
   auto mod = Json::getNumber(test.value(), "time", true);
   if (mod) {
     _time = mod.value();
   //  BOOST_LOG_TRIVIAL(trace) << _time;
   }
   
+  auto latest = Json::getBool(test.value(), "latest", true);
+  if (latest && latest.value()) {
+    return true;
+  }
+
   return false;
 }
 
 void ETagCollectionChanged::setHeaders(response_builder_t &resp) {
 
+  // always called, even for not_modified
   json j = {
     { "time", _time }
   };
