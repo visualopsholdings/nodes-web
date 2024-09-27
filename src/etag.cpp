@@ -139,12 +139,14 @@ bool ETagModifyDate::resultModified(json &j, const string &field) {
   }
   
   // remember the time always.
-  auto mod = Json::getString(obj.value(), "modifyDate", true);
-  if (mod) {
-    _time = mod.value();
-  //  BOOST_LOG_TRIVIAL(trace) << _time;
+  auto mod = Json::getString(obj.value(), "modifyDate");
+  if (!mod) {
+    BOOST_LOG_TRIVIAL(trace) << "missing modifyDate";
+    return false;
   }
   
+  _time = mod.value();
+
   auto test = Json::getObject(j, "test", true);
   if (test) {
     auto latest = Json::getBool(test.value(), "latest", true);
