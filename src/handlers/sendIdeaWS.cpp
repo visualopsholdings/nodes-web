@@ -32,7 +32,7 @@ void sendIdeaWS(ZMQClient *client, json &j) {
     return;
   }
 
-  auto corr = Json::getString(j, "corr");
+  auto corr = Json::getString(j, "corr", true);
   
   j = { 
     { "type", "update" },

@@ -20,7 +20,7 @@ namespace nodes {
 
 void sendWS(ZMQClient *client, json &json) {
   
-  auto corr = Json::getString(json, "corr");
+  auto corr = Json::getString(json, "corr", true);
   if (!corr) {
     // send to all sockets.
     client->_server->sendAllWS(json);
