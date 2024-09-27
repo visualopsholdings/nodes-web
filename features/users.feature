@@ -7,6 +7,8 @@ Feature: Users
          | privateKey   | t5R[&?W.8-mjIc]cs#<T(5AW7sCJYHo^<2k-]!2! |
          | pubKey       | 31r]#CW@p}=]xYRwvg+P>NrDffBG}wXL0%t:[j6( |
             
+      And the DB is new      
+      
 	@javascript
 	Scenario: A user can be set to admin
       When "tracy" logs into admin

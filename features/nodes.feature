@@ -8,6 +8,8 @@ Feature: Nodes
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
 
+      And the DB is new      
+      
  	@javascript
 	Scenario: A server can be reset
       When "tracy" logs into admin

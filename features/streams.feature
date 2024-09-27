@@ -12,6 +12,8 @@ Feature: Streams
          | Conversation 3  | p1     |
          | Conversation 4  | p3     |
          
+      And the DB is new      
+      
       When "tracy" log into app "admin"
       And she clicks "Streams"
       And eventually table has 4 rows

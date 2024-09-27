@@ -18,6 +18,8 @@ Feature: Chat
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
 
+      And the DB is new      
+      
   @javascript
   Scenario: New messages can be created
       When "leanne" logs into chat

@@ -23,8 +23,12 @@ status_t getrawstreams(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
   
-  server->send({ { "type", "streams" } });
-  return server->receiveArray(req, ETag::none(), "streams");
+  json msg = { 
+    { "type", "streams" }
+  };
+  auto etag = ETag::collectionChanged(req, &msg);
+  server->send(msg);
+  return server->receiveArray(req, etag, "streams");
 
 }
 

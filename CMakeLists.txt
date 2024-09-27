@@ -104,6 +104,8 @@ set(HANDLERS
   src/handlers/get/canreg.cpp
   src/handlers/sendIdeaWS.cpp
   src/handlers/delete/rawuser.cpp
+  src/handlers/get/group.cpp
+  src/handlers/get/grouppolicy.cpp
 )
 
 include_directories(include)

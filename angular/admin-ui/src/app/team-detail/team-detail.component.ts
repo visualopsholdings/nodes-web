@@ -55,7 +55,7 @@ export class TeamDetailComponent implements OnInit {
   getMembers(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.teamService.getTeamMembers(this.hasAdmin(), id)
-      .subscribe(members => this.members = members);
+      .subscribe(group => this.members = group.members);
   }
 
   getTeam(): void {

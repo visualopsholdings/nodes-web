@@ -380,4 +380,7 @@ stuff rather than using ng serve.
 - Implement framework for Etags.
 - We have a "none", "simpleTime", and "modifyDate" etags for now.
 
+### 27 Sep 2024
+- Add "collectionChanged" etag.
+
 

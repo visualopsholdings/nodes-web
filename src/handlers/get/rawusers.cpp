@@ -23,8 +23,12 @@ status_t getrawusers(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
   
-  server->send({ { "type", "users" } });
-  return server->receiveArray(req, ETag::none(), "users");
+  json msg = { 
+    { "type", "users" }
+  };
+  auto etag = ETag::collectionChanged(req, &msg);
+  server->send(msg);
+  return server->receiveArray(req, etag, "users");
   
 }
 

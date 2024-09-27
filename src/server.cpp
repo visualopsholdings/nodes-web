@@ -106,6 +106,8 @@ status_t deletegroup(Server *server, const req_t& req, params_t );
 status_t getstreamsharelink(Server *server, const req_t& req, params_t );
 status_t getcanreg(Server *server, const req_t& req, params_t );
 status_t deleterawuser(Server *server, const req_t& req, params_t );
+status_t getgroup(Server *server, const req_t& req, params_t );
+status_t getgrouppolicy(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -247,7 +249,9 @@ auto Server::handler()
     return sendBodyReturnEmptyObjAdmin(req, "setuser", restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
-  router->http_get("/rest/1.0/groupusers", by(&nodes::getgroupusers));
+  router->http_get("/rest/1.0/groups/:id", by(&nodes::getgroup));
+  router->http_get("/rest/1.0/groups/:id/users", by(&nodes::getgroupusers));
+  router->http_get("/rest/1.0/groups/:id/policy", by(&nodes::getgrouppolicy));
 
   router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
@@ -613,6 +617,11 @@ status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, co
   auto resp = checkErrors(req, j, "array");
   if (resp) {
     return resp.value();
+  }
+
+  // some etags don't use the result so they just always return false.
+  if (etag->resultModified(j, field)) {
+    return not_modified(req);
   }
 
   auto result = Json::getArray(j, field);

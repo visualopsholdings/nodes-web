@@ -60,6 +60,9 @@ public:
   static shared_ptr<ETagHandler> modifyDate(const req_t& req, json *msg);
     // an etag that makes sure that the modify date for an object has changed
     
+  static shared_ptr<ETagHandler> collectionChanged(const req_t& req, json *msg);
+    // an etag that makes sure that the modify date for a collection has changed.
+    
 };
 
 #endif // H_etag

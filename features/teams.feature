@@ -23,6 +23,7 @@ Feature: Teams
          | leanne    |
  
       And the DB is new
+      
       And "tracy" logs into admin
       And eventually the page contains "Welcome Tracy"
 	   And she clicks "Teams"

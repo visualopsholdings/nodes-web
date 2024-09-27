@@ -98,3 +98,8 @@ When('she navigates to login url that was on clipboard') do
    visit("http://localhost:8081/logout")
    visit(saved_clip_text)
 end
+
+When('the DB is new') do
+   result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace --cmd=reload`)
+   expect(result["type"]).to eq("ack")
+end

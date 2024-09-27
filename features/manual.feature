@@ -26,3 +26,5 @@ Feature: Manual
        And there are sites:
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
+
+      And the DB is new      

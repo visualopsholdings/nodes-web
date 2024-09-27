@@ -32,6 +32,8 @@ Feature: Policy
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
  
+      And the DB is new      
+      
 	@javascript
 	Scenario: Alice can be added to a policy in streams
       When "tracy" log into app "admin"

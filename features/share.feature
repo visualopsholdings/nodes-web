@@ -17,6 +17,8 @@ Feature: Share
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
 
+      And the DB is new      
+      
   @javascript
   Scenario: A stream can be shared with new users
       When "tracy" logs into chat

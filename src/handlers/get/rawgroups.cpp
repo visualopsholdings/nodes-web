@@ -23,8 +23,12 @@ status_t getrawgroups(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
 
-  server->send({ { "type", "groups" } });
-  return server->receiveArray(req, ETag::none(), "groups");
+  json msg = { 
+    { "type", "groups" }
+  };
+  auto etag = ETag::collectionChanged(req, &msg);
+  server->send(msg);
+  return server->receiveArray(req, etag, "groups");
 
 }
 

@@ -42,12 +42,12 @@ export class TeamService extends BackendService {
     );
   }
 
-  getTeamMembers(admin: boolean, id: string): Observable<TeamMember[]> {
+  getTeamMembers(admin: boolean, id: string): Observable<Team> {
     const url = `${admin ? this.admTeamsUrl : this.teamsUrl}/${id}/users`;
-    return this.http.get<TeamMember[]>(url)
+    return this.http.get<Team>(url)
     .pipe(
 //      tap(teams => this.log(`fetched teams`)),
-      catchError(this.handleError('getTeamMembers', []))
+      catchError(this.handleError<Team>(`getTeam id=${id}`))
     );
   }
 

@@ -8,6 +8,8 @@ Feature: Sites
          | headerTitle     | streamBgColor   |
          | Local           | lightgreen      |
 
+      And the DB is new      
+      
  	@javascript
 	Scenario: A site can be renamed
       When "tracy" logs into admin

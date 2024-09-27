@@ -1,4 +1,6 @@
 
+import { TeamMember } from './team-member';
+
 export class Team {
 
   _id: number;
@@ -6,5 +8,6 @@ export class Team {
   image: string;
   policy: string;
   deleted: boolean;
+  members: TeamMember[];
 
 }
