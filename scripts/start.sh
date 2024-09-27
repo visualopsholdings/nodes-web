@@ -15,7 +15,6 @@ else
   export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 fi
 
-
 $LIBS ./nodes-web/build/nodes-web \
   --logLevel=debug \
   > nodes-web.log 2>&1 &
