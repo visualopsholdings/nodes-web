@@ -1,29 +1,13 @@
 # nodes-web
 
-Web based front end for Nodes.
+A Web component that does RESTful requests, sockets, etags and all web things communicating
+with the Nodes subsystem.
 
-## Visual Ops
+The best way to get started is to take a look at:
 
-This is a companion project to:
+https://github.com/visualopsholdings/nodes-devops
 
-https://github.com/visualopsholdings/nodes
-
-Visual Ops is a proprietary (closed source) system that runs on very low end hardware
-like T4G's in AWS, or on a Raspberry Pi 4/5.
-
-An Open Source version of Visual Ops called "Nodes" is being developed.
-
-This "plugin" can run on a a server with nodes (open source) to provide a login, admin and
-chat system.
-
-If you would like access to the Visual Ops software it is available as an image download 
-after we get to know you.
-
-Visit https://info.visualops.com/ for more info.
-
-All the places that mention "Visual Ops", could be interchanged with "Nodes".
-
-### ZMQ API
+## ZMQ API
 
 This project communicate with Nodes using the ZMQ message queues.
 
