@@ -25,9 +25,8 @@ status_t getme(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
   auto etag = ETag::simpleTime(req, session.value());
-  if (!etag) {
-    // TBD: we need to solve this. it needs to use the simpletime etag to do this!!!!
-    return server->not_modified(req, nullopt);
+  if (!etag->modified()) {
+    return server->not_modified(req, etag->origEtag());
   }
   
   json j = { 

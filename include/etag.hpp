@@ -38,6 +38,8 @@ class ETagHandler {
 public:
   ETagHandler(optional<string> origEtag): _origEtag(origEtag) {}
   
+  virtual bool modified() = 0;
+  
   virtual bool resultModified(json &j, const string &field) = 0;
     // for those messages that need "test", check the result we get back to see if it's the
     // latest. Otherwise jusyt igore this.
@@ -48,7 +50,7 @@ public:
   optional<string> origEtag() { return _origEtag; }
     // Return the original etag.
     
-private:
+protected:
   optional<string> _origEtag;
   
 };

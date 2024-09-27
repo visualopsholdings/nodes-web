@@ -25,8 +25,8 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
   auto etag = ETag::simpleTime(req, session.value());
-  if (!etag) {
-    return server->not_modified(req, nullopt);
+  if (!etag->modified()) {
+    return server->not_modified(req, etag->origEtag());
   }
   
   const auto id = restinio::cast_to<string>(params["id"]);

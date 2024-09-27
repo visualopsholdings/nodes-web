@@ -18,28 +18,30 @@
 #include <boost/log/trivial.hpp>
 #include <base64.hpp>
 
-class ETagSimpleTime: public ETagHandler {
-
-public:
-  ETagSimpleTime(std::shared_ptr<Session> session): ETagHandler(nullopt), _session(session) {}
-  
-protected:
-  virtual void setHeaders(response_builder_t &resp);
-  virtual bool resultModified(json &j, const string &field) { return false; }
-
-private:
-  std::shared_ptr<Session> _session;
-};
-
 class ETagNone: public ETagHandler {
 
 public:
   ETagNone(): ETagHandler(nullopt) {}
 
 protected:
+  virtual bool modified() { return false; };
+  virtual bool resultModified(json &j, const string &field) { return false; }
   virtual void setHeaders(response_builder_t &resp) {}
+
+};
+
+class ETagSimpleTime: public ETagHandler {
+
+public:
+  ETagSimpleTime(std::shared_ptr<Session> session, optional<string> origEtag): ETagHandler(origEtag), _session(session) {}
+  
+protected:
+  virtual bool modified();
+  virtual void setHeaders(response_builder_t &resp);
   virtual bool resultModified(json &j, const string &field) { return false; }
 
+private:
+  std::shared_ptr<Session> _session;
 };
 
 class ETagModifyDate: public ETagHandler {
@@ -49,8 +51,9 @@ public:
 
 protected:
   
-  virtual void setHeaders(response_builder_t &resp);
+  virtual bool modified() { return false; };
   virtual bool resultModified(json &j, const string &field);
+  virtual void setHeaders(response_builder_t &resp);
 
 private:
   string _time;
@@ -64,8 +67,9 @@ public:
 
 protected:
   
-  virtual void setHeaders(response_builder_t &resp);
+  virtual bool modified() { return false; };
   virtual bool resultModified(json &j, const string &field);
+  virtual void setHeaders(response_builder_t &resp);
 
 private:
   long _time;
@@ -86,19 +90,28 @@ shared_ptr<ETagHandler> ETag::simpleTime(const req_t& req, std::shared_ptr<Sessi
   if (req->header().has_field("If-None-Match")) {
     auto etag = req->header().get_field("If-None-Match");
     BOOST_LOG_TRIVIAL(trace) << etag;
-    string s = base64::from_base64(etag);
+    return shared_ptr<ETagHandler>(new ETagSimpleTime(session, etag));
+  }
+  
+  return shared_ptr<ETagHandler>(new ETagSimpleTime(session, nullopt));
+  
+}
+
+bool ETagSimpleTime::modified() {
+
+  if (_origEtag) {
+    // test the original etag.
+    string s = base64::from_base64(_origEtag.value());
     json j = boost::json::parse(s);
     BOOST_LOG_TRIVIAL(trace) << j;
     auto user = Json::getString(j, "user");
     auto time = Json::getNumber(j, "time");
     long now = Date::now();
-    if (user.value() == session->userid() && now <= (time.value() + 1000)) {
-      BOOST_LOG_TRIVIAL(trace) << "same";
-      return 0;
-    }
+    return user.value() != _session->userid() || now > (time.value() + 1000);
   }
-  
-  return shared_ptr<ETagHandler>(new ETagSimpleTime(session));
+
+  // no etag, so assume it's modified
+  return true;
   
 }
 
