@@ -68,7 +68,8 @@ When("she waits {int} seconds") do |n|
 end
 
 When('nodes is reloaded') do
-   result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace --cmd=reload`)
+   j = JSON.generate({ "type": "reload" })
+   result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace '#{j}'`)
    expect(result["type"]).to eq("ack")
 end
 
@@ -100,6 +101,7 @@ When('she navigates to login url that was on clipboard') do
 end
 
 When('the DB is new') do
-   result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace --cmd=reload`)
+   j = JSON.generate({ "type": "reload" })
+   result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace '#{j}'`)
    expect(result["type"]).to eq("ack")
 end
