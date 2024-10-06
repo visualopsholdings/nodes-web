@@ -375,4 +375,8 @@ stuff rather than using ng serve.
 ### 27 Sep 2024
 - Add "collectionChanged" etag.
 
+### 6 Oct 2024
+- Now that Nodes handles upstream, switch to testing with it instead of an existing
+Visual Ops node.
+
 

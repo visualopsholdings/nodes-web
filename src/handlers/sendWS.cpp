@@ -20,16 +20,18 @@ namespace nodes {
 
 void sendWS(ZMQClient *client, json &json) {
   
+  BOOST_LOG_TRIVIAL(trace) << "sendWS";
+  
   auto corr = Json::getString(json, "corr", true);
   if (!corr) {
     // send to all sockets.
-    client->_server->sendAllWS(json);
+    client->_server->sendAllWS(Json::fixObject(json));
     return;
   }
 
   // send to the one socket.
   uint64_t id = stol(corr.value());
-  client->_server->sendWS(id, json);
+  client->_server->sendWS(id, Json::fixObject(json));
   
 }
 

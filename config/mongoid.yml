@@ -2,6 +2,6 @@
 test:
   clients:
     default:
-      database: dev
+      database: <%= "#{ENV['MONGO_PORT_27017_DB']}" %>
       hosts:
         - 127.0.0.1:27017

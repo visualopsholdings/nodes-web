@@ -8,7 +8,7 @@ require 'service_manager'
 # end
 
 ServiceManager.define_service 'nodes' do |s|
-   s.start_cmd = '$NODES_HOME/build/nodes --test --logLevel=debug --noupstream --hostName=localhost:8081'
+   s.start_cmd = '$NODES_HOME/build/nodes --test --logLevel=debug --hostName=localhost:8081 --remoteDataReqPort=8820 --remoteMsgSubPort=8821'
    s.loaded_cue = /Local REP/
    s.cwd = Dir.pwd
    s.pid_file = 'nodes.pid'
