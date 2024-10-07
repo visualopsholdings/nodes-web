@@ -106,6 +106,7 @@ set(HANDLERS
   src/handlers/delete/rawuser.cpp
   src/handlers/get/group.cpp
   src/handlers/get/grouppolicy.cpp
+  src/handlers/get/nodes.cpp
 )
 
 include_directories(include)

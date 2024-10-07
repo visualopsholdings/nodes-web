@@ -108,6 +108,7 @@ status_t getcanreg(Server *server, const req_t& req, params_t );
 status_t deleterawuser(Server *server, const req_t& req, params_t );
 status_t getgroup(Server *server, const req_t& req, params_t );
 status_t getgrouppolicy(Server *server, const req_t& req, params_t );
+status_t getnodes(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -280,6 +281,7 @@ auto Server::handler()
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
   router->http_get("/rest/1.0/users/canreg/:token", by(&nodes::getcanreg));
   router->http_delete("/rest/1.0/rawusers/:id", by(&nodes::deleterawuser));
+  router->http_get("/rest/1.0/nodes", by(&nodes::getnodes));
 
   return router;
 }

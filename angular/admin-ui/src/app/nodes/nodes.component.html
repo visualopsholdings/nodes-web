@@ -13,6 +13,47 @@
     <p *ngIf="getInfo('hasInitialSync')"><b>Has Initial Sync</b>: {{getInfo("hasInitialSync")}}</p>
     <p *ngIf="upstreamLastSeen"><b>Last time upstream seen</b>: <span [style.color]="fgColorLastSeenTime(upstreamLastSeen)">{{upstreamLastSeen | date: 'medium'}}</span></p>
   </div>
+  <mat-form-field>
+    <input matInput name="query" [formControl]="queryCtrl" placeholder="Nodes Query" autocomplete="none" (change)="search(queryCtrl.value)">
+  </mat-form-field>
+  <table mat-table [dataSource]="items">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>NAME</th>
+      <td mat-cell *matCellDef="let item" [style.background-color]="bgColor(item)" [style.color]="fgColor(item)">
+        <img *ngIf="item.headerImage && urlIsOurs(item.url) && item.publicIP && item.httpsPort"
+          src="https://{{item.publicIP}}:{{item.httpsPort}}/rest/1.0/media/{{item.headerImage}}/thumbnail" class="small-icon">
+        <img *ngIf="item.headerImage && !urlIsOurs(item.url)"
+          src="{{item.url}}/rest/1.0/media/{{item.headerImage}}/thumbnail" class="small-icon">
+          {{item.headerTitle}}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="serverId">
+      <th mat-header-cell *matHeaderCellDef>SERVER ID</th>
+      <td mat-cell *matCellDef="let item">{{item.serverId}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastSeen">
+      <th mat-header-cell *matHeaderCellDef>LAST SEEN</th>
+      <td mat-cell *matCellDef="let item" [style.color]="fgColorLastSeen(item)">{{(item.disabled ? "" : item.lastSeen) | date: 'medium'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>ACTIONS</th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-raised-button name="edit" (click)="edit(item);"><mat-icon>settings</mat-icon></button>
+        <button mat-raised-button name="delete" (click)="deleteNode(item);"><mat-icon>delete</mat-icon></button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
+  <span *ngIf="total > 0">
+    <mat-paginator [length]="total" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="goPage($event)">
+    </mat-paginator>
+  </span>
   <button *ngIf="!hasDefault()" mat-raised-button (click)="setUpstream();">SET UPSTREAM</button>
 </div>
 

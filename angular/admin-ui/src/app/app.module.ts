@@ -66,6 +66,7 @@ import { AddUserPolicyExecDialogComponent } from './add-user-policy-exec-dialog/
 import { PolicyIdDialogComponent } from './policy-id-dialog/policy-id-dialog.component';
 import { PolicyService }  from './policy.service';
 import { SetUibitsDialogComponent } from './set-uibits-dialog/set-uibits-dialog.component';
+import { NodesService }  from './nodes.service';
 
 @NgModule({
   declarations: [
@@ -130,7 +131,7 @@ import { SetUibitsDialogComponent } from './set-uibits-dialog/set-uibits-dialog.
     MatNativeDateModule
   ],
   providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService,
-    TeamService, StreamService, PolicyService],
+    TeamService, StreamService, PolicyService, NodesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

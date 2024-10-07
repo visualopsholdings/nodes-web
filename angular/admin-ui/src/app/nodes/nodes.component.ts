@@ -17,6 +17,8 @@ import { MeService }  from '../me.service';
 import { Me }  from '../me';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { SetUpstreamDialogComponent } from '../set-upstream-dialog/set-upstream-dialog.component';
+import { NodesService }  from '../nodes.service';
+import { Node }  from '../node';
 
 @Component({
   selector: 'app-nodes',
@@ -27,8 +29,16 @@ export class NodesComponent implements OnInit {
 
   private me: Me;
   private infos: Info[] = [];
+  private build: string;
   private serverId = null;
 
+  items: Node[];
+  pageSizeOptions = [9, 36, 72];
+  pageSize = 9;
+  total: number;
+  query = "";
+  queryCtrl = new FormControl("", []);
+  displayedColumns: string[] = [ "name", "serverId", "lastSeen", "actions" ];
   upstreamLastSeen: string;
 
   constructor(
@@ -36,6 +46,7 @@ export class NodesComponent implements OnInit {
     public router: Router,
     private sanitizer: DomSanitizer,
     private infoService: InfoService,
+    private nodesService: NodesService,
     private meService: MeService,
     private snackBar: MatSnackBar
   ) {
@@ -45,6 +56,7 @@ export class NodesComponent implements OnInit {
     this.meService.getMe().subscribe(me => {
         this.me = me
         this.getInfos();
+        this.getItems(0);
        });
   }
 
@@ -59,6 +71,10 @@ export class NodesComponent implements OnInit {
   private getInfos(): void {
     this.infoService.getInfos().subscribe(infos => {
       this.infos = infos;
+      let build = infos.find(e => e.type == "build");
+      if (build) {
+        this.build = build.text;
+      }
       let serverId = infos.find(e => e.type == "serverId");
       if (serverId) {
         this.serverId = serverId.text;
@@ -81,12 +97,26 @@ export class NodesComponent implements OnInit {
     return null;
   }
 
-  private isOldTime(time: string): boolean {
-    return moment().diff(moment(time), 'seconds') > 20;
+  getItems(from: number): void {
+    if (this.query.length > 0) {
+      this.nodesService.searchNodes(this.query)
+        .subscribe(items => {
+          this.total = -1;
+          this.items = items;
+        });
+    }
+    else {
+      this.nodesService.getNodes(from, this.pageSize)
+        .subscribe(resp => {
+          this.total = this.nodesService.getTotal(resp);
+          this.items = resp.body;
+        });
+    }
   }
 
-  fgColorLastSeenTime(time: string): string {
-    return this.isOldTime(time) ? "red" : "black";
+  goPage(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.getItems(event.pageIndex * event.pageSize);
   }
 
   setUpstream(): void {
@@ -129,6 +159,66 @@ export class NodesComponent implements OnInit {
         }
       }
     });
+  }
+
+  deleteNode(node: Node): void {
+    this.dialog.open(ConfirmComponent, {
+        width: '400px',
+        data: { title: "Delete Node", description: "Are you sure you want to remove the node permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.nodesService.deleteNode(node).subscribe(success => {
+          if (success) {
+            this.items = this.items.filter(t => t !== node);
+          }
+        });
+      }
+    });
+  }
+
+  edit(node: Node): void {
+    this.router.navigateByUrl(`nodes/${node._id}`);
+  }
+
+  search(query) {
+    this.query = query;
+    this.getItems(0);
+  }
+
+  bgColor(item: any): string {
+    return item.streamBgColor ? item.streamBgColor : 'white';
+  }
+
+  private isBlack(item): boolean {
+    return item.streamBgColor && (item.streamBgColor == "#000000" || item.streamBgColor == "black");
+  }
+
+  fgColor(item: any): string {
+    return this.isBlack(item) ? 'white' : 'black';
+  }
+
+  private isOldBuild(item: any): boolean {
+    return !(item.build == this.build || parseInt(item.build) > parseInt(this.build));
+  }
+
+  private isOldTime(time: string): boolean {
+    return moment().diff(moment(time), 'seconds') > 20;
+  }
+
+  fgColorLastSeenTime(time: string): string {
+    return this.isOldTime(time) ? "red" : "black";
+  }
+
+  fgColorLastSeen(item: any): string {
+    return this.isOldTime(item.lastSeen) ? "red" : "black";
+  }
+
+  fgColorBuild(item: any): string {
+    return this.isOldBuild(item) ? "orange" : "black";
+  }
+
+  urlIsOurs(url: string): boolean {
+    return url == 'https://local.visualops.com';
   }
 
 }
