@@ -379,4 +379,8 @@ stuff rather than using ng serve.
 - Now that Nodes handles upstream, switch to testing with it instead of an existing
 Visual Ops node.
 
+### 7 Oct 2024
+- Nodes can be displayed, added and deleted.
+
+
 

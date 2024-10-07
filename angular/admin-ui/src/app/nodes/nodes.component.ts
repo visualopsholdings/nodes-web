@@ -16,9 +16,10 @@ import { Info }  from '../info';
 import { MeService }  from '../me.service';
 import { Me }  from '../me';
 import { ConfirmComponent } from '../confirm/confirm.component';
-import { SetUpstreamDialogComponent } from '../set-upstream-dialog/set-upstream-dialog.component';
 import { NodesService }  from '../nodes.service';
 import { Node }  from '../node';
+import { SetUpstreamDialogComponent } from '../set-upstream-dialog/set-upstream-dialog.component';
+import { AddNodeDialogComponent } from '../add-node-dialog/add-node-dialog.component';
 
 @Component({
   selector: 'app-nodes',
@@ -157,6 +158,16 @@ export class NodesComponent implements OnInit {
           this.infoService.updateInfos(result)
             .subscribe(infos => this.infos = infos);
         }
+      }
+    });
+  }
+
+  add(): void {
+    this.dialog.open(AddNodeDialogComponent).afterClosed().subscribe(result => {
+      if (result) {
+        this.nodesService.addNode(result as Node).subscribe(() => {
+            this.getItems(0);
+        });
       }
     });
   }

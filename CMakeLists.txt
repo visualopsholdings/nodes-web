@@ -107,6 +107,8 @@ set(HANDLERS
   src/handlers/get/group.cpp
   src/handlers/get/grouppolicy.cpp
   src/handlers/get/nodes.cpp
+  src/handlers/get/node.cpp
+  src/handlers/delete/node.cpp
 )
 
 include_directories(include)

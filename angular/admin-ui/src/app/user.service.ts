@@ -40,6 +40,13 @@ export class UserService extends BackendService {
     );
   }
 
+  getUserNoError(id: string): Observable<User> {
+    const url = `${this.adminUsersUrl}/${id}`;
+    return this.http.get<User>(url).pipe(
+      catchError(this.passError<User>(`getUserNoError id=${id}`))
+    );
+  }
+
   updateUser (user: User): Observable<any> {
     const url = `${this.usersUrl}/${user._id}`;
     return this.http.put<User>(url, user, { headers: this.httpHeaders() }).pipe(

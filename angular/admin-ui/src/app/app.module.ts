@@ -67,6 +67,8 @@ import { PolicyIdDialogComponent } from './policy-id-dialog/policy-id-dialog.com
 import { PolicyService }  from './policy.service';
 import { SetUibitsDialogComponent } from './set-uibits-dialog/set-uibits-dialog.component';
 import { NodesService }  from './nodes.service';
+import { NodeDetailComponent } from './node-detail/node-detail.component';
+import { AddNodeDialogComponent } from './add-node-dialog/add-node-dialog.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +99,9 @@ import { NodesService }  from './nodes.service';
     AddGroupPolicyExecDialogComponent,
     AddUserPolicyExecDialogComponent,
     PolicyIdDialogComponent,
-    SetUibitsDialogComponent
+    SetUibitsDialogComponent,
+    NodeDetailComponent,
+    AddNodeDialogComponent
   ],
   imports: [
     BrowserModule,

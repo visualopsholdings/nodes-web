@@ -7,6 +7,7 @@ import { UsersComponent }  from './users/users.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { InfosComponent } from './infos/infos.component';
 import { NodesComponent } from './nodes/nodes.component';
+import { NodeDetailComponent } from './node-detail/node-detail.component';
 import { SiteDetailComponent } from './site-detail/site-detail.component';
 import { StreamsComponent } from './streams/streams.component';
 import { StreamDetailComponent } from './stream-detail/stream-detail.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'teams/:id', component: TeamDetailComponent },
   { path: 'infos', component: InfosComponent },
   { path: 'nodes', component: NodesComponent },
+  { path: 'nodes/:id', component: NodeDetailComponent },
   { path: 'sites', component: SiteDetailComponent },
 ];
 

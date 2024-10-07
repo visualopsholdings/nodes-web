@@ -53,6 +53,12 @@ export class NodesService extends BackendService {
     );
   }
 
+  addNode (node: Node): Observable<Node> {
+    return this.http.post<Node>(this.nodesUrl, node, httpOptions).pipe(
+      catchError(this.handleError<Node>('addNode'))
+    );
+  }
+
   deleteNode (node: Node): Observable<Node> {
     return this.http.delete<Node>(`${this.nodesUrl}/${node._id}`, httpOptions).pipe(
       catchError(this.handleError<Node>('deleteNode'))

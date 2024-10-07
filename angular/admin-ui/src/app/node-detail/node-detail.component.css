@@ -1,0 +1,27 @@
+
+.node-card {
+  margin-top: 20px;
+  width: 520px;
+}
+
+.field {
+  display: inline-block;
+  width: 480px;
+}
+
+.image {
+  width: 64px;
+  height: 64px;
+}
+
+.item {
+  padding-left: 8px;
+}
+
+.id {
+  padding-left: 16px;
+}
+
+button {
+  margin: 8px !important;
+}
