@@ -203,6 +203,14 @@ If you know the name of a single test, you can just run that with:
 ./test-single.sh "A user can be set to admin"
 ```
 
+## More complicated tests
+
+You can run tests that build multiple servers and run tests between then with.
+
+```
+./test.sh features/add-from-upstream.feature
+```
+
 ## Development and debugging
 
 To develop and debug the various code bases, you can run them up after making changes. Run

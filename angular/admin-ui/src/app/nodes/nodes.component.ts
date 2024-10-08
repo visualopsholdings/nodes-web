@@ -20,6 +20,7 @@ import { NodesService }  from '../nodes.service';
 import { Node }  from '../node';
 import { SetUpstreamDialogComponent } from '../set-upstream-dialog/set-upstream-dialog.component';
 import { AddNodeDialogComponent } from '../add-node-dialog/add-node-dialog.component';
+import { SocketService }  from '../socket.service';
 
 @Component({
   selector: 'app-nodes',
@@ -42,12 +43,16 @@ export class NodesComponent implements OnInit {
   displayedColumns: string[] = [ "name", "serverId", "lastSeen", "actions" ];
   upstreamLastSeen: string;
 
+  private onStatus = new EventEmitter<any>();
+  private onNodeSeen = new EventEmitter<any>();
+
   constructor(
     public dialog: MatDialog,
     public router: Router,
     private sanitizer: DomSanitizer,
     private infoService: InfoService,
     private nodesService: NodesService,
+    private socketService: SocketService,
     private meService: MeService,
     private snackBar: MatSnackBar
   ) {
@@ -56,6 +61,7 @@ export class NodesComponent implements OnInit {
   ngOnInit() {
     this.meService.getMe().subscribe(me => {
         this.me = me
+        this.startSocket();
         this.getInfos();
         this.getItems(0);
        });
@@ -230,6 +236,25 @@ export class NodesComponent implements OnInit {
 
   urlIsOurs(url: string): boolean {
     return url == 'https://local.visualops.com';
+  }
+
+  private startSocket(): void {
+    this.onStatus.subscribe(status => {
+      this.snackBar.open(status.text, "Hide", { duration: 3000 });
+    });
+    this.onNodeSeen.subscribe(status => {
+      if (status.upstreamLastSeen) {
+        this.upstreamLastSeen = status.upstreamLastSeen;
+      }
+      else {
+        var node = this.items.filter(e => e.serverId == status.serverId);
+        if (node.length > 0) {
+          node[0].lastSeen = status.lastSeen;
+        }
+      }
+    });
+    this.socketService.registerStatus("nodes", this.onStatus);
+    this.socketService.registerNodeSeen("nodes", this.onNodeSeen);
   }
 
 }

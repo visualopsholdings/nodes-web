@@ -16,6 +16,7 @@ export class SocketService {
 
   private statusHandlers = [];
   private qrHandlers = [];
+  private nodeSeenHandlers = [];
 
   private me: User;
   private timeout = null;
@@ -54,6 +55,11 @@ export class SocketService {
       }
       else if (json.type == "status") {
         self.statusHandlers.forEach(e => {
+          e.emitter.emit(json);
+        });
+      }
+      else if (json.type == "nodeSeen") {
+        self.nodeSeenHandlers.forEach(e => {
           e.emitter.emit(json);
         });
       }
@@ -100,6 +106,11 @@ export class SocketService {
   registerStatus(ctx: string, emitter: EventEmitter<any>) {
     this.statusHandlers = this.statusHandlers.filter(e => e.ctx != ctx);
     this.statusHandlers.push({ ctx: ctx, emitter: emitter });
+  }
+
+  registerNodeSeen(ctx: string, emitter: EventEmitter<any>) {
+    this.nodeSeenHandlers = this.nodeSeenHandlers.filter(e => e.ctx != ctx);
+    this.nodeSeenHandlers.push({ ctx: ctx, emitter: emitter });
   }
 
   id(): string {

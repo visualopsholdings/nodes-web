@@ -41,6 +41,7 @@ ZMQClient::ZMQClient(Server *server, int subPort) :
   _submessages["queryResult"] = bind(&nodes::sendWS, this, placeholders::_1);
   _submessages["status"] = bind(&nodes::sendWS, this, placeholders::_1);
   _submessages["idea"] = bind(&nodes::sendIdeaWS, this, placeholders::_1);
+  _submessages["nodeSeen"] = bind(&nodes::sendWS, this, placeholders::_1);
 
 }
 
