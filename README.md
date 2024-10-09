@@ -150,7 +150,7 @@ export RESTINIO_HOME=/where/restinio/went
 
 ## Web client
 
-The web client is written in angular so you need to install that.
+Some parts of the web client is written in angular so you need to install that.
 
 To install angular.
 
@@ -158,7 +158,7 @@ To install angular.
 sudo npm install -g @angular/cli@16
 ```
 
-To build the project (including the angular front end):
+To build the project (including the angular and react front end):
 
 ```
 nodes-web/scripts/build.sh
