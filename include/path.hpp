@@ -14,6 +14,7 @@
 #ifndef H_path
 #define H_path
 
+#include <optional>
 #include <string>
 
 using namespace std;
