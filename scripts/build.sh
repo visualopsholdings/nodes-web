@@ -16,6 +16,7 @@ pushd nodes-web/build
 git pull
 cmake ..
 make -j4
+make test
 popd
 
 if [ "$1" == "noangular" ]; then
@@ -34,6 +35,11 @@ npm install
 popd
 
 pushd nodes-web/angular/chat-ui
+npm install
+./build.sh
+popd
+
+pushd nodes-web/react/chat-ui
 npm install
 ./build.sh
 popd

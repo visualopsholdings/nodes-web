@@ -16,6 +16,7 @@
 #include "session.hpp"
 #include "zmqclient.hpp"
 #include "etag.hpp"
+#include "path.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/core.hpp>
@@ -122,7 +123,7 @@ status_t getroot(Server *server, const req_t& req, params_t params)
 
 status_t servefile(const req_t& req, const string &filename, optional<string> type = nullopt) {
 
-  BOOST_LOG_TRIVIAL(trace) << filename;
+  BOOST_LOG_TRIVIAL(trace) << filename << " as " << (type ? type.value() : "??");
 
   auto resp = req->create_response();
   resp.set_body(restinio::sendfile(filename));
@@ -168,25 +169,7 @@ status_t getappindex(Server *server, const req_t& req, params_t params)
 {
   const auto app = restinio::cast_to<string>( params[ "app" ] );
 
-  return servefile(req, "frontend/apps/" + app + "/index.html");
-
-}
-
-status_t getappfile(Server *server, const req_t& req, params_t params)
-{
-  const auto app = restinio::cast_to<string>( params[ "app" ] );
-  const auto file = restinio::cast_to<string>( params[ "file" ] );
-
-  return servefile(req, "frontend/apps/" + app + "/" + file, getmime(file));
-
-}
-
-status_t getappasset(Server *server, const req_t& req, params_t params)
-{
-  const auto app = restinio::cast_to<string>(params["app"]);
-  const auto file = restinio::cast_to<string>(params["file"]);
-
-  return servefile(req, "frontend/apps/" + app + "/assets/" + file, getmime(file));
+  return servefile(req, "frontend/apps/" + app + "/index.html", "text/html");
 
 }
 
@@ -209,9 +192,8 @@ auto Server::handler()
   if (_test) {
     // we don't install these handlers during production. Nginx takes
     // care of all this.
+    router->http_get("/apps/:app", by(&nodes::getappindex));
     router->http_get("/apps/:app/", by(&nodes::getappindex));
-    router->http_get("/apps/:app/:file", by(&nodes::getappfile));
-    router->http_get("/apps/:app/assets/:file", by(&nodes::getappasset));
   }
   
   router->http_get("/logout", by(&nodes::getlogout));
@@ -290,6 +272,24 @@ auto Server::handler()
     return sendBodyReturnEmptyObjAdmin(req, "addnode");
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
+
+  router->non_matched_request_handler([&](const req_t& req) {
+  
+    string path(req->header().path());
+    
+    BOOST_LOG_TRIVIAL(warning) << "no matched request " << path;
+    
+    if (_test) {
+      // we don't do this during production. Nginx takes
+      // care of all this.
+      auto appPath = Path::getAppPath(path);
+      if (appPath) {
+        return nodes::servefile(req, appPath.value(), nodes::getmime(path));
+      }
+    }
+    
+    return req->create_response(restinio::status_not_found()).connection_close().done();
+  });
 
   return router;
 }
@@ -500,6 +500,8 @@ status_t Server::returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag
 
 status_t Server::returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &j) {
 
+  BOOST_LOG_TRIVIAL(trace) << j;
+  
   auto resp = req->create_response();
   stringstream ss;
   ss << j;

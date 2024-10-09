@@ -11,6 +11,10 @@ When('{string} logs into admin') do |name|
   visit("http://localhost:8081/login/?username=" + name + "&app=admin")
 end
 
+When('{string} logs into react chat') do |name|
+  visit("http://localhost:8081/login/?username=" + name + "&app=rchat")
+end
+
 Given('{string} log into app {string}') do |name, app|
   visit("http://localhost:8081/login/?username=" + name + "&app=" + app)
 end

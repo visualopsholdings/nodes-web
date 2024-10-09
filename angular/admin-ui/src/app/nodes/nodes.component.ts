@@ -43,7 +43,6 @@ export class NodesComponent implements OnInit {
   displayedColumns: string[] = [ "name", "serverId", "lastSeen", "actions" ];
   upstreamLastSeen: string;
 
-  private onStatus = new EventEmitter<any>();
   private onNodeSeen = new EventEmitter<any>();
 
   constructor(
@@ -239,9 +238,6 @@ export class NodesComponent implements OnInit {
   }
 
   private startSocket(): void {
-    this.onStatus.subscribe(status => {
-      this.snackBar.open(status.text, "Hide", { duration: 3000 });
-    });
     this.onNodeSeen.subscribe(status => {
       if (status.upstreamLastSeen) {
         this.upstreamLastSeen = status.upstreamLastSeen;
@@ -253,7 +249,6 @@ export class NodesComponent implements OnInit {
         }
       }
     });
-    this.socketService.registerStatus("nodes", this.onStatus);
     this.socketService.registerNodeSeen("nodes", this.onNodeSeen);
   }
 

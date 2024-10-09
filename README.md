@@ -390,5 +390,9 @@ Visual Ops node.
 ### 7 Oct 2024
 - Nodes can be displayed, added and deleted.
 
+### 9 Oct 2024
+- Simplest possible react application. Just shows who is logged in.
+
+
 
 

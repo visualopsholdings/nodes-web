@@ -64,6 +64,7 @@ set(UTILS
   src/json.cpp
   src/cookie.cpp
   src/date.cpp
+  src/path.cpp
 )
 set(HANDLERS
   src/handlers/get/rawusers.cpp
@@ -137,3 +138,8 @@ add_executable(TestDate test/testdate.cpp src/date.cpp)
   target_link_libraries(TestDate ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestDate TestDate)
+
+add_executable(TestPath test/testpath.cpp src/path.cpp)
+  target_link_libraries(TestPath ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
+
+add_test(TestPath TestServer)
