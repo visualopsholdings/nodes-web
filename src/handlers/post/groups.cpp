@@ -1,8 +1,8 @@
 /*
-  postusers.cpp
+  postgroups.cpp
   
   Author: Paul Hamilton (paul@visualops.com)
-  Date: 15-Aug-2024
+  Date: 10-Oct-2024
     
   Licensed under [version 3 of the GNU General Public License] contained in LICENSE.
  
@@ -20,11 +20,8 @@
 
 namespace nodes {
 
-status_t postusers(Server *server, const req_t& req, params_t params) {
+status_t postgroups(Server *server, const req_t& req, params_t params) {
 
-  if (!server->isAdmin(req)) {
-    return server->unauthorised(req);
-  }
   auto etag = ETag::none();
   
   json j = boost::json::parse(req->body());
@@ -33,9 +30,14 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   // query a user.
   auto query = Json::getBool(j, "query", true);
   if (query && query.value()) {
-    auto email = Json::getString(j, "email");
-    if (!email) {
-      return server->fatal(req, "query requires email.");
+  
+    if (!server->isAdmin(req)) {
+      return server->unauthorised(req);
+    }
+    
+    auto name = Json::getString(j, "name");
+    if (!name) {
+      return server->fatal(req, "query requires name.");
     }
     
     if (!req->header().has_field("socketid")) {
@@ -45,8 +47,8 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     
     j = {
       { "type", "query" },
-      { "objtype", "user" },      
-      { "email", email.value() },
+      { "objtype", "group" },      
+      { "name", name.value() },
       { "corr", socketid }
     };
     server->send(j);
@@ -62,23 +64,27 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
   
-  // add an upstream user
+  // add an upstream group
   auto upstream = Json::getBool(j, "upstream", true);
   if (upstream && upstream.value()) {
   
+    if (!server->isAdmin(req)) {
+      return server->unauthorised(req);
+    }
+
     auto id = Json::getString(j, "_id");
     if (!id) {
       return server->fatal(req, "upstream requires id.");
     }
     j = {
-      { "type", "adduser" },
+      { "type", "addgroup" },
       { "id", id.value() },      
       { "upstream", true }
     };
     server->send(j);
     j = server->receive();
     
-    auto resp = server->checkErrors(req, j, "adduser");
+    auto resp = server->checkErrors(req, j, "addgroup");
     if (resp) {
       return resp.value();
     }
@@ -88,7 +94,7 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
 
-  return server->fatal(req, "only understand query or upstream.");  
+  return server->sendBodyReturnEmptyObj(req, "addgroup");
 
 }
 

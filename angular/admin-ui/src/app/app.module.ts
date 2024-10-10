@@ -69,6 +69,8 @@ import { SetUibitsDialogComponent } from './set-uibits-dialog/set-uibits-dialog.
 import { NodesService }  from './nodes.service';
 import { NodeDetailComponent } from './node-detail/node-detail.component';
 import { AddNodeDialogComponent } from './add-node-dialog/add-node-dialog.component';
+import { AddUpstreamTeamDialogComponent } from './add-upstream-team-dialog/add-upstream-team-dialog.component';
+import { TeamQueryResultDialogComponent } from './team-query-result-dialog/team-query-result-dialog.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +103,9 @@ import { AddNodeDialogComponent } from './add-node-dialog/add-node-dialog.compon
     PolicyIdDialogComponent,
     SetUibitsDialogComponent,
     NodeDetailComponent,
-    AddNodeDialogComponent
+    AddNodeDialogComponent,
+    AddUpstreamTeamDialogComponent,
+    TeamQueryResultDialogComponent
   ],
   imports: [
     BrowserModule,

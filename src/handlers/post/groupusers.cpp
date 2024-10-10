@@ -40,7 +40,7 @@ status_t postgroupusers(Server *server, const req_t& req, params_t params) {
   }
   
 	server->send({
-	  { "type", "newmember" },
+	  { "type", "addmember" },
 	  { "group",  id },
 	  { "id",  j.at("_id").as_string() },
     { "me", session.value()->userid() }
@@ -49,7 +49,7 @@ status_t postgroupusers(Server *server, const req_t& req, params_t params) {
   
 //  BOOST_LOG_TRIVIAL(trace) << j;
   
-  return server->checkErrorsReturnEmptyObj(req, j, "newmember");
+  return server->checkErrorsReturnEmptyObj(req, j, "addmember");
 
 }
 

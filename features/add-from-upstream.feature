@@ -52,3 +52,24 @@ Feature: Add From Upstream
       Then eventually the page contains "Discovery complete"
       And eventually table has 7 rows
       And eventually the user fullname "Fred Bloggs" with salt and hash appears in the DB
+
+  @javascript
+  Scenario: A team can be added from upstream
+      When "tracy" logs into admin
+      And she clicks "Teams"
+      And eventually table has 2 rows
+      
+      # add Paul
+      And she clicks "ADD FROM UPSTREAM"
+      And a modal dialog appears
+      And she enters "New" in "name"
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      And eventually a modal dialog appears
+      And eventually the page contains "New Team"
+      And she checks the first list option
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+      Then eventually the page contains "Discovery complete"
+      And eventually table has 3 rows
+      And eventually there is a group "New Team" in the DB

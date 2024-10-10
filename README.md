@@ -228,20 +228,17 @@ build and run nodes (in one terminal window):
 
 ```
 cd nodes/build
-make && ./nodes --test --logLevel=trace
+make -j4 && ./nodes --test --logLevel=trace
 ```
 
-But you could just run nodes with:
-
-```
-nodes/scripts/start.sh
-```
+The "test" allows the login to take a username "GET" argument (you'll see that below). This is just part
+of the fullname or the username of the user to allow testing to work.
 
 Build and run this project in another terminal window:
 
 ```
 cd nodes-web/build
-make && ./nodes-web --logLevel=trace
+make -j4 && ./nodes-web --logLevel=trace
 ```
 
 And then for the angular chat front end (in another terminal window):
@@ -253,12 +250,32 @@ cd nodes-web/angular/chat-ui
 
 Then visit here with your browser:
 
+```
 http://localhost:8081/login/?username=tracy
+```
 
 Then you can edit the TypeScript code for chat and it will deploy instantly with each change.
 
 If you need to change the C++ code, just make your changes, quit and rerun the nodes-web
 command and it will rebuild and on success re-run ready to go again.
+
+These commands will work for all of the angular projects and also the react ones, since there
+is a "run.sh" script inside each folder.
+
+## Running production built projects locally
+
+When you want to test a fully build project locally, nodes-web can operate as a simple web server
+with a "test" argument. Make sure you specify a reasonable port:
+
+```
+build/nodes-web --logLevel=trace --test --httpPort=8081
+```
+
+This URL will work just fine:
+
+```
+http://localhost:8081/login/?username=tracy
+```
 
 ## Testing dependencies
 

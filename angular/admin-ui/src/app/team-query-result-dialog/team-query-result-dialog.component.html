@@ -1,0 +1,18 @@
+<form [formGroup]="form" (ngSubmit)="submit(form)" class="modal-dialog" autocomplete="off">
+  <h1 mat-dialog-title>Choose a team to add from upstream</h1>
+  <mat-dialog-content>
+    <p>Any members of the team that already exist on this server will
+      appear in the team, others will not.</p>
+    <p>If you wanted the same team ID, you might have wanted to ADD a team
+    with the same ID rather than pulling from upstream.</p>
+    <mat-selection-list #list>
+      <mat-list-option *ngFor="let team of teams" value="{{team._id}}">
+         {{team.name}} ({{team._id}})
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button type="submit">Ok</button>
+  </mat-dialog-actions>
+</form>

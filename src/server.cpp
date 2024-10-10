@@ -112,6 +112,7 @@ status_t getgrouppolicy(Server *server, const req_t& req, params_t );
 status_t getnodes(Server *server, const req_t& req, params_t );
 status_t getnode(Server *server, const req_t& req, params_t );
 status_t deletenode(Server *server, const req_t& req, params_t );
+status_t postgroups(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -253,9 +254,7 @@ auto Server::handler()
   router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObjAdmin(req, "setgrouppolicy", restinio::cast_to<string>(params["id"]));
   });
-  router->http_post("/rest/1.0/groups", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "addgroup");
-  });
+  router->http_post("/rest/1.0/groups", by(&nodes::postgroups));
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "setgroup", restinio::cast_to<string>(params["id"]));
   });

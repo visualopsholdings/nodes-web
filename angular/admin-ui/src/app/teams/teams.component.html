@@ -16,6 +16,11 @@
       <td mat-cell *matCellDef="let item">{{item._id}}</td>
     </ng-container>
 
+    <ng-container matColumnDef="upstream">
+      <th mat-header-cell *matHeaderCellDef>UPSTREAM</th>
+      <td mat-cell *matCellDef="let item">{{item.upstream ? "☑️" : ""}}</td>
+    </ng-container>
+
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef>DATE</th>
       <td mat-cell *matCellDef="let item">{{item.modifyDate | date:'medium'}}</td>
@@ -38,4 +43,5 @@
     </mat-paginator>
   </span>
   <button class="add-button" mat-raised-button (click)="add();">ADD</button>
+  <button *ngIf="hasUpstream" class="add-button" mat-raised-button (click)="queryUpstream();">ADD FROM UPSTREAM</button>
 </div>

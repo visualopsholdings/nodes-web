@@ -110,6 +110,7 @@ set(HANDLERS
   src/handlers/get/nodes.cpp
   src/handlers/get/node.cpp
   src/handlers/delete/node.cpp
+  src/handlers/post/groups.cpp
 )
 
 include_directories(include)

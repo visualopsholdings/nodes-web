@@ -10,7 +10,11 @@ import { BootstrapService } from './bootstrap.service';
 import { SocketService }  from './socket.service';
 import { User }  from './user';
 import { UserQueryResultDialogComponent } from './user-query-result-dialog/user-query-result-dialog.component';
+import { TeamQueryResultDialogComponent } from './team-query-result-dialog/team-query-result-dialog.component';
 import { UserService }  from './user.service';
+import { TeamService }  from './team.service';
+import { Team }  from './team';
+import { ConfirmComponent } from './confirm/confirm.component';
 
 @Component({
   selector: 'app-root',
@@ -36,6 +40,7 @@ export class AppComponent implements OnInit {
     private snackBar: MatSnackBar,
     private meService: MeService,
     private userService: UserService,
+    private teamService: TeamService,
     private bootstrapService: BootstrapService,
     private socketService: SocketService,
   ) {
@@ -68,15 +73,40 @@ export class AppComponent implements OnInit {
     }
     this.onQR.subscribe(result => {
       if (result.queryType == "user") {
-        this.dialog.open(UserQueryResultDialogComponent, { data: { users: result.result } }).afterClosed().subscribe(result => {
-          if (result) {
-            result.forEach(user => {
-              this.userService.addUser({ _id: user, upstream: true } as User).subscribe(() => {
-                // need to refresh later
+        if (result.result.length == 0) {
+          this.dialog.open(ConfirmComponent, {
+              data: { title: "No users", description: "No users were found." }
+          });
+        }
+        else {
+          this.dialog.open(UserQueryResultDialogComponent, { data: { users: result.result } }).afterClosed().subscribe(result => {
+            if (result) {
+              result.forEach(user => {
+                this.userService.addUser({ _id: user, upstream: true } as User).subscribe(() => {
+                  // need to refresh later
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        }
+      }
+      else if (result.queryType == "group") {
+        if (result.result.length == 0) {
+          this.dialog.open(ConfirmComponent, {
+              data: { title: "No teams", description: "No teams were found." }
+          });
+        }
+        else {
+          this.dialog.open(TeamQueryResultDialogComponent, { data: { teams: result.result } }).afterClosed().subscribe(result => {
+            if (result) {
+              result.forEach(team => {
+                this.teamService.addTeam({ _id: team, upstream: true } as Team).subscribe(() => {
+                  // need to refresh later
+                });
+              });
+              }
+          });
+        }
       }
       else {
         console.log("Unknown query result type", result.queryType);

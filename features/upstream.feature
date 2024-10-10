@@ -12,12 +12,17 @@ Feature: Upstream Test
       And there are groups:
          | name        | id                        | modifyDate   |
          | Team 1      | 613d8641ec9e5a6c4785d6d2  | 2 Jan 2022   |
+         | New Team    |                           | 2 Jan 2022   |
          
       And there are users in group "Team 1":
          | name      | roles          |
          | joe      | admin user     |
          | fred      | pleb user      |
          | admin     |                |
+         
+      And there are users in group "New Team":
+         | name      | roles          |
+         | joe      | admin user     |
          
        And there are policies:
          | name   | viewuser           | viewgroup | edituser           | editgroup | execuser           | execgroup | id                       | 

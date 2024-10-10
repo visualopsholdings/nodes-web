@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
@@ -13,6 +13,8 @@ import { Me }  from '../me';
 import { InfoService }  from '../info.service';
 import { Info }  from '../info';
 import { AddTeamDialogComponent } from '../add-team-dialog/add-team-dialog.component';
+import { AddUpstreamTeamDialogComponent } from '../add-upstream-team-dialog/add-upstream-team-dialog.component';
+import { SocketService }  from '../socket.service';
 
 @Component({
   selector: 'app-teams',
@@ -26,7 +28,10 @@ export class TeamsComponent implements OnInit {
   pageSizeOptions = [9, 36, 72];
   pageSize = 9;
   total: number;
-  displayedColumns: string[] = [ "icon", "name", "id", "date", "actions" ];
+  displayedColumns: string[] = [ "icon", "name", "id", "date", "upstream", "actions" ];
+  hasUpstream = false;
+
+  private onStatus = new EventEmitter<any>();
 
   constructor(
     public dialog: MatDialog,
@@ -35,7 +40,9 @@ export class TeamsComponent implements OnInit {
     private teamService: TeamService,
     private iconService: IconService,
     private infoService: InfoService,
-    private meService: MeService)
+    private meService: MeService,
+    private socketService: SocketService,
+    )
   {}
 
   ngOnInit() {
@@ -43,7 +50,18 @@ export class TeamsComponent implements OnInit {
       .subscribe(me => {
         this.me = me;
         this.getItems(0);
+        this.infoService.getInfos().subscribe(infos => {
+          this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
+        });
+        this.startSocket();
      });
+  }
+
+  private startSocket(): void {
+    this.onStatus.subscribe(status => {
+      this.getItems(0);
+    });
+    this.socketService.registerStatus("teams", this.onStatus);
   }
 
   hasAdmin(): boolean {
@@ -96,6 +114,17 @@ export class TeamsComponent implements OnInit {
           }
         });
       }
+    });
+  }
+
+  queryUpstream(): void {
+    this.dialog.open(AddUpstreamTeamDialogComponent).afterClosed().subscribe(result => {
+        if (result) {
+          result.query = true;
+          this.teamService.addTeam(result as Team).subscribe(() => {
+            // need to refresh later
+          });
+        }
     });
   }
 

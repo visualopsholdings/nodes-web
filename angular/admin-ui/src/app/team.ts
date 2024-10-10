@@ -7,6 +7,7 @@ export class Team {
   name: string;
   image: string;
   policy: string;
+  upstream: boolean;
   deleted: boolean;
   members: TeamMember[];
 
