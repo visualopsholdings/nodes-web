@@ -9,12 +9,15 @@ import { MeService }  from './me.service';
 import { BootstrapService } from './bootstrap.service';
 import { SocketService }  from './socket.service';
 import { User }  from './user';
+import { StreamQueryResultDialogComponent } from './stream-query-result-dialog/stream-query-result-dialog.component';
 import { UserQueryResultDialogComponent } from './user-query-result-dialog/user-query-result-dialog.component';
 import { TeamQueryResultDialogComponent } from './team-query-result-dialog/team-query-result-dialog.component';
 import { UserService }  from './user.service';
 import { TeamService }  from './team.service';
 import { Team }  from './team';
 import { ConfirmComponent } from './confirm/confirm.component';
+import { StreamService }  from './stream.service';
+import { Stream }  from './stream';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +44,7 @@ export class AppComponent implements OnInit {
     private meService: MeService,
     private userService: UserService,
     private teamService: TeamService,
+    private streamService: StreamService,
     private bootstrapService: BootstrapService,
     private socketService: SocketService,
   ) {
@@ -93,7 +97,7 @@ export class AppComponent implements OnInit {
       else if (result.queryType == "group") {
         if (result.result.length == 0) {
           this.dialog.open(ConfirmComponent, {
-              data: { title: "No teams", description: "No teams were found." }
+              data: { title: "No groups", description: "No groups were found." }
           });
         }
         else {
@@ -101,6 +105,24 @@ export class AppComponent implements OnInit {
             if (result) {
               result.forEach(team => {
                 this.teamService.addTeam({ _id: team, upstream: true } as Team).subscribe(() => {
+                  // need to refresh later
+                });
+              });
+              }
+          });
+        }
+      }
+      else if (result.queryType == "stream") {
+        if (result.result.length == 0) {
+          this.dialog.open(ConfirmComponent, {
+              data: { title: "No streams", description: "No teams were found." }
+          });
+        }
+        else {
+          this.dialog.open(StreamQueryResultDialogComponent, { data: { teams: result.result } }).afterClosed().subscribe(result => {
+            if (result) {
+              result.forEach(stream => {
+                this.streamService.addStream({ _id: stream, upstream: true } as Stream).subscribe(() => {
                   // need to refresh later
                 });
               });

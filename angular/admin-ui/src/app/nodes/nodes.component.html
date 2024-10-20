@@ -10,6 +10,7 @@
     <p *ngIf="getInfo('upstream')"><b>Upstream node</b>: {{getInfo("upstream")}}</p>
     <p *ngIf="getInfo('upstreamPubKey')"><b>Upstream public key</b>: {{getInfo("upstreamPubKey")}}</p>
     <p *ngIf="getInfo('upstreamId')"><b>Upstream Server id</b>: {{getInfo("upstreamId")}}</p>
+    <p *ngIf="getInfo('upstreamMirror')"><b>Upstream mirror</b>: {{getInfo("upstreamMirror")}}</p>
     <p *ngIf="getInfo('hasInitialSync')"><b>Has Initial Sync</b>: {{getInfo("hasInitialSync")}}</p>
     <p *ngIf="upstreamLastSeen"><b>Last time upstream seen</b>: <span [style.color]="fgColorLastSeenTime(upstreamLastSeen)">{{upstreamLastSeen | date: 'medium'}}</span></p>
   </div>
@@ -28,9 +29,19 @@
       <td mat-cell *matCellDef="let item">{{item.serverId}}</td>
     </ng-container>
 
+    <ng-container matColumnDef="mirror">
+      <th mat-header-cell *matHeaderCellDef>MIRROR</th>
+      <td mat-cell *matCellDef="let item">{{item.mirror ? "☑️" : ""}}</td>
+    </ng-container>
+
     <ng-container matColumnDef="lastSeen">
       <th mat-header-cell *matHeaderCellDef>LAST SEEN</th>
       <td mat-cell *matCellDef="let item" [style.color]="fgColorLastSeen(item)">{{item.lastSeen | date: 'medium'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="valid">
+      <th mat-header-cell *matHeaderCellDef>VALID</th>
+      <td mat-cell *matCellDef="let item">{{item.valid ? "☑️" : ""}}</td>
     </ng-container>
 
     <ng-container matColumnDef="actions">

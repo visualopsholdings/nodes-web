@@ -71,6 +71,8 @@ import { NodeDetailComponent } from './node-detail/node-detail.component';
 import { AddNodeDialogComponent } from './add-node-dialog/add-node-dialog.component';
 import { AddUpstreamTeamDialogComponent } from './add-upstream-team-dialog/add-upstream-team-dialog.component';
 import { TeamQueryResultDialogComponent } from './team-query-result-dialog/team-query-result-dialog.component';
+import { AddUpstreamStreamDialogComponent } from './add-upstream-stream-dialog/add-upstream-stream-dialog.component';
+import { StreamQueryResultDialogComponent } from './stream-query-result-dialog/stream-query-result-dialog.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +107,9 @@ import { TeamQueryResultDialogComponent } from './team-query-result-dialog/team-
     NodeDetailComponent,
     AddNodeDialogComponent,
     AddUpstreamTeamDialogComponent,
-    TeamQueryResultDialogComponent
+    TeamQueryResultDialogComponent,
+    AddUpstreamStreamDialogComponent,
+    StreamQueryResultDialogComponent
   ],
   imports: [
     BrowserModule,

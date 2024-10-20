@@ -15,6 +15,7 @@ import { Me }  from '../me';
 import { InfoService }  from '../info.service';
 import { Info }  from '../info';
 import { SocketService }  from '../socket.service';
+import { AddUpstreamStreamDialogComponent } from '../add-upstream-stream-dialog/add-upstream-stream-dialog.component';
 
 @Component({
   selector: 'app-streams',
@@ -29,6 +30,9 @@ export class StreamsComponent implements OnInit {
   pageSize = 9;
   total: number;
   displayedColumns: string[] = [ "icon", "emoji", "name", "id", "date", "actions" ];
+  hasUpstream = false;
+  isMirror = false;
+  serverId: string;
 
   constructor(
     public dialog: MatDialog,
@@ -48,6 +52,12 @@ export class StreamsComponent implements OnInit {
       .subscribe(me => {
         this.me = me;
         this.getItems(0);
+        this.infoService.getInfos().subscribe(infos => {
+          this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
+          var mirror = infos.filter(e => e.type == "upstreamMirror");
+          this.isMirror = mirror.length > 0 && mirror[0].text == "true";
+          this.serverId = infos.filter(e => e.type == "serverId")[0].text;
+        });
      });
   }
 
@@ -93,6 +103,17 @@ export class StreamsComponent implements OnInit {
           }
         });
       }
+    });
+  }
+
+  queryUpstream(): void {
+    this.dialog.open(AddUpstreamStreamDialogComponent).afterClosed().subscribe(result => {
+        if (result) {
+          result.query = true;
+          this.streamService.addStream(result as Stream).subscribe(() => {
+            // need to refresh later
+          });
+        }
     });
   }
 

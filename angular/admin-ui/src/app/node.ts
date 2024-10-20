@@ -9,8 +9,17 @@ export class Node {
   headerTitle: string;
   streamBgColor: string;
   lastSeen: string;
+  mirror: boolean;
+  synced: boolean;
+  valid: boolean;
   lastUser: string;
+  lastGroup: string;
+  lastStream: string;
   users: string[];
   userobjs: any[];
+  groups: string[];
+  groupobjs: any[];
+  streams: any[];
+  streamobjs: any[];
 
 }

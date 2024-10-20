@@ -40,7 +40,7 @@ export class NodesComponent implements OnInit {
   total: number;
   query = "";
   queryCtrl = new FormControl("", []);
-  displayedColumns: string[] = [ "name", "serverId", "lastSeen", "actions" ];
+  displayedColumns: string[] = [ "name", "serverId", "mirror", "lastSeen", "valid", "actions" ];
   upstreamLastSeen: string;
 
   private onNodeSeen = new EventEmitter<any>();
@@ -126,13 +126,16 @@ export class NodesComponent implements OnInit {
   }
 
   setUpstream(): void {
-    let data = { upstream: null, upstreamPubKey: null };
+    let data = { upstream: null, upstreamPubKey: null, upstreamMirror: false };
     for (let i of this.infos) {
       if (i.type == "upstream") {
         data.upstream = i.text;
       }
       else if (i.type == "upstreamPubKey") {
         data.upstreamPubKey = i.text;
+      }
+      else if (i.type == "upstreamMirror") {
+        data.upstreamMirror = i.text == "true";
       }
     }
     this.dialog.open(SetUpstreamDialogComponent, {

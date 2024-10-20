@@ -13,10 +13,19 @@
         <p class="item">KEY: {{node.pubKey}}</p>
         <p class="item">ADMIN: <a  class="link" href="{{node.url}}/apps/admin" target="_blank">{{node.url}}</a></p>
         <p class="item">SERVER ID: {{node.serverId}}</p>
+        <p class="item">MIRROR: {{node.mirror}}</p>
+        <p class="item">SYNCED: {{node.synced}}</p>
+        <p class="item">SERVER ID: {{node.serverId}}</p>
         <p class="item">LAST SEEN: {{node.lastSeen | date:'medium'}}</p>
         <p class="item">LAST USER: {{node.lastUser | date:'medium'}}</p>
+        <p class="item">LAST GROUP: {{node.lastGroup | date:'medium'}}</p>
+        <p class="item">LAST STREAM: {{node.lastStream | date:'medium'}}</p>
         <p class="item">Users:</p>
         <p class="id" *ngFor="let user of node.userobjs">{{user._id}}, {{user.fullname}}</p>
+        <p class="item">Groups:</p>
+        <p class="id" *ngFor="let group of node.groupobjs">{{group._id}}, {{group.name}}</p>
+        <p class="item">Streams:</p>
+        <p class="id" *ngFor="let stream of node.streamobjs">{{stream._id}}, {{stream.name}}</p>
     </mat-card-content>
     <mat-card-actions>
     </mat-card-actions>

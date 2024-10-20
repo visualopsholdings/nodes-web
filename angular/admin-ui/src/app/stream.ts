@@ -10,5 +10,6 @@ export class Stream {
   emoji: string;
   policy: string;
   streambits?: StreamBits;
+  upstream: boolean;
 
 }
