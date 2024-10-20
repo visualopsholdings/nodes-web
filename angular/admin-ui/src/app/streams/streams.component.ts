@@ -34,6 +34,8 @@ export class StreamsComponent implements OnInit {
   isMirror = false;
   serverId: string;
 
+  private onStatus = new EventEmitter<any>();
+
   constructor(
     public dialog: MatDialog,
     public router: Router,
@@ -58,7 +60,15 @@ export class StreamsComponent implements OnInit {
           this.isMirror = mirror.length > 0 && mirror[0].text == "true";
           this.serverId = infos.filter(e => e.type == "serverId")[0].text;
         });
+        this.startSocket();
      });
+  }
+
+  private startSocket(): void {
+    this.onStatus.subscribe(status => {
+      this.getItems(0);
+    });
+    this.socketService.registerStatus("streams", this.onStatus);
   }
 
   hasAdmin(): boolean {

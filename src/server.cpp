@@ -113,6 +113,7 @@ status_t getnodes(Server *server, const req_t& req, params_t );
 status_t getnode(Server *server, const req_t& req, params_t );
 status_t deletenode(Server *server, const req_t& req, params_t );
 status_t postgroups(Server *server, const req_t& req, params_t );
+status_t poststreams(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -245,9 +246,7 @@ auto Server::handler()
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObjAdmin(req, "setstreampolicy", restinio::cast_to<string>(params["id"]));
   });
-  router->http_post("/rest/1.0/streams", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "addstream");
-  });
+  router->http_post("/rest/1.0/streams", by(&nodes::poststreams));
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
 
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));

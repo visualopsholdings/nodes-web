@@ -38,6 +38,7 @@ Feature: Upstream Test
          | Stream 2        | p1     | 61444c6addf5aaa6a02e05b7 | 5 Jan 2022   |
          | Shared Stream   | p1     | 61a0b4de98499a20f0768351 | 2 Jan 2022   |
          | Shared 2 Stream | p1     | 63c0c08e337cce14a54e0517 | 2 Jan 2022   |
+         | New Stream      | p1     | 637aa99202e727169a58282f | 2 Jan 2022   |
 
       And the server has id "4ecaf2b6-42f2-49fe-b0ef-123758a3a4db"
       And the server has privateKey "t5R[&?W.8-mjIc]cs#<T(5AW7sCJYHo^<2k-]!2!"
@@ -53,5 +54,5 @@ Feature: Upstream Test
 
    @javascript
 	Scenario: Setup upstream server
-      Then eventually there are 4 streams in the DB	
+      Then eventually there are 5 streams in the DB	
    

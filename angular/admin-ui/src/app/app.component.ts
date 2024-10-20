@@ -119,7 +119,7 @@ export class AppComponent implements OnInit {
           });
         }
         else {
-          this.dialog.open(StreamQueryResultDialogComponent, { data: { teams: result.result } }).afterClosed().subscribe(result => {
+          this.dialog.open(StreamQueryResultDialogComponent, { data: { streams: result.result } }).afterClosed().subscribe(result => {
             if (result) {
               result.forEach(stream => {
                 this.streamService.addStream({ _id: stream, upstream: true } as Stream).subscribe(() => {
