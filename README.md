@@ -410,6 +410,10 @@ Visual Ops node.
 ### 9 Oct 2024
 - Simplest possible react application. Just shows who is logged in.
 
+### 20 Oct 2024
+- Upstream for streams and groups.
+
+
 
 
 
