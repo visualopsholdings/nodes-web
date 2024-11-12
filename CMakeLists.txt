@@ -10,6 +10,8 @@
 #   https://github.com/visualopsholdings/nodes-web
 
 cmake_minimum_required(VERSION 3.5)
+cmake_policy(SET CMP0167 NEW) # Boost
+cmake_policy(SET CMP0169 OLD) # FetchContent
 
 project (nodes-web)
   find_package(Boost 1.85.0 COMPONENTS program_options filesystem unit_test_framework chrono thread log_setup log json REQUIRED)
@@ -144,4 +146,4 @@ add_test(TestDate TestDate)
 add_executable(TestPath test/testpath.cpp src/path.cpp)
   target_link_libraries(TestPath ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
-add_test(TestPath TestServer)
+add_test(TestPath TestPath)
