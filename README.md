@@ -84,6 +84,13 @@ need to build it from source:
 
 [Instructions](https://github.com/visualopsholdings/nodes-devops/blob/main/dev/BOOST.md)
 
+#### CMake 3.30
+
+if you can get this or later with a simple tool then do that, otherwise you will
+need to build it from source:
+
+[Instructions](https://github.com/visualopsholdings/nodes-devops/blob/main/dev/CMAKE.md)
+
 #### ZMQ
 
 If you can get zeromq 4.1.5 or later, then use that otherwise you will need to build it
