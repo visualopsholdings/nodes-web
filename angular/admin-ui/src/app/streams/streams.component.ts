@@ -29,7 +29,7 @@ export class StreamsComponent implements OnInit {
   pageSizeOptions = [9, 36, 72];
   pageSize = 9;
   total: number;
-  displayedColumns: string[] = [ "icon", "emoji", "name", "id", "date", "actions" ];
+  displayedColumns: string[] = [ "icon", "emoji", "name", "id", "upstream", "actions" ];
   hasUpstream = false;
   isMirror = false;
   serverId: string;

@@ -16,6 +16,8 @@
     <hr/>
     <p *ngIf="user.hash && user.hash.length > 0">User has a password set.</p>
     <p *ngIf="!user.hash || user.hash.length == 0">User has not set a password.</p>
+    <p>Modified: {{user.modifyDate | date:'medium'}}</p>
+    <p *ngIf="user.upstream">The user is from the upstream server.</p>
     <hr/>
     <mat-checkbox [(ngModel)]="user.admin" (ngModelChange)="adminChange()">Admin (local to this node)</mat-checkbox><br/>
     <mat-checkbox [(ngModel)]="user.active" (ngModelChange)="activeChange()">Active</mat-checkbox><br/>

@@ -6,11 +6,13 @@
       <mat-card-title>{{team.name}}</mat-card-title>
       <mat-card-subtitle>{{team._id}}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="mat-typography">
       <mat-form-field class="field">
         <mat-label>Name</mat-label>
         <input matInput name="name" [(ngModel)]="team.name" placeholder="Name">
       </mat-form-field>
+      <p>Modified: {{team.modifyDate | date:'medium'}}</p>
+      <p *ngIf="team.upstream">The team is from the upstream server.</p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button (click)="save();">SAVE</button>

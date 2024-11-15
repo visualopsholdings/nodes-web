@@ -6,17 +6,18 @@
       <mat-card-title>{{stream.name}}</mat-card-title>
       <mat-card-subtitle>{{stream._id}}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="mat-typography">
       <mat-form-field class="field">
         <mat-label>Name</mat-label>
         <input matInput name="name" [(ngModel)]="stream.name" placeholder="Name">
       </mat-form-field>
       <div *ngIf="hasAdmin()">
         <mat-checkbox class="field" [(ngModel)]="streamflags.shareWithNewUsers" (ngModelChange)="streamChange()">Allow stream to be shared with new users</mat-checkbox>
-
         <p>Bits: {{streamflags.bits()}}</p>
         <button mat-raised-button (click)="setStreamBits();">SET STREAM BITS</button>
       </div>
+      <p>Modified: {{stream.modifyDate | date:'medium'}}</p>
+      <p *ngIf="stream.upstream">The stream is from the upstream server.</p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button (click)="editEmoji();">EDIT EMOJI</button>
