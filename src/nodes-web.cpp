@@ -27,7 +27,7 @@ using json = boost::json::value;
 
 int main(int argc, char *argv[]) {
 
-  string version = "Nodes WEB v0.5.0, 12-Nov-2024.";
+  string version = "Nodes WEB v0.5.1, 15-Nov-2024.";
 
   int httpPort;
   int reqPort;
