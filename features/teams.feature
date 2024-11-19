@@ -54,27 +54,16 @@ Feature: Teams
       Then eventually there is a group "x" in the DB
 
    @javascript
-	Scenario: A non-empty team cant be deleted
-      And she clicks button named "delete" in row with text "Team 1"
-      And a modal dialog appears
-      And she clicks "Ok"
-      And eventually the modal dialog disappears
-      And eventually a modal dialog appears
-      And she clicks "Ok"
-      Then eventually the modal dialog disappears
-      And eventually table has 4 rows
-      
-   @javascript
-	Scenario: An empty team can be deleted
+	Scenario: A team can be deleted
       And she clicks button named "delete" in row with text "Team 3"
       And a modal dialog appears
       And she clicks "Ok"
       And eventually the modal dialog disappears
       And eventually table has 3 rows
-      And eventually there are 3 groups in the DB
+      And eventually there are 4 groups in the DB
       
 	@javascript
-	Scenario: An user can be added to a team
+	Scenario: A user can be added to a team
       And she clicks button named "edit" in row with text "Team 2"
 	   And she clicks "ADD MEMBER"
       And eventually a modal dialog appears

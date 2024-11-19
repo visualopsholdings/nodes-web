@@ -114,6 +114,9 @@ set(HANDLERS
   src/handlers/delete/node.cpp
   src/handlers/post/groups.cpp
   src/handlers/post/streams.cpp
+  src/handlers/post/rawgroups.cpp
+  src/handlers/post/rawusers.cpp
+  src/handlers/post/rawstreams.cpp
 )
 
 include_directories(include)

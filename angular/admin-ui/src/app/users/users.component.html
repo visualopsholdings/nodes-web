@@ -43,4 +43,5 @@
     </mat-paginator>
   </span>
   <button *ngIf="hasUpstream" class="add-button" mat-raised-button (click)="queryUpstream();">ADD FROM UPSTREAM</button>
+  <button *ngIf="purgeCount > 0" class="purge-button" mat-raised-button (click)="purge();">PURGE {{purgeCount}} USERS</button>
 </div>

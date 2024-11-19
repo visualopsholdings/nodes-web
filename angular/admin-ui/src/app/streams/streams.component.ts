@@ -33,6 +33,7 @@ export class StreamsComponent implements OnInit {
   hasUpstream = false;
   isMirror = false;
   serverId: string;
+  purgeCount = 0;
 
   private onStatus = new EventEmitter<any>();
 
@@ -61,6 +62,7 @@ export class StreamsComponent implements OnInit {
           this.serverId = infos.filter(e => e.type == "serverId")[0].text;
         });
         this.startSocket();
+        this.updatePurgeCount();
      });
   }
 
@@ -110,6 +112,7 @@ export class StreamsComponent implements OnInit {
         this.streamService.deleteStream(item).subscribe(success => {
           if (success) {
             this.items = this.items.filter(t => t !== item);
+            this.updatePurgeCount();
           }
         });
       }
@@ -133,6 +136,26 @@ export class StreamsComponent implements OnInit {
 
   getIcon(item: any): string {
     return this.iconService.getIcon({ icon: "internal:stream" });
+  }
+
+  private updatePurgeCount() {
+    if (this.hasAdmin()) {
+      this.streamService.getPurgeCount().subscribe(count => {
+        this.purgeCount = count.count;
+      });
+    }
+  }
+
+  purge(): void {
+    this.dialog.open(ConfirmComponent, { width: '400px',
+        data: { title: "Purge Streams", description: "Are you sure you want to purge " + this.purgeCount + " streams permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.streamService.purge().subscribe(() => {
+          this.updatePurgeCount();
+        });
+      }
+    });
   }
 
 }

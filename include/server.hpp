@@ -72,6 +72,8 @@ public:
   status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, optional<string> id=nullopt);
   status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const string &type, optional<string> id=nullopt);
   status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
+  status_t sendSimpleReturnEmptyObjAdmin(const string &type, const req_t& req);
+  status_t sendSimpleReturnRawObjectAdmin(const string &type, const req_t& req);
 
   void sendWS(uint64_t &id, const json &json);
   void sendAllWS(const json &json);

@@ -29,6 +29,7 @@ export class UsersComponent implements OnInit {
   total: number = 0;
   displayedColumns: string[] = [ "icon", "id", "name", "active", "upstream", "actions" ];
   hasUpstream = false;
+  purgeCount = 0;
 
   private onStatus = new EventEmitter<any>();
 
@@ -53,6 +54,7 @@ export class UsersComponent implements OnInit {
           this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
         });
         this.startSocket();
+        this.updatePurgeCount();
      });
   }
 
@@ -98,6 +100,7 @@ export class UsersComponent implements OnInit {
         this.userService.deleteUser(item).subscribe(success => {
           if (success) {
             this.items = this.items.filter(t => t !== item);
+            this.updatePurgeCount();
           }
         });
       }
@@ -112,6 +115,26 @@ export class UsersComponent implements OnInit {
             // need to refresh later
           });
         }
+    });
+  }
+
+  private updatePurgeCount() {
+    if (this.hasAdmin()) {
+      this.userService.getPurgeCount().subscribe(count => {
+        this.purgeCount = count.count;
+      });
+    }
+  }
+
+  purge(): void {
+    this.dialog.open(ConfirmComponent, { width: '400px',
+        data: { title: "Purge Users", description: "Are you sure you want to purge " + this.purgeCount + " users permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.userService.purge().subscribe(() => {
+          this.updatePurgeCount();
+        });
+      }
     });
   }
 

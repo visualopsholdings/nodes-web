@@ -44,4 +44,5 @@
   </span>
   <button class="add-button" mat-raised-button (click)="add();">ADD</button>
   <button *ngIf="hasUpstream" class="add-button" mat-raised-button (click)="queryUpstream();">ADD FROM UPSTREAM</button>
+  <button *ngIf="purgeCount > 0" class="purge-button" mat-raised-button (click)="purge();">PURGE {{purgeCount}} TEAMS</button>
 </div>

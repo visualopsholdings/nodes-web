@@ -106,4 +106,17 @@ export class TeamService extends BackendService {
     );
   }
 
+  getPurgeCount(): Observable<any> {
+    const url = `${this.admTeamsUrl}/purgecount`;
+    return this.http.get<any>(url).pipe(
+      catchError(this.handleError<any>(`getPurgeCount`))
+    );
+  }
+
+  purge(): Observable<any> {
+    return this.http.post<any>(this.admTeamsUrl, { purge: true }, { headers: this.httpHeaders() } ).pipe(
+      catchError(this.handleError<any>('purge'))
+    );
+  }
+
 }

@@ -44,4 +44,5 @@
   </span>
   <button class="add-button" mat-raised-button (click)="add();">ADD</button>
   <button *ngIf="hasAdmin() && hasUpstream && !isMirror" class="add-button" mat-raised-button (click)="queryUpstream();">ADD FROM UPSTREAM</button>
+  <button *ngIf="hasAdmin() && purgeCount > 0" class="add-button" mat-raised-button (click)="purge();">PURGE {{purgeCount}} STREAMS</button>
 </div>

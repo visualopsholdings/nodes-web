@@ -114,6 +114,9 @@ status_t getnode(Server *server, const req_t& req, params_t );
 status_t deletenode(Server *server, const req_t& req, params_t );
 status_t postgroups(Server *server, const req_t& req, params_t );
 status_t poststreams(Server *server, const req_t& req, params_t );
+status_t postrawgroups(Server *server, const req_t& req, params_t );
+status_t postrawstreams(Server *server, const req_t& req, params_t );
+status_t postrawusers(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -200,7 +203,11 @@ auto Server::handler()
   
   router->http_get("/logout", by(&nodes::getlogout));
   router->http_post("/login", by(&nodes::postlogin));
+  router->http_get("/rest/1.0/rawusers/purgecount", [&](const req_t& req, params_t params) {
+    return sendSimpleReturnRawObjectAdmin("purgecountusers", req);
+  });
   router->http_get("/rest/1.0/rawusers", by(&nodes::getrawusers));
+  router->http_post("/rest/1.0/rawusers", by(&nodes::postrawusers));
   router->http_get("/rest/1.0/users/me", by(&nodes::getme));
   router->http_get("/rest/1.0/users/:id", by(&nodes::getuser));
   router->http_get("/rest/1.0/streams/:id", by(&nodes::getstream));
@@ -226,8 +233,12 @@ auto Server::handler()
   router->http_post("/rest/1.0/users", by(&nodes::postusers));
   router->http_get("/websocket", by(&nodes::websocket));
   router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
+  router->http_get("/rest/1.0/rawgroups/purgecount", [&](const req_t& req, params_t params) {
+    return sendSimpleReturnRawObjectAdmin("purgecountgroups", req);
+  });
   router->http_get("/rest/1.0/rawgroups/:id", by(&nodes::getrawgroup));
   router->http_get("/rest/1.0/rawgroups/:id/users", by(&nodes::getrawgroupusers));
+  router->http_post("/rest/1.0/rawgroups", by(&nodes::postrawgroups));
   router->http_get("/rest/1.0/users", by(&nodes::getusers));
   router->http_post("/rest/1.0/groups/:id/users", by(&nodes::postgroupusers));
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
@@ -241,11 +252,15 @@ auto Server::handler()
   router->http_get("/rest/1.0/groups/:id/policy", by(&nodes::getgrouppolicy));
 
   router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
+  router->http_get("/rest/1.0/rawstreams/purgecount", [&](const req_t& req, params_t params) {
+    return sendSimpleReturnRawObjectAdmin("purgecountstreams", req);
+  });
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObjAdmin(req, "setstreampolicy", restinio::cast_to<string>(params["id"]));
   });
+  router->http_post("/rest/1.0/rawstreams", by(&nodes::postrawstreams));
   router->http_post("/rest/1.0/streams", by(&nodes::poststreams));
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
 
@@ -607,6 +622,51 @@ status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &
   
   return returnEmptyObj(req, etag);
 //  return checkErrorsReturnEmptyObj(req, etag, j, type);
+
+}
+
+status_t Server::sendSimpleReturnRawObjectAdmin(const string &type, const req_t& req) {
+
+  auto session = getSession(req);
+  if (!session) {
+    return unauthorised(req);
+  }
+  if (!session.value()->isAdmin()) {
+    return unauthorised(req);
+  }
+  auto etag = ETag::simpleTime(req, session.value());
+  if (!etag->modified()) {
+    return not_modified(req, etag->origEtag());
+  }
+  
+  json msg = { 
+    { "type", type }
+  };
+  send(msg);
+  return receiveRawObject(req, etag);
+
+}
+
+status_t Server::sendSimpleReturnEmptyObjAdmin(const string &type, const req_t& req) {
+
+  if (!isAdmin(req)) {
+    return unauthorised(req);
+  }
+  
+  json j = {
+    { "type", type }
+  };
+  send(j);
+  j = receive();
+  
+  auto resp = checkErrors(req, j, "simple");
+  if (resp) {
+    return resp.value();
+  }
+
+//    BOOST_LOG_TRIVIAL(trace) << j;
+  
+  return returnEmptyObj(req, ETag::none());
 
 }
 

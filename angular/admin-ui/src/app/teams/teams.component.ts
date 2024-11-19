@@ -30,6 +30,7 @@ export class TeamsComponent implements OnInit {
   total: number;
   displayedColumns: string[] = [ "icon", "name", "id", "date", "upstream", "actions" ];
   hasUpstream = false;
+  purgeCount = 0;
 
   private onStatus = new EventEmitter<any>();
 
@@ -54,6 +55,7 @@ export class TeamsComponent implements OnInit {
           this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
         });
         this.startSocket();
+        this.updatePurgeCount();
      });
   }
 
@@ -111,6 +113,7 @@ export class TeamsComponent implements OnInit {
         this.teamService.deleteTeam(item).subscribe(success => {
           if (success) {
             this.items = this.items.filter(t => t !== item);
+            this.updatePurgeCount();
           }
         });
       }
@@ -125,6 +128,26 @@ export class TeamsComponent implements OnInit {
             // need to refresh later
           });
         }
+    });
+  }
+
+  private updatePurgeCount() {
+    if (this.hasAdmin()) {
+      this.teamService.getPurgeCount().subscribe(count => {
+        this.purgeCount = count.count;
+      });
+    }
+  }
+
+  purge(): void {
+    this.dialog.open(ConfirmComponent, { width: '400px',
+        data: { title: "Purge Teams", description: "Are you sure you want to purge " + this.purgeCount + " teams permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.teamService.purge().subscribe(() => {
+          this.updatePurgeCount();
+        });
+      }
     });
   }
 

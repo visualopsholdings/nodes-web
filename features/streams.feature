@@ -43,4 +43,4 @@ Feature: Streams
       And she clicks "Ok"
       And eventually the modal dialog disappears
       And eventually table has 3 rows
-      And eventually there are 3 streams in the DB
+      And eventually there are 4 streams in the DB

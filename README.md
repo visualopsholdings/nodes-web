@@ -420,6 +420,9 @@ Visual Ops node.
 ### 20 Oct 2024
 - Upstream for streams and groups.
 
+### 19 Nov 2024
+- Implement purge count and purging for streams, groups and users.
+
 
 
 
