@@ -14,6 +14,7 @@ import { SetEmojiDialogComponent } from '../set-emoji-dialog/set-emoji-dialog.co
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { StreamFlags } from '../../../../shared-ui/streamflags';
 import { SetUibitsDialogComponent } from '../set-uibits-dialog/set-uibits-dialog.component';
+import { IdeaService }  from '../idea.service';
 
 @Component({
   selector: 'app-stream-detail',
@@ -28,6 +29,7 @@ export class StreamDetailComponent implements OnInit {
   private serverId: string;
 
   streamflags: StreamFlags;
+  purgeCount = 0;
 
   constructor(
     public dialog: MatDialog,
@@ -35,6 +37,7 @@ export class StreamDetailComponent implements OnInit {
     private clipboard: Clipboard,
     private snackBar: MatSnackBar,
     private streamService: StreamService,
+    private ideaService: IdeaService,
     private iconService: IconService,
     private meService: MeService,
     private infoService: InfoService,
@@ -66,6 +69,7 @@ export class StreamDetailComponent implements OnInit {
       .subscribe(stream => {
         this.stream = stream;
         this.streamflags = new StreamFlags(this.stream.streambits);
+        this.updatePurgeCount();
     });
   }
 
@@ -109,6 +113,26 @@ export class StreamDetailComponent implements OnInit {
       if (result) {
         this.streamflags.update(result.uibits);
         this.streamChange();
+      }
+    });
+  }
+
+  private updatePurgeCount() {
+    if (this.hasAdmin()) {
+      this.ideaService.getPurgeCount(this.stream._id).subscribe(count => {
+        this.purgeCount = count.count;
+      });
+    }
+  }
+
+  purge(): void {
+    this.dialog.open(ConfirmComponent, { width: '400px',
+        data: { title: "Purge Ideas", description: "Are you sure you want to purge " + this.purgeCount + " ideas permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.ideaService.purge(this.stream._id).subscribe(() => {
+          this.updatePurgeCount();
+        });
       }
     });
   }

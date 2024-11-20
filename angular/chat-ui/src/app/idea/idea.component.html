@@ -20,6 +20,14 @@
         </div>
       </div>
       <div class="error">{{error}}</div>
+      <div class="menu" *ngIf="idea && idea._id != null">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="deleteIdea(idea);">DELETE</button>
+        </mat-menu>
+      </div>
     </div>
     <div class="date flex-fixed-left" [style.color]="dateColor()" [style.display]="dateDisplay()">{{idea.modifyDate | justNow }}</div>
   </div>

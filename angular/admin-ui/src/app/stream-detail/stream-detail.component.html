@@ -26,5 +26,13 @@
   </mat-card>
   <div *ngIf="stream" class="right-area">
     <app-security [obj]="'streams'" [exec]="true" [policy]="stream.policy"></app-security>
+    <mat-card class="actions-card">
+      <mat-card-header>
+        <mat-card-title>Actions</mat-card-title>
+      </mat-card-header>
+      <mat-card-actions>
+        <button *ngIf="hasAdmin() && purgeCount > 0" class="purge-button" mat-raised-button (click)="purge();">PURGE {{purgeCount}} IDEAS</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>

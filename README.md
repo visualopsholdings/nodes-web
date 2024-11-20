@@ -423,6 +423,9 @@ Visual Ops node.
 ### 19 Nov 2024
 - Implement purge count and purging for streams, groups and users.
 
+### 20 Nov 2024
+- Implement deletion in chat, purge count and purging for ideas.
+
 
 
 

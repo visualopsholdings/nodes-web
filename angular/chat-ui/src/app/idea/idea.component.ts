@@ -222,4 +222,18 @@ export class IdeaComponent implements OnInit {
     return this.parent.breakAt(size);
   }
 
+  deleteIdea(idea: Idea): void {
+    this.dialog.open(ConfirmComponent, {
+        width: '400px',
+        data: { title: "Delete Idea", description: "Are you sure you want to remove the idea permanently?" }
+    }).afterClosed().subscribe(success => {
+      if (success) {
+        this.ideaService.deleteIdea(idea)
+          .subscribe(() => {
+            this.changed.emit({ removed: idea._id });
+          });
+      }
+    });
+  }
+
 }

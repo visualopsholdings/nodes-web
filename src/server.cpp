@@ -117,6 +117,9 @@ status_t poststreams(Server *server, const req_t& req, params_t );
 status_t postrawgroups(Server *server, const req_t& req, params_t );
 status_t postrawstreams(Server *server, const req_t& req, params_t );
 status_t postrawusers(Server *server, const req_t& req, params_t );
+status_t deleteidea(Server *server, const req_t& req, params_t );
+status_t getideaspurgecount(Server *server, const req_t& req, params_t );
+status_t postrawstream(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -219,6 +222,7 @@ auto Server::handler()
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObj(req, "message");
   });
+  router->http_delete("/rest/1.0/ideas/:id", by(&nodes::deleteidea));
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
@@ -260,7 +264,9 @@ auto Server::handler()
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
     return sendBodyReturnEmptyObjAdmin(req, "setstreampolicy", restinio::cast_to<string>(params["id"]));
   });
+  router->http_get("/rest/1.0/rawstreams/:id/purgecount", by(&nodes::getideaspurgecount));
   router->http_post("/rest/1.0/rawstreams", by(&nodes::postrawstreams));
+  router->http_post("/rest/1.0/rawstreams/:id", by(&nodes::postrawstream));
   router->http_post("/rest/1.0/streams", by(&nodes::poststreams));
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
 

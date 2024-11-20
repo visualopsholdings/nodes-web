@@ -70,4 +70,12 @@ export class IdeaService extends BackendService {
     );
   }
 
+  deleteIdea(idea: Idea | string): Observable<Idea> {
+    const id = typeof idea === 'string' ? idea : idea._id;
+    const url = `${this.ideaUrl}/${id}`;
+    return this.http.delete<Idea>(url, { headers: this.httpHeaders() }).pipe(
+      catchError(this.handleError<Idea>('deleteIdea'))
+    );
+  }
+
 }
