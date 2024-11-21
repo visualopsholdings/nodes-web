@@ -640,16 +640,12 @@ status_t Server::sendSimpleReturnRawObjectAdmin(const string &type, const req_t&
   if (!session.value()->isAdmin()) {
     return unauthorised(req);
   }
-  auto etag = ETag::simpleTime(req, session.value());
-  if (!etag->modified()) {
-    return not_modified(req, etag->origEtag());
-  }
-  
+
   json msg = { 
     { "type", type }
   };
   send(msg);
-  return receiveRawObject(req, etag);
+  return receiveRawObject(req, ETag::none());
 
 }
 

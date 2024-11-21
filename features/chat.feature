@@ -30,3 +30,25 @@ Feature: Chat
       And she clicks "add-message"
  	   Then eventually there are 3 items
  	   And eventually there are 3 ideas in the DB
+
+   @javascript
+	Scenario: An idea can be deleted
+      When "leanne" logs into chat
+      And eventually there are 2 streams
+	   And she clicks "Conversation 1"
+ 	   And eventually there are 2 items
+	   And she clicks menu on first action in conversation item with title "Message 1"
+	   And she clicks "DELETE"
+      And a modal dialog appears
+      And she clicks "Ok"
+      And eventually the modal dialog disappears
+ 	   And eventually there are 1 items
+      And eventually there are 2 ideas in the DB
+
+      And "tracy" log into app "admin"
+	   And she clicks "Streams"
+      And she clicks button named "edit" in row with text "My Conversation 1"
+	   And she clicks "PURGE 1 IDEAS"
+      And a modal dialog appears
+      And she clicks "Ok"
+      And eventually there are 1 ideas in the DB
