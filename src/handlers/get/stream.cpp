@@ -31,7 +31,8 @@ status_t getstream(Server *server, const req_t& req, params_t params)
   }
   
   json msg = { 
-    { "type", "stream" },
+    { "type", "object" },
+    { "objtype", "stream" },
     { "me", session.value()->userid() },
     { "stream", id }
   };

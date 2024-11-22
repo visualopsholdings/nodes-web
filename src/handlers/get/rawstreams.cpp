@@ -24,7 +24,8 @@ status_t getrawstreams(Server *server, const req_t& req, params_t params)
   }
   
   json msg = { 
-    { "type", "streams" }
+    { "type", "objects" },
+    { "objtype", "stream" }
   };
   auto etag = ETag::collectionChanged(req, &msg);
   server->send(msg);

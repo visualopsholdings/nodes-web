@@ -207,7 +207,10 @@ auto Server::handler()
   router->http_get("/logout", by(&nodes::getlogout));
   router->http_post("/login", by(&nodes::postlogin));
   router->http_get("/rest/1.0/rawusers/purgecount", [&](const req_t& req, params_t params) {
-    return sendSimpleReturnRawObjectAdmin("purgecountusers", req);
+    json msg = {
+      { "type", "purgecountusers" }
+    };
+    return sendSimpleReturnRawObjectAdmin(msg, req);
   });
   router->http_get("/rest/1.0/rawusers", by(&nodes::getrawusers));
   router->http_post("/rest/1.0/rawusers", by(&nodes::postrawusers));
@@ -220,17 +223,26 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams/:id/policy/groups", by(&nodes::getstreampolicygroups));
   router->http_get("/rest/1.0/streams/:id/sharelink", by(&nodes::getstreamsharelink));
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "message");
+    json msg = {
+      { "type", "message" }
+    };
+    return sendBodyReturnEmptyObj(req, msg);
   });
   router->http_delete("/rest/1.0/ideas/:id", by(&nodes::deleteidea));
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObjAdmin(req, "setinfo");
+    json msg = {
+      { "type", "setinfo" }
+    };
+    return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObjAdmin(req, "setsite");
+    json msg = {
+      { "type", "setsite" }
+    };
+    return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_get("/rest/1.0/sites", by(&nodes::getsites));
   router->http_post("/rest/1.0/users/new", by(&nodes::postnewuser));
@@ -238,7 +250,10 @@ auto Server::handler()
   router->http_get("/websocket", by(&nodes::websocket));
   router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
   router->http_get("/rest/1.0/rawgroups/purgecount", [&](const req_t& req, params_t params) {
-    return sendSimpleReturnRawObjectAdmin("purgecountgroups", req);
+    json msg = {
+      { "type", "purgecountgroups" }
+    };
+    return sendSimpleReturnRawObjectAdmin(msg, req);
   });
   router->http_get("/rest/1.0/rawgroups/:id", by(&nodes::getrawgroup));
   router->http_get("/rest/1.0/rawgroups/:id/users", by(&nodes::getrawgroupusers));
@@ -248,7 +263,10 @@ auto Server::handler()
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
   router->http_put("/rest/1.0/users/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObjAdmin(req, "setuser", restinio::cast_to<string>(params["id"]));
+    json msg = {
+      { "type", "setuser" }
+    };
+    return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groups/:id", by(&nodes::getgroup));
@@ -257,12 +275,20 @@ auto Server::handler()
 
   router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
   router->http_get("/rest/1.0/rawstreams/purgecount", [&](const req_t& req, params_t params) {
-    return sendSimpleReturnRawObjectAdmin("purgecountstreams", req);
+    json msg = {
+      { "type", "purgecount" },
+      { "objtype", "stream" }
+    };
+    return sendSimpleReturnRawObjectAdmin(msg, req);
   });
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObjAdmin(req, "setstreampolicy", restinio::cast_to<string>(params["id"]));
+    json msg = {
+      { "type", "setobjectpolicy" },
+      { "objtype", "stream" }
+    };
+    return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/rawstreams/:id/purgecount", by(&nodes::getideaspurgecount));
   router->http_post("/rest/1.0/rawstreams", by(&nodes::postrawstreams));
@@ -272,14 +298,24 @@ auto Server::handler()
 
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
   router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObjAdmin(req, "setgrouppolicy", restinio::cast_to<string>(params["id"]));
+    json msg = {
+      { "type", "setgrouppolicy" }
+    };
+    return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_post("/rest/1.0/groups", by(&nodes::postgroups));
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setgroup", restinio::cast_to<string>(params["id"]));
+    json msg = {
+      { "type", "setgroup" }
+    };
+    return sendBodyReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObj(req, "setstream", restinio::cast_to<string>(params["id"]));
+    json msg = {
+      { "type", "setobject" },
+      { "objtype", "stream" }
+    };
+    return sendBodyReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
   router->http_get("/rest/1.0/users/canreg/:token", by(&nodes::getcanreg));
@@ -288,7 +324,10 @@ auto Server::handler()
   router->http_get("/rest/1.0/nodes", by(&nodes::getnodes));
   router->http_get("/rest/1.0/nodes/:id", by(&nodes::getnode));
   router->http_post("/rest/1.0/nodes", [&](const req_t& req, params_t params) {
-    return sendBodyReturnEmptyObjAdmin(req, "addnode");
+    json msg = {
+      { "type", "addnode" }
+    };
+    return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
 
@@ -517,46 +556,46 @@ status_t Server::returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag
   
 }
 
-status_t Server::returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &j) {
+status_t Server::returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &msg) {
 
-  BOOST_LOG_TRIVIAL(trace) << j;
+  BOOST_LOG_TRIVIAL(trace) << msg;
   
   auto resp = req->create_response();
   stringstream ss;
-  ss << j;
+  ss << msg;
   resp.set_body(ss.str());
   etag->setHeaders(resp);
   return resp.done();
   
 }
 
-optional<status_t> Server::checkErrors(const req_t& req, json &j, const string &type) {
+optional<status_t> Server::checkErrors(const req_t& req, json &msg, const string &type) {
 
   // test for an error...
-  auto rettype = Json::getString(j, "type");
+  auto rettype = Json::getString(msg, "type");
   if (!rettype) {
     BOOST_LOG_TRIVIAL(error) << type << " missing type in return";
     return fatal(req, "missing type");
   }
   if (rettype.value() == "err") {
-    auto msg = Json::getString(j, "msg");
-    auto level = Json::getString(j, "level");
+    auto m = Json::getString(msg, "msg");
+    auto level = Json::getString(msg, "level");
     if (level.value() == "warning") {
-      return warning(req, msg.value());
+      return warning(req, m.value());
     }
     else if (level.value() == "security") {
       return security(req);
     }
-    return fatal(req, msg.value());
+    return fatal(req, m.value());
   }
 
   return nullopt;
   
 }
 
-status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type) {
+status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &msg, const string &type) {
 
-  auto resp = checkErrors(req, j, type);
+  auto resp = checkErrors(req, msg, type);
   if (resp) {
     return resp.value();
   }
@@ -565,59 +604,72 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &j, const stri
 
 }
 
-status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const string &type, optional<string> id) {
+status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, json &msg, optional<string> id) {
 
   if (!isAdmin(req)) {
     return unauthorised(req);
   }
 
-  json j = boost::json::parse(req->body());
-//  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
+  json body = boost::json::parse(req->body());
+//  BOOST_LOG_TRIVIAL(trace) << type << " " << body;
 
-  return sendBody(req, ETag::none(), j, type, id);
+  return sendBody(req, ETag::none(), body, msg, id);
 
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, const string &type, optional<string> id) {
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, json &msg, optional<string> id) {
 
   auto session = getSession(req);
   if (!session) {
     return unauthorised(req);
   }
 
-  json j = boost::json::parse(req->body());
-//  BOOST_LOG_TRIVIAL(trace) << type << " " << j;
+  json body = boost::json::parse(req->body());
+//  BOOST_LOG_TRIVIAL(trace) << type << " " << body;
 
-  j.as_object()["me"] = session.value()->userid();
+  body.as_object()["me"] = session.value()->userid();
 
-  return sendBody(req, ETag::none(), j, type, id);
+  return sendBody(req, ETag::none(), body, msg, id);
   
 }
 
-status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &j, const string &type, optional<string> id) {
+status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &body, json &msg, optional<string> id) {
 
-  if (!j.is_object()) {
+  if (!body.is_object()) {
     return fatal(req, "body is not object");
   }
 
-  j.as_object()["type"] = type;
-  if (j.as_object().if_contains("_id")) {
-    j.as_object()["id"] = Json::getString(j, "_id").value();
-    j.as_object().erase("_id");
+  auto obj = body.as_object();
+  
+  // copy fields of the msg into the body. Could do it the other way around.
+  string type = "??";
+  for (auto i: msg.as_object()) {
+    if (i.key() == "type") {
+      type = i.value().as_string();
+    }
+    else {
+      obj[i.key()] = i.value();
+    }
+  }
+  
+  obj["type"] = type;
+  if (obj.if_contains("_id")) {
+    obj["id"] = Json::getString(body, "_id").value();
+    obj.erase("_id");
   }
   
   if (id) {
-    j.as_object()["id"] = id.value();
+    obj["id"] = id.value();
   }
   
   // if we have a socket id, then send it on as the correlation id.
   if (req->header().has_field("socketid")) {
     BOOST_LOG_TRIVIAL(trace) << "setting socket id from header";
-    j.as_object()["corr"] = req->header().value_of("socketid");
+    obj["corr"] = req->header().value_of("socketid");
   }
 
-	send(j);
-  j = receive();
+	send(obj);
+  auto j = receive();
   
 //  BOOST_LOG_TRIVIAL(trace) << j;
   
@@ -627,11 +679,10 @@ status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &
   }
   
   return returnEmptyObj(req, etag);
-//  return checkErrorsReturnEmptyObj(req, etag, j, type);
 
 }
 
-status_t Server::sendSimpleReturnRawObjectAdmin(const string &type, const req_t& req) {
+status_t Server::sendSimpleReturnRawObjectAdmin(json &msg, const req_t& req) {
 
   auto session = getSession(req);
   if (!session) {
@@ -641,25 +692,19 @@ status_t Server::sendSimpleReturnRawObjectAdmin(const string &type, const req_t&
     return unauthorised(req);
   }
 
-  json msg = { 
-    { "type", type }
-  };
   send(msg);
   return receiveRawObject(req, ETag::none());
 
 }
 
-status_t Server::sendSimpleReturnEmptyObjAdmin(const string &type, const req_t& req) {
+status_t Server::sendSimpleReturnEmptyObjAdmin(json &msg, const req_t& req) {
 
   if (!isAdmin(req)) {
     return unauthorised(req);
   }
   
-  json j = {
-    { "type", type }
-  };
-  send(j);
-  j = receive();
+  send(msg);
+  auto j = receive();
   
   auto resp = checkErrors(req, j, "simple");
   if (resp) {

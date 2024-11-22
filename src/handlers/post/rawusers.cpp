@@ -28,7 +28,10 @@ status_t postrawusers(Server *server, const req_t& req, params_t params) {
   // purge
   auto purge = Json::getBool(j, "purge", true);
   if (purge && purge.value()) {
-    return server->sendSimpleReturnEmptyObjAdmin("purgeusers", req);
+    json msg = { 
+      { "type", "purgeusers" }
+    };
+    return server->sendSimpleReturnEmptyObjAdmin(msg, req);
   }
 
   return server->fatal(req, "only understand purge.");  

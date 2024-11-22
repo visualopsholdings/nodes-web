@@ -33,7 +33,8 @@ status_t getideaspurgecount(Server *server, const req_t& req, params_t params)
   }
 
   json msg = { 
-    { "type", "purgecountideas" },
+    { "type", "purgecount" },
+    { "objtype", "idea" },
     { "stream", id }
   };
   server->send(msg);

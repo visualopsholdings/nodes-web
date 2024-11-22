@@ -69,11 +69,11 @@ public:
   status_t returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag);
   status_t returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag);
 
-  status_t sendBodyReturnEmptyObj(const req_t& req, const string &type, optional<string> id=nullopt);
-  status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const string &type, optional<string> id=nullopt);
-  status_t checkErrorsReturnEmptyObj(const req_t& req, json &j, const string &type);
-  status_t sendSimpleReturnEmptyObjAdmin(const string &type, const req_t& req);
-  status_t sendSimpleReturnRawObjectAdmin(const string &type, const req_t& req);
+  status_t sendBodyReturnEmptyObj(const req_t& req, json &msg, optional<string> id=nullopt);
+  status_t sendBodyReturnEmptyObjAdmin(const req_t& req, json &msg, optional<string> id=nullopt);
+  status_t checkErrorsReturnEmptyObj(const req_t& req, json &msg, const string &type);
+  status_t sendSimpleReturnEmptyObjAdmin(json &msg, const req_t& req);
+  status_t sendSimpleReturnRawObjectAdmin(json &msg, const req_t& req);
 
   void sendWS(uint64_t &id, const json &json);
   void sendAllWS(const json &json);
@@ -100,7 +100,7 @@ private:
   shared_ptr<ZMQClient> _zmq;
   map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
   
-  status_t sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &j, const string &type, optional<string> id);
+  status_t sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &body, json &msg, optional<string> id);
   
 };
 

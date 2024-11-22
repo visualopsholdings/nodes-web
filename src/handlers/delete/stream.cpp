@@ -29,7 +29,8 @@ status_t deletestream(Server *server, const req_t& req, params_t params) {
   const auto id = restinio::cast_to<string>(params["id"]);
   
 	server->send({
-	  { "type", "deletestream" },
+    { "type", "deleteobject" },
+    { "objtype", "stream" },
 	  { "id",  id },
     { "me", session.value()->userid() }
 	});

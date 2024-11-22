@@ -28,7 +28,11 @@ status_t postrawstreams(Server *server, const req_t& req, params_t params) {
   // purge
   auto purge = Json::getBool(j, "purge", true);
   if (purge && purge.value()) {
-    return server->sendSimpleReturnEmptyObjAdmin("purgestreams", req);
+    json msg = { 
+      { "type", "purge" },
+      { "objtype", "stream" },
+    };
+    return server->sendSimpleReturnEmptyObjAdmin(msg, req);
   }
 
   return server->fatal(req, "only understand purge.");  

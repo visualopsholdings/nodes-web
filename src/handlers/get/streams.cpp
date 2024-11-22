@@ -26,7 +26,8 @@ status_t getstreams(Server *server, const req_t& req, params_t params)
   }
   
   json msg = { 
-    { "type", "streams" },
+    { "type", "objects" },
+    { "objtype", "stream" },
     { "me", session.value()->userid() }
   };
   auto etag = ETag::collectionChanged(req, &msg);

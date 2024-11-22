@@ -31,7 +31,8 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
   }
   
   json msg = { 
-    { "type", "ideas" },
+    { "type", "objects" },
+    { "objtype", "idea" },
     { "stream", id },
     { "me", session.value()->userid() }
   };

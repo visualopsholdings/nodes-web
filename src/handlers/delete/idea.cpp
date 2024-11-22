@@ -29,7 +29,8 @@ status_t deleteidea(Server *server, const req_t& req, params_t params) {
   const auto id = restinio::cast_to<string>(params["id"]);
   
   server->send({
-    { "type", "deleteidea" },
+    { "type", "deleteobject" },
+    { "objtype", "idea" },
     { "id",  id },
     { "me", session.value()->userid() }
   });

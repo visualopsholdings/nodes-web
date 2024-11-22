@@ -77,7 +77,8 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
       return server->fatal(req, "upstream requires id.");
     }
     j = {
-      { "type", "addstream" },
+      { "type", "addobject" },
+      { "objtype", "stream" },
       { "id", id.value() },      
       { "upstream", true }
     };
@@ -94,7 +95,11 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
 
-  return server->sendBodyReturnEmptyObj(req, "addstream");
+  json msg = {
+    { "type", "addobject" },
+    { "objtype", "stream" }
+  };
+  return server->sendBodyReturnEmptyObj(req, msg);
 
 }
 

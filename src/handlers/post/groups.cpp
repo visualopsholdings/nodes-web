@@ -94,7 +94,10 @@ status_t postgroups(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
 
-  return server->sendBodyReturnEmptyObj(req, "addgroup");
+  json msg = {
+    { "type", "addgroup" }
+  };
+  return server->sendBodyReturnEmptyObj(req, msg);
 
 }
 
