@@ -19,7 +19,7 @@ export class AddUpstreamUserDialogComponent implements OnInit {
   ngOnInit() {
     this.form = this.formBuilder.group({
       _id: '',
-      email: '',
+      fullname: '',
     })
   }
 

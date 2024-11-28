@@ -3,7 +3,7 @@
   <mat-dialog-content>
     <mat-selection-list #list>
       <mat-list-option *ngFor="let user of users" value="{{user._id}}">
-        {{user.fullname}}, {{user.email}}, {{user._id}}
+        {{user.fullname}}, {{user._id}}
       </mat-list-option>
     </mat-selection-list>
   </mat-dialog-content>

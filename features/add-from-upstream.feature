@@ -31,7 +31,7 @@ Feature: Add From Upstream
       # add Paul
       And she clicks "ADD FROM UPSTREAM"
       And a modal dialog appears
-      And she enters "Joe" in "email"
+      And she enters "Joe" in "fullname"
       And she clicks "Ok"
       And eventually the modal dialog disappears
       And eventually a modal dialog appears
@@ -46,7 +46,7 @@ Feature: Add From Upstream
       # add Marvin
       And she clicks "ADD FROM UPSTREAM"
       And a modal dialog appears
-      And she enters "Fred" in "email"
+      And she enters "Fred" in "fullname"
       And she clicks "Ok"
       And eventually the modal dialog disappears
       And eventually a modal dialog appears

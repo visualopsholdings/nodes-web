@@ -33,9 +33,11 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   // query a user.
   auto query = Json::getBool(j, "query", true);
   if (query && query.value()) {
-    auto email = Json::getString(j, "email");
-    if (!email) {
-      return server->fatal(req, "query requires email.");
+  
+    // get the name or the fullname.
+    auto fullname = Json::getString(j, "fullname", true);
+    if (!fullname) {
+      return server->fatal(req, "query requires fullname.");
     }
     
     if (!req->header().has_field("socketid")) {
@@ -46,7 +48,7 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     j = {
       { "type", "query" },
       { "objtype", "user" },      
-      { "email", email.value() },
+      { "fullname", fullname.value() },
       { "corr", socketid }
     };
     server->send(j);

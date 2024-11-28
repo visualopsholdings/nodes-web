@@ -37,7 +37,8 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
   server->send({
       { "type", "adduser" },
       { "vopsidtoken", vopsidtoken.value() },
-      { "fullname", fullname.value() }
+      { "fullname", fullname.value() },
+      { "collection", "streams" },
   });
   
   j = server->receive();

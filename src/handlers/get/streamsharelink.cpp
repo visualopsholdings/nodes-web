@@ -43,10 +43,13 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
   const auto expires = restinio::cast_to<int>(qp["expires"]);
   
   server->send({ 
-    { "type", "streamsharelink" },
-    { "stream", id },
+    { "type", "sharelink" },
+    { "collection", "streams" },
+    { "id", id },
+    { "bitsfield", "streambits" },
     { "group", group },
     { "expires", expires },
+    { "urlpostfix", "/apps/chat/#/streams/" + id },
     { "me", session.value()->userid() }
   });
   return server->receiveRawObject(req, etag);

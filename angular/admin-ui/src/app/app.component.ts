@@ -76,7 +76,7 @@ export class AppComponent implements OnInit {
       this.socketService.startDown(console, this.onSocket);
     }
     this.onQR.subscribe(result => {
-      if (result.queryType == "user") {
+      if (result.objtype == "user") {
         if (result.result.length == 0) {
           this.dialog.open(ConfirmComponent, {
               data: { title: "No users", description: "No users were found." }
@@ -94,7 +94,7 @@ export class AppComponent implements OnInit {
           });
         }
       }
-      else if (result.queryType == "group") {
+      else if (result.objtype == "group") {
         if (result.result.length == 0) {
           this.dialog.open(ConfirmComponent, {
               data: { title: "No groups", description: "No groups were found." }
@@ -112,7 +112,7 @@ export class AppComponent implements OnInit {
           });
         }
       }
-      else if (result.queryType == "stream") {
+      else if (result.objtype == "stream") {
         if (result.result.length == 0) {
           this.dialog.open(ConfirmComponent, {
               data: { title: "No streams", description: "No teams were found." }
@@ -131,7 +131,7 @@ export class AppComponent implements OnInit {
         }
       }
       else {
-        console.log("Unknown query result type", result.queryType);
+        console.log("Unknown query result type", result.objtype);
       }
     });
     this.onStatus.subscribe(status => {
