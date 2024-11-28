@@ -224,7 +224,8 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams/:id/sharelink", by(&nodes::getstreamsharelink));
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
     json msg = {
-      { "type", "message" }
+      { "type", "addobject" },
+      { "objtype", "idea" }
     };
     return sendBodyReturnEmptyObj(req, msg);
   });

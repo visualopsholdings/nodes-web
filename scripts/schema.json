@@ -1,0 +1,32 @@
+[
+  {
+    "type": "user",
+    "internal": true
+  },
+  {
+    "type": "group",
+    "internal": true
+  },
+  {
+    "type": "policy",
+    "coll": "policies",
+    "nosync": true,
+    "internal": true
+  },
+  {
+    "type": "stream",
+    "subobj": {
+      "type": "idea",
+      "field": "stream",
+      "namefield": "text"
+    }
+  },
+  {
+    "type": "media",
+    "coll": "media",
+    "subobj": {
+      "type": "format",
+      "field": "media"
+    }
+  }
+]
