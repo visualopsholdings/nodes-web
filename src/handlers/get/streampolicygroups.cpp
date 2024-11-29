@@ -32,7 +32,7 @@ status_t getstreampolicygroups(Server *server, const req_t& req, params_t params
   json msg = { 
     { "type", "object" },
     { "objtype", "stream" },
-    { "stream", id }
+    { "id", id }
   };
   auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
