@@ -114,11 +114,13 @@ cd restinio
 
 To clarify, your directory tree would look this this:
 
+```
 - My dev place
 -- nodes
 -- nodes-devops
 -- nodes-web
 -- restinio
+```
 
 Now if you have ruby 3.2.0 or later, you need to fix a script, otherwise
 just skip these steps.
