@@ -176,7 +176,7 @@ bool ETagModifyDate::resultModified(json &j, const string &field) {
 void ETagModifyDate::setHeaders(response_builder_t &resp) {
 
   json j = {
-    { "time", _time }
+    { "modifyDate", _time }
   };
   BOOST_LOG_TRIVIAL(trace) << "setting headers: " << j;
 
