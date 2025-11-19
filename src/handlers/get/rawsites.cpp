@@ -23,9 +23,9 @@ status_t getrawsites(Server *server, const req_t& req, params_t params)
   if (!server->isAdmin(req)) {
     return server->unauthorised(req);
   }
-  json msg = { 
+  auto msg = dictO({
     { "type", "site" }
-  };
+  });
   auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   return server->receiveObject(req, etag, "site");

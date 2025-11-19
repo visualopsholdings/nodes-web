@@ -29,13 +29,11 @@ status_t websocket(Server *server, const req_t& req, params_t params)
     shared_ptr<rws::ws_t> wsh = server->createWS(req);
          
     // send the ID.
-    json j = {
+    auto j = dictO({
       { "type", "id" },
-      { "id", wsh->connection_id() }
-    };
-    stringstream ss;
-    ss << j;
-    wsh->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+      { "id", (long)wsh->connection_id() }
+    });
+    wsh->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, Dict::toString(j, false)));
 
     return restinio::request_accepted();
   }

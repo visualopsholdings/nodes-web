@@ -23,7 +23,6 @@
 namespace po = boost::program_options;
 
 using namespace std;
-using json = boost::json::value;
 
 int main(int argc, char *argv[]) {
 

@@ -30,10 +30,10 @@ BOOST_AUTO_TEST_CASE( createAndAccess )
 {
   cout << "=== create ===" << endl;
   
-  json j = {
+  auto j = dictO({
     { "id", "aaaa" },
     { "admin", true }
-  };
+  });
   auto session = Sessions::instance()->create(j);
   
   BOOST_CHECK_EQUAL(session.size(), 36);

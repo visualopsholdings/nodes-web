@@ -207,9 +207,9 @@ auto Server::handler()
   router->http_get("/logout", by(&nodes::getlogout));
   router->http_post("/login", by(&nodes::postlogin));
   router->http_get("/rest/1.0/rawusers/purgecount", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "purgecountusers" }
-    };
+    });
     return sendSimpleReturnRawObjectAdmin(msg, req);
   });
   router->http_get("/rest/1.0/rawusers", by(&nodes::getrawusers));
@@ -223,26 +223,26 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams/:id/policy/groups", by(&nodes::getstreampolicygroups));
   router->http_get("/rest/1.0/streams/:id/sharelink", by(&nodes::getstreamsharelink));
   router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "addobject" },
       { "objtype", "idea" }
-    };
+    });
     return sendBodyReturnEmptyObj(req, msg);
   });
   router->http_delete("/rest/1.0/ideas/:id", by(&nodes::deleteidea));
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setinfo" }
-    };
+    });
     return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setsite" }
-    };
+    });
     return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_get("/rest/1.0/sites", by(&nodes::getsites));
@@ -251,9 +251,9 @@ auto Server::handler()
   router->http_get("/websocket", by(&nodes::websocket));
   router->http_get("/rest/1.0/rawgroups", by(&nodes::getrawgroups));
   router->http_get("/rest/1.0/rawgroups/purgecount", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "purgecountgroups" }
-    };
+    });
     return sendSimpleReturnRawObjectAdmin(msg, req);
   });
   router->http_get("/rest/1.0/rawgroups/:id", by(&nodes::getrawgroup));
@@ -264,9 +264,9 @@ auto Server::handler()
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
   router->http_put("/rest/1.0/users/:id", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setuser" }
-    };
+    });
     return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
@@ -276,19 +276,19 @@ auto Server::handler()
 
   router->http_get("/rest/1.0/rawstreams", by(&nodes::getrawstreams));
   router->http_get("/rest/1.0/rawstreams/purgecount", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "purgecount" },
       { "objtype", "stream" }
-    };
+    });
     return sendSimpleReturnRawObjectAdmin(msg, req);
   });
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setobjectpolicy" },
       { "objtype", "stream" }
-    };
+    });
     return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/rawstreams/:id/purgecount", by(&nodes::getideaspurgecount));
@@ -299,23 +299,23 @@ auto Server::handler()
 
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
   router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setgrouppolicy" }
-    };
+    });
     return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_post("/rest/1.0/groups", by(&nodes::postgroups));
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setgroup" }
-    };
+    });
     return sendBodyReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "setobject" },
       { "objtype", "stream" }
-    };
+    });
     return sendBodyReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
@@ -325,9 +325,9 @@ auto Server::handler()
   router->http_get("/rest/1.0/nodes", by(&nodes::getnodes));
   router->http_get("/rest/1.0/nodes/:id", by(&nodes::getnode));
   router->http_post("/rest/1.0/nodes", [&](const req_t& req, params_t params) {
-    json msg = {
+    auto msg = dictO({
       { "type", "addnode" }
-    };
+    });
     return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
@@ -388,27 +388,25 @@ shared_ptr<rws::ws_t> Server::createWS(const req_t& req) {
 
 }
 
-void Server::sendWS(uint64_t &id, const json &json) {
+void Server::sendWS(uint64_t &id, const DictO &json) {
 
-  BOOST_LOG_TRIVIAL(trace) << "sendWS " << json;
+  auto s = Dict::toString(json);
+  BOOST_LOG_TRIVIAL(trace) << "sendWS " << s;
 
   auto i = _registry.find(id);
   if (i != _registry.end()) {
-    stringstream ss;
-    ss << json;
-    i->second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+    i->second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, s));
   }
 }
 
-void Server::sendAllWS(const json &json) {
+void Server::sendAllWS(const DictO &json) {
 
-  BOOST_LOG_TRIVIAL(trace) << "sendAllWS " << json;
+  auto s = Dict::toString(json, false);
+  BOOST_LOG_TRIVIAL(trace) << "sendAllWS " << s;
 
-  stringstream ss;
-  ss << json;
   for (auto i: _registry) {
     try {
-      i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+      i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, s));
     }
     catch (...) {
       BOOST_LOG_TRIVIAL(error) << "failed send_message on socket";      
@@ -417,9 +415,10 @@ void Server::sendAllWS(const json &json) {
   
 }
 
-void Server::sendAllWSExcept(const json &json, const string &socketid) {
+void Server::sendAllWSExcept(const DictO &json, const string &socketid) {
 
-  BOOST_LOG_TRIVIAL(trace) << "sendAllWSExcept " << json << " not " << socketid;
+  auto s = Dict::toString(json, false);
+  BOOST_LOG_TRIVIAL(trace) << "sendAllWSExcept " << s << " not " << socketid;
 
   long sock = 0;
   try {
@@ -428,14 +427,12 @@ void Server::sendAllWSExcept(const json &json, const string &socketid) {
     BOOST_LOG_TRIVIAL(trace) << "skipping socketid, not a number";      
   }
   
-  stringstream ss;
-  ss << json;
   for (auto i: _registry) {
     if (i.first == sock) {
       continue;
     }
     try {
-      i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, ss.str()));
+      i.second->send_message(rws::message_t(rws::final_frame, rws::opcode_t::text_frame, s));
     }
     catch (...) {
       BOOST_LOG_TRIVIAL(error) << "failed send_message on socket";      
@@ -467,26 +464,22 @@ optional<shared_ptr<Session> > Server::getSession(const req_t& req) {
 status_t Server::unauthorised(const req_t& req) {
 
   auto resp = init_resp(req->create_response(restinio::status_unauthorized()));
-  json err = {
+  auto err = dictO({
     { "status", 401 },
     { "err", "Username/Password incorrect" }
-  };
-  stringstream ss;
-  ss << err;
-  resp.set_body(ss.str());
+  });
+  resp.set_body(Dict::toString(err, false));
   return resp.done();
 }
 
 status_t Server::not_modified(const req_t& req, optional<string> etag) {
 
   auto resp = init_resp(req->create_response(restinio::status_not_modified()));
-  json err = {
+  auto err = dictO({
     { "status", 403 },
     { "err", "Not modified" }
-  };
-  stringstream ss;
-  ss << err;
-  resp.set_body(ss.str());
+  });
+  resp.set_body(Dict::toString(err, false));
   if (etag) {
     resp.append_header("Etag", etag.value());
   }
@@ -499,13 +492,11 @@ status_t Server::fatal(const req_t& req, const string &msg) {
   BOOST_LOG_TRIVIAL(error) << "fatal " << msg;
 
   auto resp = init_resp(req->create_response(restinio::status_internal_server_error()));
-  json err = {
+  auto err = dictO({
     { "status", 500 },
     { "err", msg }
-  };
-  stringstream ss;
-  ss << err;
-  resp.set_body(ss.str());
+  });
+  resp.set_body(Dict::toString(err, false));
   return resp.done();
 }
 
@@ -514,13 +505,11 @@ status_t Server::warning(const req_t& req, const string &msg) {
   BOOST_LOG_TRIVIAL(error) << "warning " << msg;
 
   auto resp = init_resp(req->create_response(restinio::status_bad_request()));
-  json err = {
+  auto err = dictO({
     { "status", 400 },
     { "err", msg }
-  };
-  stringstream ss;
-  ss << err;
-  resp.set_body(ss.str());
+  });
+  resp.set_body(Dict::toString(err, false));
   return resp.done();
 }
 
@@ -529,13 +518,11 @@ status_t Server::security(const req_t& req) {
   BOOST_LOG_TRIVIAL(error) << "security";
 
   auto resp = init_resp(req->create_response(restinio::status_unauthorized()));
-  json err = {
+  auto err = dictO({
     { "status", 401 },
     { "err", "Unauthorized" }
-  };
-  stringstream ss;
-  ss << err;
-  resp.set_body(ss.str());
+  });
+  resp.set_body(Dict::toString(err, false));
   return resp.done();
 }
 
@@ -557,30 +544,29 @@ status_t Server::returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag
   
 }
 
-status_t Server::returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &msg) {
+status_t Server::returnObj(const req_t& req, shared_ptr<ETagHandler> etag, const DictG &msg) {
 
-  BOOST_LOG_TRIVIAL(trace) << msg;
+  auto s = Dict::toString(msg, false);
+  BOOST_LOG_TRIVIAL(trace) << s;
   
   auto resp = req->create_response();
-  stringstream ss;
-  ss << msg;
-  resp.set_body(ss.str());
+  resp.set_body(s);
   etag->setHeaders(resp);
   return resp.done();
   
 }
 
-optional<status_t> Server::checkErrors(const req_t& req, json &msg, const string &type) {
+optional<status_t> Server::checkErrors(const req_t& req, const DictO &msg, const string &type) {
 
   // test for an error...
-  auto rettype = Json::getString(msg, "type");
+  auto rettype = Dict::getString(msg, "type");
   if (!rettype) {
     BOOST_LOG_TRIVIAL(error) << type << " missing type in return";
     return fatal(req, "missing type");
   }
   if (rettype.value() == "err") {
-    auto m = Json::getString(msg, "msg");
-    auto level = Json::getString(msg, "level");
+    auto m = Dict::getString(msg, "msg");
+    auto level = Dict::getString(msg, "level");
     if (level.value() == "warning") {
       return warning(req, m.value());
     }
@@ -594,7 +580,7 @@ optional<status_t> Server::checkErrors(const req_t& req, json &msg, const string
   
 }
 
-status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &msg, const string &type) {
+status_t Server::checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, const string &type) {
 
   auto resp = checkErrors(req, msg, type);
   if (resp) {
@@ -605,68 +591,95 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, json &msg, const st
 
 }
 
-status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, json &msg, optional<string> id) {
+status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id) {
 
+  BOOST_LOG_TRIVIAL(trace) << "sendBodyReturnEmptyObjAdmin " << (id ? *id : "no id!");
+  
   if (!isAdmin(req)) {
     return unauthorised(req);
   }
 
-  json body = boost::json::parse(req->body());
-//  BOOST_LOG_TRIVIAL(trace) << type << " " << body;
+  auto body = Dict::getObject(Dict::parseString(req->body()));
+  if (!body) {
+    return fatal(req, "could not parse body to JSON.");
+  }
+//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
 
-  return sendBody(req, ETag::none(), body, msg, id);
+  return sendBody(req, ETag::none(), *body, msg, id);
 
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, json &msg, optional<string> id) {
+status_t Server::sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id) {
 
   auto session = getSession(req);
   if (!session) {
     return unauthorised(req);
   }
 
-  json body = boost::json::parse(req->body());
-//  BOOST_LOG_TRIVIAL(trace) << type << " " << body;
+  auto body = Dict::getObject(Dict::parseString(req->body()));
+  if (!body) {
+    return fatal(req, "could not parse body to JSON.");
+  }
+//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
 
-  body.as_object()["me"] = session.value()->userid();
+  (*body)["me"] = session.value()->userid();
 
-  return sendBody(req, ETag::none(), body, msg, id);
+  return sendBody(req, ETag::none(), *body, msg, id);
   
 }
 
-status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &body, json &msg, optional<string> id) {
+status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &body, const DictO &msg, optional<string> id) {
 
-  if (!body.is_object()) {
-    return fatal(req, "body is not object");
+  DictO obj;
+  
+  // we can't erase, so just copy all fields instead of the _id, if we have one
+  // set the correct field name;
+  for (auto i: body) {
+    auto key = get<0>(i);
+    auto value = get<1>(i);
+    if (key == "_id") {
+      auto id = Dict::getString(value);
+      if (!id) {
+        BOOST_LOG_TRIVIAL(error) << "_id is not a string" << Dict::toString(value);
+        continue;
+      }
+      // use "id" as the field name.
+      obj["id"] = *id;
+    }
+    else {
+      obj[key] =  get<1>(i);
+    }
   }
-
-  auto obj = body.as_object();
+  
+  // and forget all that if the actually pass the idea.
+  if (id) {
+    obj["id"] = *id;
+  }
   
   // copy fields of the msg into the body. Could do it the other way around.
   string type = "??";
-  for (auto i: msg.as_object()) {
-    if (i.key() == "type") {
-      type = i.value().as_string();
+  for (auto i: msg) {
+    auto key = get<0>(i);
+    auto value = get<1>(i);
+    if (key == "type") {
+      auto t = Dict::getString(value);
+      if (!t) {
+        BOOST_LOG_TRIVIAL(error) << "type is not a string" << Dict::toString(value);
+        continue;
+      }
+      type = *t;
     }
     else {
-      obj[i.key()] = i.value();
+      obj[key] = value;
     }
   }
   
   obj["type"] = type;
-  if (obj.if_contains("_id")) {
-    obj["id"] = Json::getString(body, "_id").value();
-    obj.erase("_id");
-  }
-  
-  if (id) {
-    obj["id"] = id.value();
-  }
   
   // if we have a socket id, then send it on as the correlation id.
   if (req->header().has_field("socketid")) {
     BOOST_LOG_TRIVIAL(trace) << "setting socket id from header";
-    obj["corr"] = req->header().value_of("socketid");
+    obj["corr"] = string(req->header().value_of("socketid"));
   }
 
 	send(obj);
@@ -683,7 +696,7 @@ status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &
 
 }
 
-status_t Server::sendSimpleReturnRawObjectAdmin(json &msg, const req_t& req) {
+status_t Server::sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req) {
 
   auto session = getSession(req);
   if (!session) {
@@ -698,7 +711,7 @@ status_t Server::sendSimpleReturnRawObjectAdmin(json &msg, const req_t& req) {
 
 }
 
-status_t Server::sendSimpleReturnEmptyObjAdmin(json &msg, const req_t& req) {
+status_t Server::sendSimpleReturnEmptyObjAdmin(const DictO &msg, const req_t& req) {
 
   if (!isAdmin(req)) {
     return unauthorised(req);
@@ -720,7 +733,7 @@ status_t Server::sendSimpleReturnEmptyObjAdmin(json &msg, const req_t& req) {
 
 status_t Server::receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag) {
 
-  json j = receive();
+  auto j = receive();
 
   auto resp = checkErrors(req, j, "rawobj");
   if (resp) {
@@ -733,7 +746,7 @@ status_t Server::receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag
 
 status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field) {
 
-  json j = receive();
+  auto j = receive();
 
   auto resp = checkErrors(req, j, "array");
   if (resp) {
@@ -745,7 +758,7 @@ status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, co
     return not_modified(req, etag->origEtag());
   }
 
-  auto result = Json::getArray(j, field);
+  auto result = Dict::getVector(j, field);
   
   if (!result) {
     // send fatal error
@@ -755,14 +768,14 @@ status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, co
 
 //  BOOST_LOG_TRIVIAL(debug) << result.value();
 
-  j = Json::fixIds(result.value());
-  return returnObj(req, etag, j);
+  auto msg = Json::fixIds(result.value());
+  return returnObj(req, etag, msg);
 
 }
 
 status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field) {
 
-  json j = receive();
+  auto j = receive();
 
 //	BOOST_LOG_TRIVIAL(debug) << j;
 
@@ -776,7 +789,7 @@ status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, c
     return not_modified(req, etag->origEtag());
   }
 
-  auto result = Json::getObject(j, field);
+  auto result = Dict::getObject(j, field);
   
   if (!result) {
     // send fatal error
@@ -807,22 +820,22 @@ bool Server::isAdmin(const req_t& req) {
 
 optional<string> Server::finishlogin(const string &password) {
 
-  send({
+  send(dictO({
     { "type", "login" },
     { "session", "1" },
     { "password", password }
-  });
-  json j = receive();
-  BOOST_LOG_TRIVIAL(trace) << "login returned " << j;
+  }));
+  auto j = receive();
+  BOOST_LOG_TRIVIAL(trace) << "login returned " << Dict::toString(j);
   
-  auto type = Json::getString(j, "type");
+  auto type = Dict::getString(j, "type");
   if (!type) {
     BOOST_LOG_TRIVIAL(error) << "missing type in return";
     return nullopt;
   }
   
   if (type.value() == "err") {
-    BOOST_LOG_TRIVIAL(error) << Json::getString(j, "msg").value();
+    BOOST_LOG_TRIVIAL(error) << Dict::getString(j, "msg").value();
     return nullopt;
   }
 
@@ -830,11 +843,9 @@ optional<string> Server::finishlogin(const string &password) {
   
 }
 
-void Server::send(const json &json) {
+void Server::send(const DictO &json) {
 
-  stringstream ss;
-  ss << json;
-  string m = ss.str();
+  string m = Dict::toString(json);
   zmq::message_t msg(m.length());
   memcpy(msg.data(), m.c_str(), m.length());
 #if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
@@ -845,7 +856,7 @@ void Server::send(const json &json) {
 
 }
 
-json Server::receive() {
+DictO Server::receive() {
 
   zmq::message_t reply;
 #if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
@@ -854,6 +865,12 @@ json Server::receive() {
   auto res = _req.recv(reply, zmq::recv_flags::none);
 #endif
   string r((const char *)reply.data(), reply.size());
-  return boost::json::parse(r);
+  auto obj = Dict::getObject(Dict::parseString(r));
+  if (!obj) {
+    BOOST_LOG_TRIVIAL(error) << "didn't get back JSON object " << r;
+    return DictO();
+  }
+  
+  return *obj;
 
 }

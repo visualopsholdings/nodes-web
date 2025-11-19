@@ -11,16 +11,14 @@
 
 #include "zmqclient.hpp"
 
-#include "json.hpp"
-
 #include <boost/log/trivial.hpp>
 #include <thread>
 
 namespace nodes {
 
 // messages
-void sendWS(ZMQClient *client, json &json);
-void sendIdeaWS(ZMQClient *client, json &json);
+void sendWS(ZMQClient *client, const DictO &json);
+void sendIdeaWS(ZMQClient *client, const DictO &json);
 
 };
 
@@ -93,12 +91,16 @@ void ZMQClient::handle_reply(const zmq::message_t &reply, map<string, msgHandler
 
   // convert to JSON
   string r((const char *)reply.data(), reply.size());
-  json doc = boost::json::parse(r);
 
-  BOOST_LOG_TRIVIAL(debug) << "<-* " << doc;
+  auto doc = Dict::getObject(Dict::parseString(r));
+  if (!doc) {
+    BOOST_LOG_TRIVIAL(error) << "could not parse body to JSON object.";
+    return;
+  }
+  BOOST_LOG_TRIVIAL(debug) << "<-* " << Dict::toString(*doc);
 
   // switch the handler based on the message type.
-  auto type = Json::getString(doc, "type");
+  auto type = Dict::getString(doc, "type");
   if (!type) {
     BOOST_LOG_TRIVIAL(error) << "no type";
     return;
@@ -109,7 +111,7 @@ void ZMQClient::handle_reply(const zmq::message_t &reply, map<string, msgHandler
     BOOST_LOG_TRIVIAL(error) << "unknown reply type " << type.value();
     return;
   }
-  handler->second(doc);
+  handler->second(*doc);
   
 }
 

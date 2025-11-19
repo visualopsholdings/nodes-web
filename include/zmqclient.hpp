@@ -14,17 +14,18 @@
 #ifndef H_zmqclient
 #define H_zmqclient
 
+#include "dict.hpp"
+
 #include <string>
 #include <map>
-#include <boost/json.hpp>
 #include <zmq.hpp>
 
 using namespace std;
-using json = boost::json::value;
+using namespace vops;
 
 class Server;
 
-typedef function<void (json &)> msgHandler;
+typedef function<void (const DictO &)> msgHandler;
 
 class ZMQClient : public enable_shared_from_this<ZMQClient> {
 

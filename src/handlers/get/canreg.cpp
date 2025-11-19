@@ -21,10 +21,10 @@ status_t getcanreg(Server *server, const req_t& req, params_t params)
 {
   const auto token = restinio::cast_to<string>(params["token"]);
 
-  server->send({ 
+  server->send(dictO({ 
     { "type", "canreg" },
     { "token", token }
-  });
+  }));
   return server->receiveRawObject(req, ETag::none());
 
 }

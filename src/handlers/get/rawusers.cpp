@@ -23,9 +23,9 @@ status_t getrawusers(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
   
-  json msg = { 
+  auto msg = dictO({ 
     { "type", "users" }
-  };
+  });
   auto etag = ETag::collectionChanged(req, &msg);
   server->send(msg);
   return server->receiveArray(req, etag, "users");

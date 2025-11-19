@@ -29,31 +29,31 @@ status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
   if (id == "undefined") {
     return server->returnEmptyArray(req, ETag::none());
   }
-  json msg = { 
+  auto msg = dictO({
     { "type", "object" },
     { "objtype", "stream" },
     { "id", id }
-  };
+  });
   auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   
-  json j = server->receive();
+  auto j = server->receive();
   
   if (etag->resultModified(j, "stream")) {
     return server->not_modified(req, etag->origEtag());
   }
-  auto stream = Json::getObject(j, "stream");
+  auto stream = Dict::getObject(j, "stream");
   if (!stream) {
     return server->fatal(req, "stream missing stream");
   }
-  auto policy = Json::getString(stream.value(), "policy");
+  auto policy = Dict::getString(stream.value(), "policy");
   if (!policy) {
     return server->fatal(req, "stream missing policy");
   }
-  server->send({ 
+  server->send(dictO({ 
     { "type", "policyusers" },
     { "policy", policy.value() }
-  });
+  }));
   return server->receiveArray(req, etag, "users");
 
 }

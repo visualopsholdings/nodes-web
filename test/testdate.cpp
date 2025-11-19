@@ -17,7 +17,6 @@
 #include <boost/test/unit_test.hpp>
 
 using namespace std;
-using json = boost::json::value;
 
 BOOST_AUTO_TEST_CASE( toISODate )
 {

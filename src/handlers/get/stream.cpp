@@ -30,12 +30,12 @@ status_t getstream(Server *server, const req_t& req, params_t params)
     return server->returnEmptyObj(req, ETag::none());
   }
   
-  json msg = { 
+  auto msg = dictO({
     { "type", "object" },
     { "objtype", "stream" },
     { "me", session.value()->userid() },
     { "id", id }
-  };
+  });
   auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   return server->receiveObject(req, etag, "stream");

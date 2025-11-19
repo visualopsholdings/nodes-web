@@ -29,16 +29,16 @@ status_t getme(Server *server, const req_t& req, params_t params)
     return server->not_modified(req, etag->origEtag());
   }
   
-  json j = { 
+  auto msg = dictO({
     { "id", session.value()->userid() },
     { "_id", session.value()->userid() },
     { "name", session.value()->name() },
     { "fullname", session.value()->fullname() },
     { "admin", session.value()->admin() },
     { "modifyDate", session.value()->modifyDate() }
-  };
+  });
   
-  return server->returnObj(req, etag, j);
+  return server->returnObj(req, etag, msg);
 
 }
 

@@ -30,12 +30,12 @@ status_t getgrouppolicy(Server *server, const req_t& req, params_t params)
   if (id == "undefined") {
     return server->returnEmptyObj(req, etag);
   }
-  server->send({ 
+  server->send(dictO({ 
     { "type", "policy" },
     { "objtype", "group" },
     { "id", id },
     { "me", session.value()->userid() }
-  });
+  }));
   return server->receiveArray(req, etag, "policy");
 
 }

@@ -25,10 +25,10 @@ status_t getgroups(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
 
-  json msg = { 
+  auto msg = dictO({
     { "type", "groups" },
     { "me", session.value()->userid() }
-  };
+  });
   auto etag = ETag::collectionChanged(req, &msg);
   server->send(msg);
   return server->receiveArray(req, etag, "groups");

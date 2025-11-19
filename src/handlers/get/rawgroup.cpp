@@ -32,10 +32,10 @@ status_t getrawgroup(Server *server, const req_t& req, params_t params)
   if (id == "undefined") {
     return server->returnEmptyObj(req, ETag::none());
   }
-  json msg = { 
+  auto msg = dictO({
     { "type", "group" },
     { "group", id }
-  };
+  });
   auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   return server->receiveObject(req, etag, "group");

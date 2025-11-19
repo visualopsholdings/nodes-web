@@ -18,35 +18,35 @@
 
 namespace nodes {
 
-void sendIdeaWS(ZMQClient *client, json &j) {
+void sendIdeaWS(ZMQClient *client, const DictO &j) {
   
-  auto stream = Json::getString(j, "stream");
+  auto stream = Dict::getString(j, "stream");
   if (!stream) {
     BOOST_LOG_TRIVIAL(error) << "missing stream from idea";
     return;
   }
   
-  auto idea = Json::getString(j, "id");
+  auto idea = Dict::getString(j, "id");
   if (!idea) {
     BOOST_LOG_TRIVIAL(error) << "missing id from idea";
     return;
   }
 
-  auto corr = Json::getString(j, "corr", true);
+  auto corr = Dict::getString(j, "corr");
   
-  j = { 
+  auto j2 = dictO({ 
     { "type", "update" },
     { "objtype", "stream" },
     { "id", stream.value() },
     { "idea", idea.value() }
-  };
+  });
 
   // send to everybody 
   if (corr) {
-    client->_server->sendAllWSExcept(j, corr.value());
+    client->_server->sendAllWSExcept(j2, corr.value());
   }
   else {
-    client->_server->sendAllWS(j);
+    client->_server->sendAllWS(j2);
   }
   
 }

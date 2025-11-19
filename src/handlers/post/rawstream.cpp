@@ -27,17 +27,20 @@ status_t postrawstream(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, ETag::none());
   }
 
-  json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << j;
+  auto j = Dict::getObject(Dict::parseString(req->body()));
+  if (!j) {
+    return server->fatal(req, "could not parse body to JSON.");
+  }
+  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*j);
 
   // purge
-  auto purge = Json::getBool(j, "purge", true);
+  auto purge = Dict::getBool(j, "purge");
   if (purge && purge.value()) {
-    json msg = { 
+    auto msg = dictO({
       { "type", "purge" },
       { "objtype", "idea" },
       { "stream", id }
-    };
+    });
     return server->sendSimpleReturnEmptyObjAdmin(msg, req);
   }
 

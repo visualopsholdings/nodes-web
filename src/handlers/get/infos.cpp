@@ -25,9 +25,9 @@ status_t getinfos(Server *server, const req_t& req, params_t params)
     return server->unauthorised(req);
   }
 
-  json msg = { 
+  auto msg = dictO({
     { "type", "infos" }
-  };
+  });
   auto etag = ETag::collectionChanged(req, &msg);
   server->send(msg);
   return server->receiveArray(req, etag, "infos");

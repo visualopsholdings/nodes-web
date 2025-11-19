@@ -20,10 +20,13 @@ namespace nodes {
 
 status_t postlogin(Server *server, const req_t& req, params_t params) {
 
-  json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << "postlogin " << j;
+  auto j = Dict::getObject(Dict::parseString(req->body()));
+  if (!j) {
+    return server->fatal(req, "could not parse body to JSON.");
+  }
+  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*j);
 
-  auto password = Json::getString(j, "password");
+  auto password = Dict::getString(j, "password");
   if (!password) {
     BOOST_LOG_TRIVIAL(error) << "missing password";
     return server->unauthorised(req);

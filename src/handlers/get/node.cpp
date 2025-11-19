@@ -37,10 +37,10 @@ status_t getnode(Server *server, const req_t& req, params_t params)
     return server->returnEmptyObj(req, ETag::none());
   }
   
-  json msg = { 
+  auto msg = dictO({
     { "type", "node" },
     { "node", id }
-  };
+  });
   server->send(msg);
   return server->receiveObject(req, etag, "node");
 

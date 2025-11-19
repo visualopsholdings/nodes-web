@@ -29,31 +29,31 @@ status_t getuser(Server *server, const req_t& req, params_t params)
   if (id == "undefined") {
     return server->returnEmptyObj(req, ETag::none());
   }
-  json msg = { 
+  auto msg = dictO({
     { "type", "user" },
     { "user", id }
-  };
+  });
   auto etag = ETag::modifyDate(req, &msg);
   server->send(msg);
   
-  json j = server->receive();
+  auto j = server->receive();
 
   if (etag->resultModified(j, "user")) {
     return server->not_modified(req, etag->origEtag());
   }
 
-  auto user = Json::getObject(j, "user");
+  auto user = Dict::getObject(j, "user");
   if (!user) {
     // send fatal error
     return server->fatal(req, "user missing user");
   }
 
   // return a subset of the user.
-  json newuser = {
-    { "_id", Json::getString(user.value(), "id").value() },
-    { "fullname", Json::getString(user.value(), "fullname").value() },
-    { "modifyDate", Json::getString(user.value(), "modifyDate").value() }
-  };
+  auto newuser = dictO({
+    { "_id", Dict::getString(user.value(), "id").value() },
+    { "fullname", Dict::getString(user.value(), "fullname").value() },
+    { "modifyDate", Dict::getString(user.value(), "modifyDate").value() }
+  });
   
   return server->returnObj(req, etag, newuser);
 

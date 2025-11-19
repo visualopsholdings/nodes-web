@@ -30,12 +30,12 @@ status_t getconversation(Server *server, const req_t& req, params_t params)
     return server->returnEmptyArray(req, ETag::none());
   }
   
-  json msg = { 
+  auto msg = dictO({ 
     { "type", "objects" },
     { "objtype", "idea" },
     { "stream", id },
     { "me", session.value()->userid() }
-  };
+  });
   auto etag = ETag::collectionChanged(req, &msg);
   server->send(msg);
   return server->receiveArray(req, etag, "ideas");

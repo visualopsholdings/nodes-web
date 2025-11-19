@@ -27,11 +27,11 @@ status_t deletenode(Server *server, const req_t& req, params_t params) {
 
   const auto id = restinio::cast_to<string>(params["id"]);
   
-	server->send({
+	server->send(dictO({
 	  { "type", "deletenode" },
 	  { "id",  id }
-	});
-  json j = server->receive();
+	}));
+  auto j = server->receive();
   
 //  BOOST_LOG_TRIVIAL(trace) << j;
   

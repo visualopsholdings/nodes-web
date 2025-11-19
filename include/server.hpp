@@ -14,15 +14,17 @@
 #ifndef H_server
 #define H_server
 
+#include "dict.hpp"
+
 #include <string>
 #include <map>
-#include <boost/json.hpp>
 #include <zmq.hpp>
 #include <restinio/http_headers.hpp>
 #include <restinio/settings.hpp>
 
 using namespace std;
-using json = boost::json::value;
+using namespace vops;
+
 namespace restinio {
   namespace router {
     class route_params_t;
@@ -50,8 +52,8 @@ public:
     
   void run(int httpPort);
   auto handler();
-  void send(const json &json);
-  json receive();
+  void send(const DictO &json);
+  DictO receive();
   optional<string> finishlogin(const string &password);
   status_t unauthorised(const req_t& req);
   status_t fatal(const req_t& req, const string &msg);
@@ -60,24 +62,24 @@ public:
   status_t not_modified(const req_t& req, optional<string> etag);
   optional<shared_ptr<Session> > getSession(const req_t& req);
   bool isAdmin(const req_t& req);
-  optional<status_t> checkErrors(const req_t& req, json &j, const string &type);
+  optional<status_t> checkErrors(const req_t& req, const DictO &j, const string &type);
   
-  status_t returnObj(const req_t& req, shared_ptr<ETagHandler> etag, json &j);
+  status_t returnObj(const req_t& req, shared_ptr<ETagHandler> etag, const DictG &j);
   status_t receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
   status_t receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
   status_t receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag);
   status_t returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag);
   status_t returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag);
 
-  status_t sendBodyReturnEmptyObj(const req_t& req, json &msg, optional<string> id=nullopt);
-  status_t sendBodyReturnEmptyObjAdmin(const req_t& req, json &msg, optional<string> id=nullopt);
-  status_t checkErrorsReturnEmptyObj(const req_t& req, json &msg, const string &type);
-  status_t sendSimpleReturnEmptyObjAdmin(json &msg, const req_t& req);
-  status_t sendSimpleReturnRawObjectAdmin(json &msg, const req_t& req);
+  status_t sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+  status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+  status_t checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, const string &type);
+  status_t sendSimpleReturnEmptyObjAdmin(const DictO &msg, const req_t& req);
+  status_t sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req);
 
-  void sendWS(uint64_t &id, const json &json);
-  void sendAllWS(const json &json);
-  void sendAllWSExcept(const json &json, const string &socketid);
+  void sendWS(uint64_t &id, const DictO &json);
+  void sendAllWS(const DictO &json);
+  void sendAllWSExcept(const DictO &json, const string &socketid);
   shared_ptr<rws::ws_t> createWS(const req_t& req);
   
 	template < typename RESP >
@@ -100,7 +102,7 @@ private:
   shared_ptr<ZMQClient> _zmq;
   map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
   
-  status_t sendBody(const req_t& req, shared_ptr<ETagHandler> etag, json &body, json &msg, optional<string> id);
+  status_t sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &body, const DictO &msg, optional<string> id);
   
 };
 

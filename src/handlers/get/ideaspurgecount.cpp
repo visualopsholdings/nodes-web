@@ -32,11 +32,11 @@ status_t getideaspurgecount(Server *server, const req_t& req, params_t params)
     return server->returnEmptyObj(req, etag);
   }
 
-  json msg = { 
+  auto msg = dictO({
     { "type", "purgecount" },
     { "objtype", "idea" },
     { "stream", id }
-  };
+  });
   server->send(msg);
   return server->receiveRawObject(req, etag);
 

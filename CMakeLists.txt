@@ -14,14 +14,14 @@ cmake_policy(SET CMP0167 NEW) # Boost
 cmake_policy(SET CMP0169 OLD) # FetchContent
 
 project (nodes-web)
-  find_package(Boost 1.85.0 COMPONENTS program_options filesystem unit_test_framework chrono thread log_setup log json REQUIRED)
+  find_package(Boost 1.85.0 COMPONENTS program_options filesystem unit_test_framework chrono thread log_setup log REQUIRED)
   find_package(cppzmq REQUIRED)
   add_definitions(-DBOOST_ALL_DYN_LINK) 
   enable_testing()
 
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (UNIX AND NOT APPLE)
   add_definitions(-funwind-tables) 
@@ -34,6 +34,15 @@ endif ()
 # fetch from other repos.
 
 include(FetchContent)
+
+FetchContent_Declare(
+  dict
+  GIT_REPOSITORY https://github.com/visualopsholdings/dict.git
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(dict)
+
+include_directories(build/_deps/dict-src/include)
 
 FetchContent_Declare(
   nodes-test
@@ -61,7 +70,7 @@ if(NOT base64_POPULATED)
 endif()
 
 set(LIBS zmq)
-set(BOOSTLIBS ${Boost_LOG_LIBRARY} ${Boost_JSON_LIBRARY})
+set(BOOSTLIBS ${Boost_LOG_LIBRARY})
 set(UTILS
   src/json.cpp
   src/cookie.cpp
@@ -125,17 +134,17 @@ set(HANDLERS
 include_directories(include)
 
 add_executable(nodes-web src/nodes-web.cpp ${UTILS} ${HANDLERS} src/session.cpp src/server.cpp  src/zmqclient.cpp src/etag.cpp)
-  target_link_libraries(nodes-web ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
+  target_link_libraries(nodes-web DictLib ${Boost_PROGRAM_OPTIONS_LIBRARY} ${BOOSTLIBS} zmq $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libfmtd.a $ENV{RESTINIO_HOME}/dev/cmake_build/lib/libllhttp.a)
   target_include_directories(nodes-web PUBLIC $ENV{RESTINIO_HOME}/dev $ENV{RESTINIO_HOME}/dev/nodejs/llhttp/include $ENV{RESTINIO_HOME}/dev/expected-lite/include $ENV{RESTINIO_HOME}/dev/fmt/include)
   target_compile_definitions(nodes-web  PUBLIC RESTINIO_USE_BOOST_ASIO=1)
 
 add_executable(TestSession test/testsession.cpp src/session.cpp ${UTILS})
-  target_link_libraries(TestSession ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
+  target_link_libraries(TestSession DictLib ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestSession TestSession)
 
 add_executable(TestJson test/testjson.cpp src/json.cpp src/date.cpp)
-  target_link_libraries(TestJson ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
+  target_link_libraries(TestJson DictLib ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestJson TestJson)
 
@@ -145,11 +154,11 @@ add_executable(TestCookie test/testcookie.cpp src/cookie.cpp)
 add_test(TestCookie TestCookie)
 
 add_executable(TestDate test/testdate.cpp src/date.cpp)
-  target_link_libraries(TestDate ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
+  target_link_libraries(TestDate DictLib ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestDate TestDate)
 
 add_executable(TestPath test/testpath.cpp src/path.cpp)
-  target_link_libraries(TestPath ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
+  target_link_libraries(TestPath DictLib ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${BOOSTLIBS})
 
 add_test(TestPath TestPath)

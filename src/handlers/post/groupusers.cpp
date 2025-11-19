@@ -28,28 +28,28 @@ status_t postgroupusers(Server *server, const req_t& req, params_t params) {
 
   const auto id = restinio::cast_to<string>(params["id"]);
   
-  json j = boost::json::parse(req->body());
-
-//  BOOST_LOG_TRIVIAL(trace) << j;
-
-  if (!j.is_object()) {
-    return server->fatal(req, "body is not object");
+  auto j = Dict::getObject(Dict::parseString(req->body()));
+  if (!j) {
+    return server->fatal(req, "could not parse body to JSON.");
   }
-  if (!j.as_object().if_contains("_id")) {
+  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*j);
+
+  auto bodyid = Dict::getString(j, "_id");
+  if (!bodyid) {
     return server->fatal(req, "body missing _id");
   }
   
-	server->send({
+	server->send(dictO({
 	  { "type", "addmember" },
 	  { "group",  id },
-	  { "id",  j.at("_id").as_string() },
+	  { "id",  *bodyid },
     { "me", session.value()->userid() }
-	});
-  j = server->receive();
+	}));
+  auto j2 = server->receive();
   
 //  BOOST_LOG_TRIVIAL(trace) << j;
   
-  return server->checkErrorsReturnEmptyObj(req, j, "addmember");
+  return server->checkErrorsReturnEmptyObj(req, j2, "addmember");
 
 }
 

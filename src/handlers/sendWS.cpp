@@ -18,11 +18,11 @@
 
 namespace nodes {
 
-void sendWS(ZMQClient *client, json &json) {
+void sendWS(ZMQClient *client, const DictO &json) {
   
   BOOST_LOG_TRIVIAL(trace) << "sendWS";
   
-  auto corr = Json::getString(json, "corr", true);
+  auto corr = Dict::getString(json, "corr");
   if (!corr) {
     // send to all sockets.
     client->_server->sendAllWS(Json::fixObject(json));

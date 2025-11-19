@@ -24,18 +24,21 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
 
   auto etag = ETag::none();
   
-  json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << j;
+  auto j = Dict::getObject(Dict::parseString(req->body()));
+  if (!j) {
+    return server->fatal(req, "could not parse body to JSON.");
+  }
+  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*j);
 
   // query a stream.
-  auto query = Json::getBool(j, "query", true);
+  auto query = Dict::getBool(j, "query");
   if (query && query.value()) {
   
     if (!server->isAdmin(req)) {
       return server->unauthorised(req);
     }
     
-    auto name = Json::getString(j, "name");
+    auto name = Dict::getString(j, "name");
     if (!name) {
       return server->fatal(req, "query requires name.");
     }
@@ -45,16 +48,16 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
     }
     auto socketid = req->header().value_of("socketid");
     
-    j = {
+    auto msg = dictO({
       { "type", "query" },
       { "objtype", "stream" },      
       { "name", name.value() },
-      { "corr", socketid }
-    };
-    server->send(j);
-    j = server->receive();
+      { "corr", string(socketid) }
+    });
+    server->send(msg);
+    auto reply = server->receive();
     
-    auto resp = server->checkErrors(req, j, "query");
+    auto resp = server->checkErrors(req, reply, "query");
     if (resp) {
       return resp.value();
     }
@@ -65,27 +68,27 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
   }
   
   // add an upstream stream
-  auto upstream = Json::getBool(j, "upstream", true);
+  auto upstream = Dict::getBool(j, "upstream");
   if (upstream && upstream.value()) {
   
     if (!server->isAdmin(req)) {
       return server->unauthorised(req);
     }
 
-    auto id = Json::getString(j, "_id");
+    auto id = Dict::getString(j, "_id");
     if (!id) {
       return server->fatal(req, "upstream requires id.");
     }
-    j = {
+    auto msg = dictO({
       { "type", "addobject" },
       { "objtype", "stream" },
       { "id", id.value() },      
       { "upstream", true }
-    };
-    server->send(j);
-    j = server->receive();
+    });
+    server->send(msg);
+    auto reply = server->receive();
     
-    auto resp = server->checkErrors(req, j, "addstream");
+    auto resp = server->checkErrors(req, reply, "addstream");
     if (resp) {
       return resp.value();
     }
@@ -95,10 +98,10 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
 
-  json msg = {
+  auto msg = dictO({
     { "type", "addobject" },
     { "objtype", "stream" }
-  };
+  });
   return server->sendBodyReturnEmptyObj(req, msg);
 
 }

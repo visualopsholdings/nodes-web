@@ -29,13 +29,13 @@ status_t deletegroupusers(Server *server, const req_t& req, params_t params) {
   const auto id = restinio::cast_to<string>(params["id"]);
   const auto user = restinio::cast_to<string>(params["user"]);
   
-	server->send({
+	server->send(dictO({
 	  { "type", "deletemember" },
 	  { "group",  id },
 	  { "id",  user },
     { "me", session.value()->userid() }
-	});
-  json j = server->receive();
+	}));
+  auto j = server->receive();
   
 //  BOOST_LOG_TRIVIAL(trace) << j;
   

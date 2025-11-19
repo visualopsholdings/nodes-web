@@ -29,11 +29,11 @@ status_t getrawstreampolicy(Server *server, const req_t& req, params_t params)
   if (id == "undefined") {
     return server->returnEmptyObj(req, etag);
   }
-  server->send({ 
+  server->send(dictO({ 
     { "type", "policy" },
     { "objtype", "stream" },
     { "id", id }
-  });
+  }));
   return server->receiveArray(req, etag, "policy");
 
 }

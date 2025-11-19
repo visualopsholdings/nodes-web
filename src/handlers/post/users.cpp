@@ -27,15 +27,18 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   }
   auto etag = ETag::none();
   
-  json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << j;
+  auto j = Dict::getObject(Dict::parseString(req->body()));
+  if (!j) {
+    return server->fatal(req, "could not parse body to JSON.");
+  }
+  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*j);
 
   // query a user.
-  auto query = Json::getBool(j, "query", true);
+  auto query = Dict::getBool(j, "query");
   if (query && query.value()) {
   
     // get the name or the fullname.
-    auto fullname = Json::getString(j, "fullname", true);
+    auto fullname = Dict::getString(j, "fullname");
     if (!fullname) {
       return server->fatal(req, "query requires fullname.");
     }
@@ -45,12 +48,12 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
     }
     auto socketid = req->header().value_of("socketid");
     
-    j = {
+    auto j = dictO({
       { "type", "query" },
       { "objtype", "user" },      
       { "fullname", fullname.value() },
-      { "corr", socketid }
-    };
+      { "corr", string(socketid) }
+    });
     server->send(j);
     j = server->receive();
     
@@ -65,18 +68,18 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
   }
   
   // add an upstream user
-  auto upstream = Json::getBool(j, "upstream", true);
+  auto upstream = Dict::getBool(j, "upstream");
   if (upstream && upstream.value()) {
   
-    auto id = Json::getString(j, "_id");
+    auto id = Dict::getString(j, "_id");
     if (!id) {
       return server->fatal(req, "upstream requires id.");
     }
-    j = {
+    auto j = dictO({
       { "type", "adduser" },
       { "id", id.value() },      
       { "upstream", true }
-    };
+    });
     server->send(j);
     j = server->receive();
     

@@ -428,6 +428,10 @@ Visual Ops node.
 ### 20 Nov 2024
 - Implement deletion in chat, purge count and purging for ideas.
 
+### 19 Nov 2025
+- Rewrite to use new "Dict" instead of boost json.
+
+
 
 
 

@@ -23,9 +23,9 @@ using namespace std;
 
 shared_ptr<Sessions> Sessions::_instance;
 
-Session::Session(json json) {
+Session::Session(const DictO &json) {
   
-  auto id = Json::getString(json, "id");
+  auto id = Dict::getString(json, "id");
   if (id) {
     _userid = id.value();
   }
@@ -33,29 +33,29 @@ Session::Session(json json) {
 	  BOOST_LOG_TRIVIAL(error) << "missing id ";
   }
 
-  auto name = Json::getString(json, "name");
+  auto name = Dict::getString(json, "name");
   if (name) {
     _name = name.value();
   }
 
-  auto fullname = Json::getString(json, "fullname");
+  auto fullname = Dict::getString(json, "fullname");
   if (fullname) {
     _fullname = fullname.value();
   }
 
-  auto admin = Json::getBool(json, "admin");
+  auto admin = Dict::getBool(json, "admin");
   if (admin) {
     _admin = admin.value();
   }
   
-  auto modifyDate = Json::getString(json, "modifyDate");
+  auto modifyDate = Dict::getString(json, "modifyDate");
   if (modifyDate) {
     _modifyDate = modifyDate.value();
   }
   
 }
 
-string Sessions::create(json json) {
+string Sessions::create(const DictO &json) {
 
   auto uuid = boost::uuids::to_string(boost::uuids::random_generator()());
   

@@ -11,7 +11,6 @@
 
 #include "server.hpp"
 #include "session.hpp"
-#include "json.hpp"
 #include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -24,48 +23,48 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
 
   auto etag = ETag::none();
 
-  json j = boost::json::parse(req->body());
-  BOOST_LOG_TRIVIAL(trace) << j;
+  auto j = Dict::getObject(Dict::parseString(req->body()));
+  if (!j) {
+    return server->fatal(req, "could not parse body to JSON.");
+  }
+  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*j);
 
-  auto fullname = Json::getString(j, "fullname");
-  auto vopsidtoken = Json::getString(j, "vopsidtoken");
+  auto fullname = Dict::getString(j, "fullname");
+  auto vopsidtoken = Dict::getString(j, "vopsidtoken");
   if (!fullname || !vopsidtoken) {
     // don't let on.
     return server->returnEmptyObj(req, etag);
   }
   
-  server->send({
+  server->send(dictO({
       { "type", "adduser" },
       { "vopsidtoken", vopsidtoken.value() },
       { "fullname", fullname.value() },
       { "collection", "streams" },
-  });
+  }));
   
   j = server->receive();
 
-  auto resp1 = server->checkErrors(req, j, "postnewuser");
+  auto resp1 = server->checkErrors(req, *j, "postnewuser");
   if (resp1) {
     return resp1.value();
   }
   
-  json user;
-  auto id = Json::getString(j, "id");
-  fullname = Json::getString(j, "fullname");
+  auto id = Dict::getString(j, "id");
+  fullname = Dict::getString(j, "fullname");
   if (!id && !fullname) {
     return server->fatal(req, "no id and fullname in response");
   }
   
   // create a login session.
-  string session = Sessions::instance()->create({
+  string session = Sessions::instance()->create(dictO({
     { "id", id.value() },
     { "fullname", fullname.value() },
-  });
+  }));
   
   // return what we got back from nodes and set the session if.
   auto resp = req->create_response();
-  stringstream ss;
-  ss << j;
-  resp.set_body(ss.str());
+  resp.set_body(Dict::toString(*j, false));
   resp.append_header("Set-Cookie", "ss-id=" + session + "; Path=/; Secure; HttpOnly");
   etag->setHeaders(resp);
   return resp.done();

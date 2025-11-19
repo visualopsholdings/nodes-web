@@ -25,7 +25,7 @@ public:
 
 protected:
   virtual bool modified() { return false; };
-  virtual bool resultModified(json &j, const string &field) { return false; }
+  virtual bool resultModified(const DictO &j, const string &field) { return false; }
   virtual void setHeaders(response_builder_t &resp) {}
 
 };
@@ -38,7 +38,7 @@ public:
 protected:
   virtual bool modified();
   virtual void setHeaders(response_builder_t &resp);
-  virtual bool resultModified(json &j, const string &field) { return false; }
+  virtual bool resultModified(const DictO &j, const string &field) { return false; }
 
 private:
   std::shared_ptr<Session> _session;
@@ -52,7 +52,7 @@ public:
 protected:
   
   virtual bool modified() { return false; };
-  virtual bool resultModified(json &j, const string &field);
+  virtual bool resultModified(const DictO &j, const string &field);
   virtual void setHeaders(response_builder_t &resp);
 
 private:
@@ -68,7 +68,7 @@ public:
 protected:
   
   virtual bool modified() { return false; };
-  virtual bool resultModified(json &j, const string &field);
+  virtual bool resultModified(const DictO &j, const string &field);
   virtual void setHeaders(response_builder_t &resp);
 
 private:
@@ -102,11 +102,24 @@ bool ETagSimpleTime::modified() {
   if (_origEtag) {
     // test the original etag.
     string s = base64::from_base64(_origEtag.value());
-    json j = boost::json::parse(s);
-    BOOST_LOG_TRIVIAL(trace) << j;
-    auto user = Json::getString(j, "user");
-    auto time = Json::getNumber(j, "time");
+    auto j = Dict::getObject(Dict::parseString(s));
+    if (!j) {
+      BOOST_LOG_TRIVIAL(error) << "etag contents not json object " << s;
+      return false;
+    }
+//    BOOST_LOG_TRIVIAL(trace) << "JSON " << Dict::toString(*j);
+    auto user = Dict::getString(*j, "user");
+    if (!user) {
+      BOOST_LOG_TRIVIAL(error) << "no user found";
+      return false;
+    }
+    auto time = Dict::getNum(*j, "time");
+    if (!time) {
+      BOOST_LOG_TRIVIAL(error) << "no time found";
+      return false;
+    }
     long now = Date::now();
+    BOOST_LOG_TRIVIAL(trace) << "here3";
     return user.value() != _session->userid() || now > (time.value() + 1000);
   }
 
@@ -117,21 +130,20 @@ bool ETagSimpleTime::modified() {
 
 void ETagSimpleTime::setHeaders(response_builder_t &resp) {
 
-  json j = {
+  auto j = dictO({
     { "user", _session->userid() },
     { "time", Date::now() }
-  };
-  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << j;
+  });
+  auto s = Dict::toString(j, false);
+  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << s;
 
-  stringstream ss;
-  ss << j;
-  string etag = base64::to_base64(ss.str());
+  string etag = base64::to_base64(s);
   BOOST_LOG_TRIVIAL(trace) << "setting Etag " << etag;
   resp.append_header("Etag", etag);
   
 }
  
-shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, json *msg) {
+shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, DictO *msg) {
 
   BOOST_LOG_TRIVIAL(trace) << "modifyDate";
 
@@ -139,7 +151,15 @@ shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, json *msg) {
   if (req->header().has_field("If-None-Match")) {
     auto etag = req->header().get_field("If-None-Match");
     BOOST_LOG_TRIVIAL(trace) << "modifyDate: " << etag;
-    (*msg).as_object()["test"] = boost::json::parse(base64::from_base64(etag));
+    auto s = base64::from_base64(etag);
+    auto j = Dict::parseString(s);
+    if (j) {
+      (*msg)["test"] = *j;
+    }
+    else {
+      BOOST_LOG_TRIVIAL(error) << "etag contents not json " << s << " setting test empty";
+      (*msg)["test"] = DictO();
+    }
     return shared_ptr<ETagHandler>(new ETagModifyDate(etag));
   }
   
@@ -147,24 +167,24 @@ shared_ptr<ETagHandler> ETag::modifyDate(const req_t& req, json *msg) {
   
 }
 
-bool ETagModifyDate::resultModified(json &j, const string &field) {
+bool ETagModifyDate::resultModified(const DictO &j, const string &field) {
 
-  auto test = Json::getObject(j, "test", true);
+  auto test = Dict::getObject(j, "test");
   if (test) {
-    auto latest = Json::getBool(test.value(), "latest", true);
+    auto latest = Dict::getBool(test.value(), "latest");
     if (latest && latest.value()) {
       return true;
     }
   }
 
-  auto obj = Json::getObject(j, field);
+  auto obj = Dict::getObject(j, field);
   if (!obj) {
     BOOST_LOG_TRIVIAL(trace) << "missing " << field;
     return false;
   }
   
   // remember the time always.
-  auto mod = Json::getString(obj.value(), "modifyDate", true);
+  auto mod = Dict::getString(obj.value(), "modifyDate");
   if (mod) {
     _time = mod.value();
     //  BOOST_LOG_TRIVIAL(trace) << _time;
@@ -175,20 +195,19 @@ bool ETagModifyDate::resultModified(json &j, const string &field) {
 
 void ETagModifyDate::setHeaders(response_builder_t &resp) {
 
-  json j = {
+  auto j = dictO({
     { "modifyDate", _time }
-  };
-  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << j;
+  });
+  string s = Dict::toString(j);
+  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << s;
 
-  stringstream ss;
-  ss << j;
-  string etag = base64::to_base64(ss.str());
+  string etag = base64::to_base64(s);
   BOOST_LOG_TRIVIAL(trace) << "setting Etag " << etag;
   resp.append_header("Etag", etag);
 
 }
 
-shared_ptr<ETagHandler> ETag::collectionChanged(const req_t& req, json *msg) {
+shared_ptr<ETagHandler> ETag::collectionChanged(const req_t& req, DictO *msg) {
 
   BOOST_LOG_TRIVIAL(trace) << "collectionChanged";
 
@@ -196,7 +215,15 @@ shared_ptr<ETagHandler> ETag::collectionChanged(const req_t& req, json *msg) {
   if (req->header().has_field("If-None-Match")) {
     auto etag = req->header().get_field("If-None-Match");
     BOOST_LOG_TRIVIAL(trace) << "collectionChanged: " << etag;
-    (*msg).as_object()["test"] = boost::json::parse(base64::from_base64(etag));
+    auto s = base64::from_base64(etag);
+    auto j = Dict::parseString(s);
+    if (j) {
+      (*msg)["test"] = *j;
+    }
+    else {
+      BOOST_LOG_TRIVIAL(error) << "etag contents not json " << s << " setting test empty";
+      (*msg)["test"] = DictO();
+    }
     return shared_ptr<ETagHandler>(new ETagCollectionChanged(etag));
   }
   
@@ -204,18 +231,18 @@ shared_ptr<ETagHandler> ETag::collectionChanged(const req_t& req, json *msg) {
   
 }
 
-bool ETagCollectionChanged::resultModified(json &j, const string &field) {
+bool ETagCollectionChanged::resultModified(const DictO &j, const string &field) {
 
-  auto test = Json::getObject(j, "test", true);
+  auto test = Dict::getObject(j, "test");
   if (test) {
-    auto latest = Json::getBool(test.value(), "latest", true);
+    auto latest = Dict::getBool(test.value(), "latest");
     if (latest && latest.value()) {
       return true;
     }
   }
 
   // remember the time
-  auto mod = Json::getNumber(test.value(), "time", true);
+  auto mod = Dict::getNum(test.value(), "time");
   if (mod) {
     _time = mod.value();
   //  BOOST_LOG_TRIVIAL(trace) << _time;
@@ -226,14 +253,13 @@ bool ETagCollectionChanged::resultModified(json &j, const string &field) {
 
 void ETagCollectionChanged::setHeaders(response_builder_t &resp) {
 
-  json j = {
+  auto j = dictO({
     { "time", _time }
-  };
-  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << j;
+  });
+  string s = Dict::toString(j);
+  BOOST_LOG_TRIVIAL(trace) << "setting headers: " << s;
 
-  stringstream ss;
-  ss << j;
-  string etag = base64::to_base64(ss.str());
+  string etag = base64::to_base64(s);
   BOOST_LOG_TRIVIAL(trace) << "setting Etag " << etag;
   resp.append_header("Etag", etag);
 

@@ -14,18 +14,19 @@
 #ifndef H_session
 #define H_session
 
+#include "dict.hpp"
+
 #include <string>
 #include <map>
 #include <memory>
-#include <boost/json.hpp>
 
 using namespace std;
-using json = boost::json::value;
+using namespace vops;
 
 class Session {
 
 public:
-  Session(json json);
+  Session(const DictO &json);
   
   bool isAdmin() { return _admin; };
   string userid() { return _userid; };
@@ -54,7 +55,7 @@ public:
     return _instance;
   };
     
-  string create(json json);
+  string create(const DictO &json);
 
   bool has(const string &sessid) {
     return _sessions.find(sessid) != _sessions.end();

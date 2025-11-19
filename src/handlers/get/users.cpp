@@ -28,10 +28,10 @@ status_t getusers(Server *server, const req_t& req, params_t params)
   const auto qp = restinio::parse_query(req->header().query());
   if (qp.has("q")) {
     const auto q = restinio::cast_to<string>(qp["q"]);
-    server->send({ 
+    server->send(dictO({ 
       { "type", "searchusers" },
       { "q", q }
-    });
+    }));
     return server->receiveArray(req, etag, "result");
   }
   
