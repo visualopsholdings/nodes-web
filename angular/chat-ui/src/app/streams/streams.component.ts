@@ -142,7 +142,7 @@ export class StreamsComponent implements OnInit, OnDestroy {
   }
 
   private shouldShowAtAll(): boolean {
-    return this.me != null;
+    return this.me != null && this.router.url.indexOf("/image-upload") < 0;
   }
 
   private shouldShowAtStart(): boolean {

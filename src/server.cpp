@@ -105,6 +105,7 @@ status_t getrawgrouppolicy(Server *server, const req_t& req, params_t );
 status_t deletestream(Server *server, const req_t& req, params_t );
 status_t deletegroup(Server *server, const req_t& req, params_t );
 status_t getstreamsharelink(Server *server, const req_t& req, params_t );
+status_t postideas(Server *server, const req_t& req, params_t );
 status_t getcanreg(Server *server, const req_t& req, params_t );
 status_t deleterawuser(Server *server, const req_t& req, params_t );
 status_t getgroup(Server *server, const req_t& req, params_t );
@@ -120,6 +121,7 @@ status_t postrawusers(Server *server, const req_t& req, params_t );
 status_t deleteidea(Server *server, const req_t& req, params_t );
 status_t getideaspurgecount(Server *server, const req_t& req, params_t );
 status_t postrawstream(Server *server, const req_t& req, params_t );
+status_t postmediaupload(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -222,13 +224,7 @@ auto Server::handler()
   router->http_get("/rest/1.0/streams/:id/policy/users", by(&nodes::getstreampolicyusers));
   router->http_get("/rest/1.0/streams/:id/policy/groups", by(&nodes::getstreampolicygroups));
   router->http_get("/rest/1.0/streams/:id/sharelink", by(&nodes::getstreamsharelink));
-  router->http_post("/rest/1.0/ideas", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
-      { "type", "addobject" },
-      { "objtype", "idea" }
-    });
-    return sendBodyReturnEmptyObj(req, msg);
-  });
+  router->http_post("/rest/1.0/ideas", by(&nodes::postideas));
   router->http_delete("/rest/1.0/ideas/:id", by(&nodes::deleteidea));
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
@@ -331,6 +327,7 @@ auto Server::handler()
     return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
+  router->http_post("/rest/1.0/media/upload", by(&nodes::postmediaupload));
 
   router->non_matched_request_handler([&](const req_t& req) {
   
@@ -605,7 +602,21 @@ status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg,
   }
 //  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
 
-  return sendBody(req, ETag::none(), *body, msg, id);
+  auto etag = ETag::none();
+  
+  string type;
+  sendBody(req, *body, msg, &type, id);
+  
+  auto j = receive();
+  
+  BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
+  
+  auto resp = checkErrors(req, j, type);
+  if (resp) {
+    return resp.value();
+  }
+  
+  return returnEmptyObj(req, etag);
 
 }
 
@@ -624,11 +635,48 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, opti
 
   (*body)["me"] = session.value()->userid();
 
-  return sendBody(req, ETag::none(), *body, msg, id);
+  auto etag = ETag::none();
+  
+  string type;
+  sendBody(req, *body, msg, &type, id);
+  
+  auto j = receive();
+  
+  BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
+  
+  auto resp = checkErrors(req, j, type);
+  if (resp) {
+    return resp.value();
+  }
+  
+  return returnEmptyObj(req, etag);
   
 }
 
-status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &body, const DictO &msg, optional<string> id) {
+status_t Server::sendBodyReturnRawObj(const req_t& req, const DictO &msg, optional<string> id) {
+
+  auto session = getSession(req);
+  if (!session) {
+    return unauthorised(req);
+  }
+
+  auto body = Dict::getObject(Dict::parseString(req->body()));
+  if (!body) {
+    return fatal(req, "could not parse body to JSON.");
+  }
+//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
+
+  (*body)["me"] = session.value()->userid();
+
+  auto etag = ETag::none();
+  
+  string type;
+  sendBody(req, *body, msg, &type, id);
+  return receiveRawObject(req, etag);
+  
+}
+
+void Server::sendBody(const req_t& req, const DictO &body, const DictO &msg, string *type, optional<string> id) {
 
   DictO obj;
   
@@ -657,7 +705,7 @@ status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const 
   }
   
   // copy fields of the msg into the body. Could do it the other way around.
-  string type = "??";
+  *type = "??";
   for (auto i: msg) {
     auto key = get<0>(i);
     auto value = get<1>(i);
@@ -667,14 +715,14 @@ status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const 
         BOOST_LOG_TRIVIAL(error) << "type is not a string" << Dict::toString(value);
         continue;
       }
-      type = *t;
+      *type = *t;
     }
     else {
       obj[key] = value;
     }
   }
   
-  obj["type"] = type;
+  obj["type"] = *type;
   
   // if we have a socket id, then send it on as the correlation id.
   if (req->header().has_field("socketid")) {
@@ -682,17 +730,9 @@ status_t Server::sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const 
     obj["corr"] = string(req->header().value_of("socketid"));
   }
 
+//  BOOST_LOG_TRIVIAL(trace) << "send " << Dict::toString(obj);
+
 	send(obj);
-  auto j = receive();
-  
-//  BOOST_LOG_TRIVIAL(trace) << j;
-  
-  auto resp = checkErrors(req, j, type);
-  if (resp) {
-    return resp.value();
-  }
-  
-  return returnEmptyObj(req, etag);
 
 }
 

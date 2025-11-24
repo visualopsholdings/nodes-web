@@ -22,13 +22,13 @@
   .parent::-webkit-scrollbar,
   .focus::-webkit-scrollbar,
   .add-message::-webkit-scrollbar, .more::-webkit-scrollbar, .less::-webkit-scrollbar,
-  .share::-webkit-scrollbar, .people::-webkit-scrollbar {
+  .share::-webkit-scrollbar, .people::-webkit-scrollbar, .add-image::-webkit-scrollbar {
   display: none;
 }
 
 .footer, .outer, .back, .paginator, .security,
   .focus, .parent,
-  .add-message, .more, .less, .share, .people {
+  .add-message, .add-image, .more, .less, .share, .people {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -293,6 +293,14 @@
 .add-button-icon {
   width: 28px;
   height: 28px;
+}
+
+.add-image {
+  min-width: 40px;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
 }
 
 .user {

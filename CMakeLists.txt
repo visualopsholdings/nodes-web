@@ -129,6 +129,8 @@ set(HANDLERS
   src/handlers/delete/idea.cpp
   src/handlers/get/ideaspurgecount.cpp
   src/handlers/post/rawstream.cpp
+  src/handlers/post/ideas.cpp
+  src/handlers/post/mediaupload.cpp
 )
 
 include_directories(include)

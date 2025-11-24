@@ -453,6 +453,28 @@ export class ConversationComponent implements OnInit, OnDestroy {
     }
   }
 
+  addImage(): void {
+
+    let message = new Idea();
+    message.user = this.me._id;
+    message.needsSend = true;
+    message.text = "Image";
+
+    this._addItem("message", message, message.date);
+    this.calcSeps();
+    this.message = "";
+
+    message.stream = this.stream._id;
+
+    this.ideaService.addIdea(message).subscribe(i => {
+      message.modifyDate = i.modifyDate;
+      message._id = i._id;
+      message.needsSend = false;
+      this.router.navigateByUrl("/image-upload/" + message._id);
+    });
+
+  }
+
   showKeyboard(event): void {
    this.innerHeight = window.innerHeight;
   }

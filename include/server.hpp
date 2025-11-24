@@ -71,8 +71,10 @@ public:
   status_t returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag);
   status_t returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag);
 
+  void sendBody(const req_t& req, const DictO &body, const DictO &msg, string *type, optional<string> id);
   status_t sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
   status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+  status_t sendBodyReturnRawObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
   status_t checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, const string &type);
   status_t sendSimpleReturnEmptyObjAdmin(const DictO &msg, const req_t& req);
   status_t sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req);
@@ -101,9 +103,7 @@ private:
   zmq::socket_t _req;
   shared_ptr<ZMQClient> _zmq;
   map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
-  
-  status_t sendBody(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &body, const DictO &msg, optional<string> id);
-  
+    
 };
 
 #endif // H_server

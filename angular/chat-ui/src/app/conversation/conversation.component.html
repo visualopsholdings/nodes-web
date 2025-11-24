@@ -48,8 +48,14 @@
       class="footer top-border" class="flex-fixed flex-row" [style.width]="footerWidth()"
        [style.background-color]="streamBgColor()">
     <div class="flex-spacer" [style.background-color]="streamBgColor()"></div>
+    <button mat-icon-button class="flex-fixed" class="add-image" name="add-image"
+      [style.background-color]="streamBgColor()" (click)="addImage()">
+     <mat-icon>image</mat-icon>
+    </button>
+<!--
     <div class="flex-fixed" [style.width]="'40px'"
       [style.background-color]="streamBgColor()" [style.display]="displayActionsSpacer()" ></div>
+ -->
     <div class="flex-fixed" class="input" [style.width]="replyWidth()" [style.background-color]="streamBgColor()">
       <textarea matInput class="inputText mat-typography" [style.width]="innerReplyWidth()" [(ngModel)]="message"
         name="newText" placeholder="Type a message."

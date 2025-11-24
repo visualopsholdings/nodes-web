@@ -109,3 +109,7 @@ When('the DB is new') do
    result = JSON.parse(`$NODES_HOME/build/Send --logLevel=trace '#{j}'`)
    expect(result["type"]).to eq("ack")
 end
+
+When('she uploads file {string}') do |filename|
+  page.attach_file("fileUpload", filename, make_visible: true)
+end

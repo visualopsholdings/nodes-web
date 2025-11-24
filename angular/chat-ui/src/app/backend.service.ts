@@ -133,5 +133,15 @@ export class BackendService {
     }
   }
 
+  public httpPostHeaders(): HttpHeaders {
+    let socketid = this.socketService.id();
+    if (socketid) {
+      return new HttpHeaders({ 'socketid': socketid });
+    }
+    else {
+      return null;
+    }
+  }
+
 }
 

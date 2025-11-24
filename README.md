@@ -237,11 +237,13 @@ build and run nodes (in one terminal window):
 
 ```
 cd nodes/build
-make -j4 && ./nodes --test --logLevel=trace
+make -j4 && ./nodes --test --logLevel=trace --schema=../../nodes-web/scripts/schema.json
 ```
 
 The "test" allows the login to take a username "GET" argument (you'll see that below). This is just part
 of the fullname or the username of the user to allow testing to work.
+
+The "schema" argument is important since nodes-web uses a scheam that describes, "streams", "ideas" etc.
 
 Build and run this project in another terminal window:
 
@@ -430,6 +432,9 @@ Visual Ops node.
 
 ### 19 Nov 2025
 - Rewrite to use new "Dict" instead of boost json.
+
+### 24 Nov 2025
+- Simple media upload.
 
 
 

@@ -1,0 +1,25 @@
+<canvas id="canvas" #canvas></canvas>
+<input type="file" #fileUpload id="fileUpload" (change)="choose()" accept="image/*" multiple><br/>
+<mat-select placeholder="Choose size" [(value)]="maxWidth"
+    [disabled]="files.length == 0" (selectionChange)="loadImages()">
+  <mat-option [value]="64">
+    64 Pixels wide
+  </mat-option>
+  <mat-option [value]="128">
+    128 Pixels wide
+  </mat-option>
+  <mat-option [value]="256">
+    256 Pixels wide
+  </mat-option>
+  <mat-option [value]="1024">
+    1024 Pixels wide
+  </mat-option>
+</mat-select>
+<div *ngFor="let image of imageUrls" >
+  <img [src]='image'/>
+</div>
+<button mat-button name="upload" [disabled]="files.length == 0 || imageUrls.length != files.length" (click)="upload()">
+  Upload
+</button>
+<mat-progress-bar *ngIf="inProgress && progress < 100" [value]="progress"></mat-progress-bar>
+<p class="mat-typography" *ngIf="noThumbnail">{{noThumbnail}}</p>
