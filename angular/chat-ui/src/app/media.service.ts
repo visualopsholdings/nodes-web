@@ -24,9 +24,9 @@ export class MediaService extends BackendService {
     super(dialog, socketService, upService, http)
   }
 
-  uploadNewMedia(form: FormData): Observable<any> {
+  uploadNewMedia(idea: string, type: string, form: FormData): Observable<any> {
 
-    const url = `${this.mediaUrl}/upload`;
+    const url = `${this.mediaUrl}/upload/${idea}?type=${type}`;
     var args = { reportProgress: true, observe: 'events' } as any;
     var post = this.httpPostHeaders();
     if (post) {

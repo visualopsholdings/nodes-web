@@ -85,10 +85,12 @@ export class ImageUploadComponent {
 
           ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
+          // convert to a blob for upload.
           this.canvas.nativeElement.toBlob((blob) => {
             this.images.push(blob);
-          }, 'image/jpeg', 0.8);
-          let url = this.canvas.nativeElement.toDataURL('image/jpeg', 0.8);
+          }, this.files[i].type);
+          // convert to an URL for display.
+          let url = this.canvas.nativeElement.toDataURL(this.files[i].type);
           this.imageUrls.push(url);
         };
         img.src = event.target.result;
@@ -99,14 +101,13 @@ export class ImageUploadComponent {
 
   upload(): void {
 
-    // upload the first image.
-    let data = this.images[0];
-    let file = this.files[0];
-
+    // upload all the files.
     const formData = new FormData();
-    formData.append('file', data, "resized.jpeg");
+    for (let i in this.files) {
+      formData.append("files", this.images[i], this.files[i].name);
+    }
     this.inProgress = true;
-    this.mediaService.uploadNewMedia(formData).pipe(
+    this.mediaService.uploadNewMedia(this.id, "IMAGE", formData).pipe(
       map(event => {
         switch (event.type) {
           case HttpEventType.UploadProgress:
@@ -120,7 +121,7 @@ export class ImageUploadComponent {
         this.inProgress = false;
 //        uploaded(false);
 //        element.value = null;
-       return of(`${file.name} upload failed.`);
+       return of(`upload failed.`);
       })).subscribe((event: any) => {
         if (event && event.status == 200) {
           this.progress = 100;

@@ -59,9 +59,10 @@ using traits_t =
     boost_logger_t,
     router_t >;
 
-Server::Server(int reqPort, int subPort, bool test): 
+Server::Server(int reqPort, int subPort, const string &mediaPath, bool test): 
     _context(1), _req(_context, ZMQ_REQ), _test(test) {
     
+  _mediaPath = mediaPath;
   _req.connect("tcp://127.0.0.1:" + to_string(reqPort));
   
 	_zmq = shared_ptr<ZMQClient>(new ZMQClient(this, subPort));
@@ -327,7 +328,7 @@ auto Server::handler()
     return sendBodyReturnEmptyObjAdmin(req, msg);
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
-  router->http_post("/rest/1.0/media/upload", by(&nodes::postmediaupload));
+  router->http_post("/rest/1.0/media/upload/:id", by(&nodes::postmediaupload));
 
   router->non_matched_request_handler([&](const req_t& req) {
   

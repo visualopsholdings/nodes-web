@@ -434,7 +434,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
     message.stream = this.stream._id;
 
     this.ideaService.addIdea(message).subscribe(i => {
-      message.date = i.date;
+      message.modifyDate = i.modifyDate;
       message._id = i._id;
       message.needsSend = false;
     });
@@ -458,7 +458,12 @@ export class ConversationComponent implements OnInit, OnDestroy {
     let message = new Idea();
     message.user = this.me._id;
     message.needsSend = true;
-    message.text = "Image";
+    if (this.message.length > 0) {
+      message.text = this.message;
+    }
+    else {
+      message.text = "Image";
+    }
 
     this._addItem("message", message, message.date);
     this.calcSeps();

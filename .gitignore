@@ -3,3 +3,4 @@ Gemfile.lock
 build
 frontend/apps
 *.log
+private

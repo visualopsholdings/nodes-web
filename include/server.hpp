@@ -48,7 +48,7 @@ class ETagHandler;
 class Server {
 
 public:
-  Server(int reqPort, int subPort, bool test);
+  Server(int reqPort, int subPort, const string &mediaPath, bool test);
     
   void run(int httpPort);
   auto handler();
@@ -97,7 +97,8 @@ public:
 	}
 
   bool _test;
-
+  string _mediaPath;
+  
 private:
   zmq::context_t _context;
   zmq::socket_t _req;

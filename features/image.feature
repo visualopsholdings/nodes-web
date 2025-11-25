@@ -25,8 +25,9 @@ Feature: Image
 	Scenario: An image can be imported
       And she clicks "Conversation 1"
  	   And eventually there are 0 items
+      And she enters "My Image" in "newText"
       And she clicks "add-image"
-      And she uploads file "media/image.png"
+      And she uploads files "media/image.png" "media/linkedin.jpeg"
       And she clicks button named "upload"
       And eventually the page contains "Image upload successful."
  

@@ -113,3 +113,7 @@ end
 When('she uploads file {string}') do |filename|
   page.attach_file("fileUpload", filename, make_visible: true)
 end
+
+When('she uploads files {string} {string}') do |filename1, filename2|
+  page.attach_file("fileUpload", [filename1, filename2], make_visible: true)
+end

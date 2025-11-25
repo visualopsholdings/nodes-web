@@ -15,7 +15,7 @@ ServiceManager.define_service 'nodes' do |s|
 end
 
 ServiceManager.define_service 'nodes-web' do |s|
-   s.start_cmd = 'build/nodes-web --logLevel=debug --httpPort=8081 --test'
+   s.start_cmd = 'build/nodes-web --logLevel=trace --httpPort=8081 --test'
    s.loaded_cue = /Local REQ/
    s.cwd = Dir.pwd
    s.pid_file = 'nodes-web.pid'

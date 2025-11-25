@@ -26,12 +26,13 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-  string version = "Nodes WEB v0.6.0, 22-Nov-2024.";
+  string version = "Nodes WEB v0.7.0, 25-Nov-2024.";
 
   int httpPort;
   int reqPort;
   int subPort;
   string logLevel;
+  string mediaPath;
   bool test;
   
   po::options_description desc("Allowed options");
@@ -39,6 +40,7 @@ int main(int argc, char *argv[]) {
     ("httpPort", po::value<int>(&httpPort)->default_value(3000), "HTTP port.")
     ("subPort", po::value<int>(&subPort)->default_value(3012), "ZMQ Sub port.")
     ("reqPort", po::value<int>(&reqPort)->default_value(3013), "ZMQ Req port.")
+    ("mediaPath", po::value<string>(&mediaPath)->default_value("private/media"), "Path to local media.")
     ("logLevel", po::value<string>(&logLevel)->default_value("info"), "Logging level [trace, debug, warn, info].")
     ("test", po::bool_switch(&test), "We are testing so serve local content without nginx.")
     ("help", "produce help message")
@@ -79,7 +81,7 @@ int main(int argc, char *argv[]) {
   BOOST_LOG_TRIVIAL(info) << version;
 	BOOST_LOG_TRIVIAL(info) << "Connect to ZMQ as Local REQ on " << reqPort;
 
-  Server server(reqPort, subPort, test);
+  Server server(reqPort, subPort, mediaPath, test);
   server.run(httpPort);
   
 }
