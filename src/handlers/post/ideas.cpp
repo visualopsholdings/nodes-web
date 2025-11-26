@@ -40,9 +40,8 @@ status_t postideas(Server *server, const req_t& req, params_t params) {
       { "objtype", "idea" }
     });
     
-    string type;
-    server->sendBody(req, *body, msg, &type, nullopt);
-    
+    server->send(server->mergeBody(req, *body, msg, nullopt));
+
     auto j = server->receive();
   
     auto resp = server->checkErrors(req, j, "postideas");

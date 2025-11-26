@@ -186,7 +186,7 @@ status_t getappindex(Server *server, const req_t& req, params_t params)
 
 };
 
-auto Server::handler()
+std::unique_ptr<router_t> Server::createRouter()
 {
   auto router = std::make_unique< router_t >();
 
@@ -233,14 +233,14 @@ auto Server::handler()
     auto msg = dictO({
       { "type", "setinfo" }
     });
-    return sendBodyReturnEmptyObjAdmin(req, msg);
+    return sendObjReturnEmptyObjAdmin(req, msg);
   });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
     auto msg = dictO({
       { "type", "setsite" }
     });
-    return sendBodyReturnEmptyObjAdmin(req, msg);
+    return sendObjReturnEmptyObjAdmin(req, msg);
   });
   router->http_get("/rest/1.0/sites", by(&nodes::getsites));
   router->http_post("/rest/1.0/users/new", by(&nodes::postnewuser));
@@ -264,7 +264,7 @@ auto Server::handler()
     auto msg = dictO({
       { "type", "setuser" }
     });
-    return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
+    return sendObjReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groups/:id", by(&nodes::getgroup));
@@ -286,7 +286,7 @@ auto Server::handler()
       { "type", "setobjectpolicy" },
       { "objtype", "stream" }
     });
-    return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
+    return sendObjReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/rawstreams/:id/purgecount", by(&nodes::getideaspurgecount));
   router->http_post("/rest/1.0/rawstreams", by(&nodes::postrawstreams));
@@ -299,21 +299,21 @@ auto Server::handler()
     auto msg = dictO({
       { "type", "setgrouppolicy" }
     });
-    return sendBodyReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
+    return sendObjReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_post("/rest/1.0/groups", by(&nodes::postgroups));
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
     auto msg = dictO({
       { "type", "setgroup" }
     });
-    return sendBodyReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
+    return sendObjReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
     auto msg = dictO({
       { "type", "setobject" },
       { "objtype", "stream" }
     });
-    return sendBodyReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
+    return sendObjReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
   router->http_get("/rest/1.0/users/canreg/:token", by(&nodes::getcanreg));
@@ -325,7 +325,7 @@ auto Server::handler()
     auto msg = dictO({
       { "type", "addnode" }
     });
-    return sendBodyReturnEmptyObjAdmin(req, msg);
+    return sendObjReturnEmptyObjAdmin(req, msg);
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
   router->http_post("/rest/1.0/media/upload/:id", by(&nodes::postmediaupload));
@@ -358,7 +358,7 @@ void Server::run(int httpPort) {
   restinio::run(
     restinio::on_this_thread<traits_t>()
       .port(httpPort).address("localhost")
-      .request_handler(handler())
+      .request_handler(createRouter())
   );
 }
 
@@ -559,7 +559,7 @@ optional<status_t> Server::checkErrors(const req_t& req, const DictO &msg, const
   // test for an error...
   auto rettype = Dict::getString(msg, "type");
   if (!rettype) {
-    BOOST_LOG_TRIVIAL(error) << type << " missing type in return";
+    BOOST_LOG_TRIVIAL(error) << type << " missing type in return " << Dict::toString(msg);
     return fatal(req, "missing type");
   }
   if (rettype.value() == "err") {
@@ -589,9 +589,9 @@ status_t Server::checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, c
 
 }
 
-status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id) {
+status_t Server::sendObjReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id) {
 
-  BOOST_LOG_TRIVIAL(trace) << "sendBodyReturnEmptyObjAdmin " << (id ? *id : "no id!");
+  BOOST_LOG_TRIVIAL(trace) << "sendObjReturnEmptyObjAdmin " << (id ? *id : "no id!");
   
   if (!isAdmin(req)) {
     return unauthorised(req);
@@ -603,25 +603,29 @@ status_t Server::sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg,
   }
 //  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
 
-  auto etag = ETag::none();
+  auto newbody = mergeBody(req, *body, msg, id);
   
-  string type;
-  sendBody(req, *body, msg, &type, id);
+  auto type = Dict::getString(newbody, "type");
+  if (!type) {
+    return fatal(req, "body missing type");
+  }
+
+  send(newbody);
   
   auto j = receive();
   
   BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
   
-  auto resp = checkErrors(req, j, type);
+  auto resp = checkErrors(req, j, *type);
   if (resp) {
     return resp.value();
   }
   
-  return returnEmptyObj(req, etag);
+  return returnEmptyObj(req, ETag::none());
 
 }
 
-status_t Server::sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id) {
+status_t Server::sendObjReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id) {
 
   auto session = getSession(req);
   if (!session) {
@@ -636,25 +640,29 @@ status_t Server::sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, opti
 
   (*body)["me"] = session.value()->userid();
 
-  auto etag = ETag::none();
+  auto newbody = mergeBody(req, *body, msg, id);
   
-  string type;
-  sendBody(req, *body, msg, &type, id);
+  auto type = Dict::getString(newbody, "type");
+  if (!type) {
+    return fatal(req, "body missing type");
+  }
+
+  send(newbody);
   
   auto j = receive();
   
   BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
   
-  auto resp = checkErrors(req, j, type);
+  auto resp = checkErrors(req, j, *type);
   if (resp) {
     return resp.value();
   }
   
-  return returnEmptyObj(req, etag);
+  return returnEmptyObj(req, ETag::none());
   
 }
 
-status_t Server::sendBodyReturnRawObj(const req_t& req, const DictO &msg, optional<string> id) {
+status_t Server::sendObjReturnRawObj(const req_t& req, const DictO &msg, optional<string> id) {
 
   auto session = getSession(req);
   if (!session) {
@@ -669,15 +677,13 @@ status_t Server::sendBodyReturnRawObj(const req_t& req, const DictO &msg, option
 
   (*body)["me"] = session.value()->userid();
 
-  auto etag = ETag::none();
+  send(mergeBody(req, *body, msg, id));
   
-  string type;
-  sendBody(req, *body, msg, &type, id);
-  return receiveRawObject(req, etag);
+  return receiveRawObject(req, ETag::none());
   
 }
 
-void Server::sendBody(const req_t& req, const DictO &body, const DictO &msg, string *type, optional<string> id) {
+DictO Server::mergeBody(const req_t& req, const DictO &body, const DictO &msg, optional<string> id) {
 
   DictO obj;
   
@@ -700,13 +706,13 @@ void Server::sendBody(const req_t& req, const DictO &body, const DictO &msg, str
     }
   }
   
-  // and forget all that if the actually pass the idea.
+  // and forget all that if the actually pass the id.
   if (id) {
     obj["id"] = *id;
   }
   
   // copy fields of the msg into the body. Could do it the other way around.
-  *type = "??";
+  string type = "??";
   for (auto i: msg) {
     auto key = get<0>(i);
     auto value = get<1>(i);
@@ -716,14 +722,14 @@ void Server::sendBody(const req_t& req, const DictO &body, const DictO &msg, str
         BOOST_LOG_TRIVIAL(error) << "type is not a string" << Dict::toString(value);
         continue;
       }
-      *type = *t;
+      type = *t;
     }
     else {
       obj[key] = value;
     }
   }
   
-  obj["type"] = *type;
+  obj["type"] = type;
   
   // if we have a socket id, then send it on as the correlation id.
   if (req->header().has_field("socketid")) {
@@ -731,10 +737,8 @@ void Server::sendBody(const req_t& req, const DictO &body, const DictO &msg, str
     obj["corr"] = string(req->header().value_of("socketid"));
   }
 
-//  BOOST_LOG_TRIVIAL(trace) << "send " << Dict::toString(obj);
-
-	send(obj);
-
+  return obj;
+  
 }
 
 status_t Server::sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req) {
@@ -840,8 +844,7 @@ status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, c
 
 //  BOOST_LOG_TRIVIAL(debug) << result.value();
 
-  j = Json::fixObject(result.value());
-  return returnObj(req, etag, j);
+  return returnObj(req, etag, Json::fixObject(result.value()));
 
 }
 

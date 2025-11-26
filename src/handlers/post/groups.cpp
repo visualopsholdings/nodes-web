@@ -100,7 +100,7 @@ status_t postgroups(Server *server, const req_t& req, params_t params) {
   auto msg = dictO({
     { "type", "addgroup" }
   });
-  return server->sendBodyReturnEmptyObj(req, msg);
+  return server->sendObjReturnEmptyObj(req, msg);
 
 }
 

@@ -21,6 +21,7 @@
 #include <zmq.hpp>
 #include <restinio/http_headers.hpp>
 #include <restinio/settings.hpp>
+#include <restinio/router/express.hpp>
 
 using namespace std;
 using namespace vops;
@@ -51,31 +52,61 @@ public:
   Server(int reqPort, int subPort, const string &mediaPath, bool test);
     
   void run(int httpPort);
-  auto handler();
-  void send(const DictO &json);
+    // run the server.
+  
+  void send(const DictO &obj);
+    // send the object to nodes.
+    
   DictO receive();
+    // recieve an object back from nodes.
+    
+  status_t returnObj(const req_t& req, shared_ptr<ETagHandler> etag, const DictG &obj);
+    // return an object to the browser.
+    
+  status_t returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag);
+    // return an empty object back to the browser.
+    
+  status_t returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag);
+    // return an empty array back to the browser.
+    
   optional<string> finishlogin(const string &password);
+    // finish the login and create a session.
+    
   status_t unauthorised(const req_t& req);
   status_t fatal(const req_t& req, const string &msg);
   status_t warning(const req_t& req, const string &msg);
   status_t security(const req_t& req);
   status_t not_modified(const req_t& req, optional<string> etag);
-  optional<shared_ptr<Session> > getSession(const req_t& req);
-  bool isAdmin(const req_t& req);
-  optional<status_t> checkErrors(const req_t& req, const DictO &j, const string &type);
+    // warnings/errors back to the browser.
   
-  status_t returnObj(const req_t& req, shared_ptr<ETagHandler> etag, const DictG &j);
+  optional<shared_ptr<Session> > getSession(const req_t& req);
+    // get our session from the request.
+    
+  bool isAdmin(const req_t& req);
+    // are we admin?
+    
+  optional<status_t> checkErrors(const req_t& req, const DictO &obj, const string &type);
+    // check errors back from nodes.
+    
   status_t receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
+    // receive a message back from nodes, and pass the named field as an array back to the browser.
+    
   status_t receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
+    // receive a message back from nodes, and pass the named field as an object back to the browser.
+    
   status_t receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag);
-  status_t returnEmptyObj(const req_t& req, shared_ptr<ETagHandler> etag);
-  status_t returnEmptyArray(const req_t& req, shared_ptr<ETagHandler> etag);
-
-  void sendBody(const req_t& req, const DictO &body, const DictO &msg, string *type, optional<string> id);
-  status_t sendBodyReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
-  status_t sendBodyReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id=nullopt);
-  status_t sendBodyReturnRawObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+    // receive a message back from nodes, and pass the it straight back to the browser.
+    
+  DictO mergeBody(const req_t& req, const DictO &body, const DictO &msg, optional<string> id);
+    // merge the message fields and the body, the id and a possible corr field into one object.
+    
+  status_t sendObjReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+  status_t sendObjReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+  status_t sendObjReturnRawObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
+    // send the body along with the obj data and return to the brower.
+    
   status_t checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, const string &type);
+  
   status_t sendSimpleReturnEmptyObjAdmin(const DictO &msg, const req_t& req);
   status_t sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req);
 
@@ -105,6 +136,8 @@ private:
   shared_ptr<ZMQClient> _zmq;
   map<uint64_t, std::shared_ptr<rws::ws_t> > _registry;
     
+  std::unique_ptr<restinio::router::express_router_t<> > createRouter();
+    // register all of the message handlers and return the router object.
 };
 
 #endif // H_server

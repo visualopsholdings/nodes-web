@@ -102,7 +102,7 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
     { "type", "addobject" },
     { "objtype", "stream" }
   });
-  return server->sendBodyReturnEmptyObj(req, msg);
+  return server->sendObjReturnEmptyObj(req, msg);
 
 }
 

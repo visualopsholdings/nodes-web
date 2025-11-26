@@ -23,10 +23,6 @@
   },
   {
     "type": "media",
-    "coll": "media",
-    "subobj": {
-      "type": "format",
-      "field": "media"
-    }
+    "coll": "media"
   }
 ]
