@@ -34,10 +34,13 @@ status_t getuser(Server *server, const req_t& req, params_t params)
     { "user", id }
   });
   auto etag = ETag::modifyDate(req, &msg);
-  server->send(msg);
-  
-  auto j = server->receive();
+  auto j = server->callNodes(msg);
 
+  auto resp = server->checkErrors(req, j, "user");
+  if (resp) {
+    return resp.value();
+  }
+  
   if (etag->resultModified(j, "user")) {
     return server->not_modified(req, etag->origEtag());
   }

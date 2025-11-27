@@ -54,8 +54,7 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
       { "name", name.value() },
       { "corr", string(socketid) }
     });
-    server->send(msg);
-    auto reply = server->receive();
+    auto reply = server->callNodes(msg);
     
     auto resp = server->checkErrors(req, reply, "query");
     if (resp) {
@@ -85,24 +84,20 @@ status_t poststreams(Server *server, const req_t& req, params_t params) {
       { "id", id.value() },      
       { "upstream", true }
     });
-    server->send(msg);
-    auto reply = server->receive();
+    auto reply = server->callNodes(msg);
     
     auto resp = server->checkErrors(req, reply, "addstream");
     if (resp) {
       return resp.value();
     }
   
-//    BOOST_LOG_TRIVIAL(trace) << j;
-    
     return server->returnEmptyObj(req, etag);
   }
 
-  auto msg = dictO({
+  return server->sendObjReturnEmptyObj(req, dictO({
     { "type", "addobject" },
     { "objtype", "stream" }
-  });
-  return server->sendObjReturnEmptyObj(req, msg);
+  }));
 
 }
 

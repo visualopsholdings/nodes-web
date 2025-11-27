@@ -29,8 +29,13 @@ status_t getinfos(Server *server, const req_t& req, params_t params)
     { "type", "infos" }
   });
   auto etag = ETag::collectionChanged(req, &msg);
-  server->send(msg);
-  return server->receiveArray(req, etag, "infos");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "infos");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "infos");
 
 }
 

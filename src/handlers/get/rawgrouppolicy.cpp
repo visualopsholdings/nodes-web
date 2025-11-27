@@ -29,12 +29,17 @@ status_t getrawgrouppolicy(Server *server, const req_t& req, params_t params)
   if (id == "undefined") {
     return server->returnEmptyObj(req, etag);
   }
-  server->send(dictO({ 
+  auto j = server->callNodes(dictO({ 
     { "type", "policy" },
     { "objtype", "group" },
     { "id", id }
   }));
-  return server->receiveArray(req, etag, "policy");
+
+  auto resp = server->checkErrors(req, j, "policy");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "policy");
 
 }
 

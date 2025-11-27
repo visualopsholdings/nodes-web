@@ -35,8 +35,14 @@ status_t getgroup(Server *server, const req_t& req, params_t params)
     { "me", session.value()->userid() }
   });
   auto etag = ETag::modifyDate(req, &msg);
-  server->send(msg);
-  return server->receiveObject(req, etag, "group");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "group");
+  if (resp) {
+    return resp.value();
+  }
+  
+  return server->returnObject(req, etag, j, "group");
 
 }
 

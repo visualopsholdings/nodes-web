@@ -230,17 +230,15 @@ std::unique_ptr<router_t> Server::createRouter()
   router->http_post("/rest/1.0/users/me/typing", by(&nodes::posttyping));
   router->http_get("/rest/1.0/infos", by(&nodes::getinfos));
   router->http_post("/rest/1.0/infos", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObjAdmin(req, dictO({
       { "type", "setinfo" }
-    });
-    return sendObjReturnEmptyObjAdmin(req, msg);
+    }));
   });
   router->http_get("/rest/1.0/rawsites", by(&nodes::getrawsites));
   router->http_put("/rest/1.0/sites", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObjAdmin(req, dictO({
       { "type", "setsite" }
-    });
-    return sendObjReturnEmptyObjAdmin(req, msg);
+    }));
   });
   router->http_get("/rest/1.0/sites", by(&nodes::getsites));
   router->http_post("/rest/1.0/users/new", by(&nodes::postnewuser));
@@ -261,10 +259,9 @@ std::unique_ptr<router_t> Server::createRouter()
   router->http_delete("/rest/1.0/groups/:id/users/:user", by(&nodes::deletegroupusers));
   router->http_get("/rest/1.0/rawusers/:id", by(&nodes::getrawuser));
   router->http_put("/rest/1.0/users/:id", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObjAdmin(req, dictO({
       { "type", "setuser" }
-    });
-    return sendObjReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
+    }), restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/groups", by(&nodes::getgroups));
   router->http_get("/rest/1.0/groups/:id", by(&nodes::getgroup));
@@ -282,11 +279,10 @@ std::unique_ptr<router_t> Server::createRouter()
   router->http_get("/rest/1.0/rawstreams/:id", by(&nodes::getrawstream));
   router->http_get("/rest/1.0/rawstreams/:id/policy", by(&nodes::getrawstreampolicy));
   router->http_put("/rest/1.0/rawstreams/:id/policy", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObjAdmin(req, dictO({
       { "type", "setobjectpolicy" },
       { "objtype", "stream" }
-    });
-    return sendObjReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
+    }), restinio::cast_to<string>(params["id"]));
   });
   router->http_get("/rest/1.0/rawstreams/:id/purgecount", by(&nodes::getideaspurgecount));
   router->http_post("/rest/1.0/rawstreams", by(&nodes::postrawstreams));
@@ -296,24 +292,21 @@ std::unique_ptr<router_t> Server::createRouter()
 
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
   router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObjAdmin(req, dictO({
       { "type", "setgrouppolicy" }
-    });
-    return sendObjReturnEmptyObjAdmin(req, msg, restinio::cast_to<string>(params["id"]));
+    }), restinio::cast_to<string>(params["id"]));
   });
   router->http_post("/rest/1.0/groups", by(&nodes::postgroups));
   router->http_put("/rest/1.0/groups/:id", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObj(req, dictO({
       { "type", "setgroup" }
-    });
-    return sendObjReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
+    }), restinio::cast_to<string>(params["id"]));
   });
   router->http_put("/rest/1.0/streams/:id", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObj(req, dictO({
       { "type", "setobject" },
       { "objtype", "stream" }
-    });
-    return sendObjReturnEmptyObj(req, msg, restinio::cast_to<string>(params["id"]));
+    }), restinio::cast_to<string>(params["id"]));
   });
   router->http_delete("/rest/1.0/groups/:id", by(&nodes::deletegroup));
   router->http_get("/rest/1.0/users/canreg/:token", by(&nodes::getcanreg));
@@ -322,10 +315,9 @@ std::unique_ptr<router_t> Server::createRouter()
   router->http_get("/rest/1.0/nodes", by(&nodes::getnodes));
   router->http_get("/rest/1.0/nodes/:id", by(&nodes::getnode));
   router->http_post("/rest/1.0/nodes", [&](const req_t& req, params_t params) {
-    auto msg = dictO({
+    return sendObjReturnEmptyObjAdmin(req, dictO({
       { "type", "addnode" }
-    });
-    return sendObjReturnEmptyObjAdmin(req, msg);
+    }));
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
   router->http_post("/rest/1.0/media/upload/:id", by(&nodes::postmediaupload));
@@ -578,20 +570,95 @@ optional<status_t> Server::checkErrors(const req_t& req, const DictO &msg, const
   
 }
 
-status_t Server::checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, const string &type) {
+DictO Server::callNodes(const DictO &obj) {
 
-  auto resp = checkErrors(req, msg, type);
+  const auto format = ".json";
+  
+  string m = Dict::toString(obj, false, format);
+
+  BOOST_LOG_TRIVIAL(trace) << "sending " << m;
+  
+  zmq::message_t msg(m.length());
+  memcpy(msg.data(), m.c_str(), m.length());
+#if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
+  _req.send(msg);
+#else
+  _req.send(msg, zmq::send_flags::none);
+#endif
+  
+  zmq::message_t reply;
+#if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
+  _req.recv(&reply);
+#else
+  auto res = _req.recv(reply, zmq::recv_flags::none);
+#endif
+  string r((const char *)reply.data(), reply.size());
+  BOOST_LOG_TRIVIAL(trace) << "received " << r;
+
+  auto oreply = Dict::getObject(Dict::parseString(r, format));
+  if (!oreply) {
+    BOOST_LOG_TRIVIAL(error) << "didn't get back JSON object " << r;
+    return DictO();
+  }
+  
+  
+  return *oreply;
+  
+}
+
+status_t Server::sendObjReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id) {
+
+  // all handlers should look very similar to this one, so here is where
+  // we document how it all works.
+  
+  // The entry point for REST is right here, so first make sure there is a session.
+  auto session = getSession(req);
+  if (!session) {
+    return unauthorised(req);
+  }
+
+  // parse out the body of the request to an object, if you need that.
+  auto body = Dict::getObject(Dict::parseString(req->body()));
+  if (!body) {
+    return fatal(req, "could not parse body to JSON.");
+  }
+//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
+
+  // set "me" into the call, you can get that from the session.
+  (*body)["me"] = session.value()->userid();
+
+  // create a new message that you will send on....
+  // here we merge the "msg" info the object and an in the id if it exists.
+  // this would be different to every nodes call obviously.
+  auto newbody = mergeBody(req, *body, msg, id);
+  
+  // you would probably hard code the type for "checkErrors" but we get it from the
+  // message being sent. 
+  auto type = Dict::getString(newbody, "type");
+  if (!type) {
+    return fatal(req, "body missing type");
+  }
+
+  // send off the request to nodes and get something back.
+  auto j = callNodes(newbody);
+  
+  // always do this, it checks for any errors in the response and creates
+  // a web response for that. pass in something useful to "type" so the error
+  // has some context.
+  auto resp = checkErrors(req, j, *type);
   if (resp) {
     return resp.value();
   }
   
+  // and return something back to the web call if required. We just return an empty object here.
   return returnEmptyObj(req, ETag::none());
-
+  
 }
 
 status_t Server::sendObjReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id) {
 
-  BOOST_LOG_TRIVIAL(trace) << "sendObjReturnEmptyObjAdmin " << (id ? *id : "no id!");
+  // this is VERY similar to above, we just check for the admin flag on the user and fail.
+  // we don't set "me" like above.
   
   if (!isAdmin(req)) {
     return unauthorised(req);
@@ -610,11 +677,7 @@ status_t Server::sendObjReturnEmptyObjAdmin(const req_t& req, const DictO &msg, 
     return fatal(req, "body missing type");
   }
 
-  send(newbody);
-  
-  auto j = receive();
-  
-  BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
+  auto j = callNodes(newbody);
   
   auto resp = checkErrors(req, j, *type);
   if (resp) {
@@ -623,64 +686,6 @@ status_t Server::sendObjReturnEmptyObjAdmin(const req_t& req, const DictO &msg, 
   
   return returnEmptyObj(req, ETag::none());
 
-}
-
-status_t Server::sendObjReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id) {
-
-  auto session = getSession(req);
-  if (!session) {
-    return unauthorised(req);
-  }
-
-  auto body = Dict::getObject(Dict::parseString(req->body()));
-  if (!body) {
-    return fatal(req, "could not parse body to JSON.");
-  }
-//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
-
-  (*body)["me"] = session.value()->userid();
-
-  auto newbody = mergeBody(req, *body, msg, id);
-  
-  auto type = Dict::getString(newbody, "type");
-  if (!type) {
-    return fatal(req, "body missing type");
-  }
-
-  send(newbody);
-  
-  auto j = receive();
-  
-  BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
-  
-  auto resp = checkErrors(req, j, *type);
-  if (resp) {
-    return resp.value();
-  }
-  
-  return returnEmptyObj(req, ETag::none());
-  
-}
-
-status_t Server::sendObjReturnRawObj(const req_t& req, const DictO &msg, optional<string> id) {
-
-  auto session = getSession(req);
-  if (!session) {
-    return unauthorised(req);
-  }
-
-  auto body = Dict::getObject(Dict::parseString(req->body()));
-  if (!body) {
-    return fatal(req, "could not parse body to JSON.");
-  }
-//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(*body);
-
-  (*body)["me"] = session.value()->userid();
-
-  send(mergeBody(req, *body, msg, id));
-  
-  return receiveRawObject(req, ETag::none());
-  
 }
 
 DictO Server::mergeBody(const req_t& req, const DictO &body, const DictO &msg, optional<string> id) {
@@ -743,16 +748,23 @@ DictO Server::mergeBody(const req_t& req, const DictO &body, const DictO &msg, o
 
 status_t Server::sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req) {
 
-  auto session = getSession(req);
-  if (!session) {
-    return unauthorised(req);
-  }
-  if (!session.value()->isAdmin()) {
+  if (!isAdmin(req)) {
     return unauthorised(req);
   }
 
-  send(msg);
-  return receiveRawObject(req, ETag::none());
+  auto type = Dict::getString(msg, "type");
+  if (!type) {
+    return fatal(req, "msg missing type");
+  }
+
+  auto j = callNodes(msg);
+
+  auto resp = checkErrors(req, j, *type);
+  if (resp) {
+    return resp.value();
+  }
+
+  return returnObj(req, ETag::none(), j);
 
 }
 
@@ -762,48 +774,30 @@ status_t Server::sendSimpleReturnEmptyObjAdmin(const DictO &msg, const req_t& re
     return unauthorised(req);
   }
   
-  send(msg);
-  auto j = receive();
+  auto type = Dict::getString(msg, "type");
+  if (!type) {
+    return fatal(req, "msg missing type");
+  }
+
+  auto j = callNodes(msg);
   
-  auto resp = checkErrors(req, j, "simple");
+  auto resp = checkErrors(req, j, *type);
   if (resp) {
     return resp.value();
   }
 
-//    BOOST_LOG_TRIVIAL(trace) << j;
-  
   return returnEmptyObj(req, ETag::none());
 
 }
 
-status_t Server::receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag) {
-
-  auto j = receive();
-
-  auto resp = checkErrors(req, j, "rawobj");
-  if (resp) {
-    return resp.value();
-  }
-
-  return returnObj(req, etag, j);
-
-}
-
-status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field) {
-
-  auto j = receive();
-
-  auto resp = checkErrors(req, j, "array");
-  if (resp) {
-    return resp.value();
-  }
+status_t Server::returnArray(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &obj, const string &field) {
 
   // some etags don't use the result so they just always return false.
-  if (etag->resultModified(j, field)) {
+  if (etag->resultModified(obj, field)) {
     return not_modified(req, etag->origEtag());
   }
 
-  auto result = Dict::getVector(j, field);
+  auto result = Dict::getVector(obj, field);
   
   if (!result) {
     // send fatal error
@@ -818,23 +812,14 @@ status_t Server::receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, co
 
 }
 
-status_t Server::receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field) {
+status_t Server::returnObject(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &obj, const string &field) {
 
-  auto j = receive();
-
-//	BOOST_LOG_TRIVIAL(debug) << j;
-
-  auto resp = checkErrors(req, j, "object");
-  if (resp) {
-    return resp.value();
-  }
-  
   // some etags don't use the result so they just always return false.
-  if (etag->resultModified(j, field)) {
+  if (etag->resultModified(obj, field)) {
     return not_modified(req, etag->origEtag());
   }
 
-  auto result = Dict::getObject(j, field);
+  auto result = Dict::getObject(obj, field);
   
   if (!result) {
     // send fatal error
@@ -864,13 +849,11 @@ bool Server::isAdmin(const req_t& req) {
 
 optional<string> Server::finishlogin(const string &password) {
 
-  send(dictO({
+  auto j = callNodes(dictO({
     { "type", "login" },
     { "session", "1" },
     { "password", password }
   }));
-  auto j = receive();
-  BOOST_LOG_TRIVIAL(trace) << "login returned " << Dict::toString(j);
   
   auto type = Dict::getString(j, "type");
   if (!type) {
@@ -885,36 +868,4 @@ optional<string> Server::finishlogin(const string &password) {
 
   return Sessions::instance()->create(j);
   
-}
-
-void Server::send(const DictO &json) {
-
-  string m = Dict::toString(json);
-  zmq::message_t msg(m.length());
-  memcpy(msg.data(), m.c_str(), m.length());
-#if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
-  _req.send(msg);
-#else
-  _req.send(msg, zmq::send_flags::none);
-#endif
-
-}
-
-DictO Server::receive() {
-
-  zmq::message_t reply;
-#if CPPZMQ_VERSION == ZMQ_MAKE_VERSION(4, 3, 1)
-  _req.recv(&reply);
-#else
-  auto res = _req.recv(reply, zmq::recv_flags::none);
-#endif
-  string r((const char *)reply.data(), reply.size());
-  auto obj = Dict::getObject(Dict::parseString(r));
-  if (!obj) {
-    BOOST_LOG_TRIVIAL(error) << "didn't get back JSON object " << r;
-    return DictO();
-  }
-  
-  return *obj;
-
 }

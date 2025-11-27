@@ -36,8 +36,14 @@ status_t getrawuser(Server *server, const req_t& req, params_t params)
     { "user", id }
   });
   auto etag = ETag::modifyDate(req, &msg);
-  server->send(msg);
-  return server->receiveObject(req, etag, "user");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "user");
+  if (resp) {
+    return resp.value();
+  }
+  
+  return server->returnObject(req, etag, j, "user");
 
 }
 

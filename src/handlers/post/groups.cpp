@@ -54,8 +54,7 @@ status_t postgroups(Server *server, const req_t& req, params_t params) {
       { "name", name.value() },
       { "corr", string(socketid) }
     });
-    server->send(msg);
-    auto reply = server->receive();
+    auto reply = server->callNodes(msg);
     
     auto resp = server->checkErrors(req, reply, "query");
     if (resp) {
@@ -84,8 +83,7 @@ status_t postgroups(Server *server, const req_t& req, params_t params) {
       { "id", id.value() },      
       { "upstream", true }
     });
-    server->send(msg);
-    auto reply = server->receive();
+    auto reply = server->callNodes(msg);
     
     auto resp = server->checkErrors(req, reply, "addgroup");
     if (resp) {
@@ -97,10 +95,9 @@ status_t postgroups(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
 
-  auto msg = dictO({
+  return server->sendObjReturnEmptyObj(req, dictO({
     { "type", "addgroup" }
-  });
-  return server->sendObjReturnEmptyObj(req, msg);
+  }));
 
 }
 

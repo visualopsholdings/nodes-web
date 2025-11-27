@@ -54,16 +54,13 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
       { "fullname", fullname.value() },
       { "corr", string(socketid) }
     });
-    server->send(j);
-    j = server->receive();
+    j = server->callNodes(j);
     
     auto resp = server->checkErrors(req, j, "query");
     if (resp) {
       return resp.value();
     }
   
-//    BOOST_LOG_TRIVIAL(trace) << j;
-    
     return server->returnEmptyObj(req, etag);
   }
   
@@ -80,16 +77,13 @@ status_t postusers(Server *server, const req_t& req, params_t params) {
       { "id", id.value() },      
       { "upstream", true }
     });
-    server->send(j);
-    j = server->receive();
+    j = server->callNodes(j);
     
     auto resp = server->checkErrors(req, j, "adduser");
     if (resp) {
       return resp.value();
     }
   
-//    BOOST_LOG_TRIVIAL(trace) << j;
-    
     return server->returnEmptyObj(req, etag);
   }
 

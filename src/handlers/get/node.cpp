@@ -41,8 +41,14 @@ status_t getnode(Server *server, const req_t& req, params_t params)
     { "type", "node" },
     { "node", id }
   });
-  server->send(msg);
-  return server->receiveObject(req, etag, "node");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "node");
+  if (resp) {
+    return resp.value();
+  }
+  
+  return server->returnObject(req, etag, j, "node");
 
 }
 

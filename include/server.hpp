@@ -54,12 +54,9 @@ public:
   void run(int httpPort);
     // run the server.
   
-  void send(const DictO &obj);
-    // send the object to nodes.
-    
-  DictO receive();
-    // recieve an object back from nodes.
-    
+  DictO callNodes(const DictO &msg);
+    // send a message to nodes and get a reply back.
+
   status_t returnObj(const req_t& req, shared_ptr<ETagHandler> etag, const DictG &obj);
     // return an object to the browser.
     
@@ -88,33 +85,29 @@ public:
   optional<status_t> checkErrors(const req_t& req, const DictO &obj, const string &type);
     // check errors back from nodes.
     
-  status_t receiveArray(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
+  status_t returnArray(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &obj, const string &field);
     // receive a message back from nodes, and pass the named field as an array back to the browser.
     
-  status_t receiveObject(const req_t& req, shared_ptr<ETagHandler> etag, const string &field);
+  status_t returnObject(const req_t& req, shared_ptr<ETagHandler> etag, const DictO &obj, const string &field);
     // receive a message back from nodes, and pass the named field as an object back to the browser.
-    
-  status_t receiveRawObject(const req_t& req, shared_ptr<ETagHandler> etag);
-    // receive a message back from nodes, and pass the it straight back to the browser.
     
   DictO mergeBody(const req_t& req, const DictO &body, const DictO &msg, optional<string> id);
     // merge the message fields and the body, the id and a possible corr field into one object.
     
   status_t sendObjReturnEmptyObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
   status_t sendObjReturnEmptyObjAdmin(const req_t& req, const DictO &msg, optional<string> id=nullopt);
-  status_t sendObjReturnRawObj(const req_t& req, const DictO &msg, optional<string> id=nullopt);
     // send the body along with the obj data and return to the brower.
     
-  status_t checkErrorsReturnEmptyObj(const req_t& req, const DictO &msg, const string &type);
-  
   status_t sendSimpleReturnEmptyObjAdmin(const DictO &msg, const req_t& req);
   status_t sendSimpleReturnRawObjectAdmin(const DictO &msg, const req_t& req);
-
+    // similar to the above guys but don't merge the body.
+    
   void sendWS(uint64_t &id, const DictO &json);
   void sendAllWS(const DictO &json);
   void sendAllWSExcept(const DictO &json, const string &socketid);
   shared_ptr<rws::ws_t> createWS(const req_t& req);
-  
+    // all thinsg web sockets.
+    
 	template < typename RESP >
 	static RESP
 	init_resp( RESP resp )
@@ -138,6 +131,7 @@ private:
     
   std::unique_ptr<restinio::router::express_router_t<> > createRouter();
     // register all of the message handlers and return the router object.
+        
 };
 
 #endif // H_server

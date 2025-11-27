@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -28,17 +29,19 @@ status_t deleteidea(Server *server, const req_t& req, params_t params) {
 
   const auto id = restinio::cast_to<string>(params["id"]);
   
-  server->send(dictO({
+  auto j = server->callNodes(dictO({
     { "type", "deleteobject" },
     { "objtype", "idea" },
     { "id",  id },
     { "me", session.value()->userid() }
   }));
-  auto j = server->receive();
   
-//  BOOST_LOG_TRIVIAL(trace) << j;
+  auto resp = server->checkErrors(req, j, "deleteidea");
+  if (resp) {
+    return resp.value();
+  }
   
-  return server->checkErrorsReturnEmptyObj(req, j, "deleteidea");
+  return server->returnEmptyObj(req, ETag::none());
 
 }
 

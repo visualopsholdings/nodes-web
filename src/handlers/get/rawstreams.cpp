@@ -28,8 +28,13 @@ status_t getrawstreams(Server *server, const req_t& req, params_t params)
     { "objtype", "stream" }
   });
   auto etag = ETag::collectionChanged(req, &msg);
-  server->send(msg);
-  return server->receiveArray(req, etag, "streams");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "streams");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "streams");
 
 }
 

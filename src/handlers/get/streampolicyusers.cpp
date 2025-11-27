@@ -35,9 +35,12 @@ status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
     { "id", id }
   });
   auto etag = ETag::modifyDate(req, &msg);
-  server->send(msg);
+  auto j = server->callNodes(msg);
   
-  auto j = server->receive();
+  auto resp = server->checkErrors(req, j, "getstreams");
+  if (resp) {
+    return resp.value();
+  }
   
   if (etag->resultModified(j, "stream")) {
     return server->not_modified(req, etag->origEtag());
@@ -50,11 +53,16 @@ status_t getstreampolicyusers(Server *server, const req_t& req, params_t params)
   if (!policy) {
     return server->fatal(req, "stream missing policy");
   }
-  server->send(dictO({ 
+  j = server->callNodes(dictO({ 
     { "type", "policyusers" },
     { "policy", policy.value() }
   }));
-  return server->receiveArray(req, etag, "users");
+
+  resp = server->checkErrors(req, j, "users");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "users");
 
 }
 

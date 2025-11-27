@@ -37,8 +37,14 @@ status_t getideaspurgecount(Server *server, const req_t& req, params_t params)
     { "objtype", "idea" },
     { "stream", id }
   });
-  server->send(msg);
-  return server->receiveRawObject(req, etag);
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "purgecount");
+  if (resp) {
+    return resp.value();
+  }
+
+  return server->returnObj(req, ETag::none(), j);
 
 }
 

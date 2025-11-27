@@ -21,11 +21,17 @@ status_t getcanreg(Server *server, const req_t& req, params_t params)
 {
   const auto token = restinio::cast_to<string>(params["token"]);
 
-  server->send(dictO({ 
+  auto j = server->callNodes(dictO({ 
     { "type", "canreg" },
     { "token", token }
   }));
-  return server->receiveRawObject(req, ETag::none());
+
+  auto resp = server->checkErrors(req, j, "canreg");
+  if (resp) {
+    return resp.value();
+  }
+
+  return server->returnObj(req, ETag::none(), j);
 
 }
 

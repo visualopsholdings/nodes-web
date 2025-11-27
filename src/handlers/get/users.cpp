@@ -26,16 +26,20 @@ status_t getusers(Server *server, const req_t& req, params_t params)
   auto etag = ETag::none();
 
   const auto qp = restinio::parse_query(req->header().query());
-  if (qp.has("q")) {
-    const auto q = restinio::cast_to<string>(qp["q"]);
-    server->send(dictO({ 
-      { "type", "searchusers" },
-      { "q", q }
-    }));
-    return server->receiveArray(req, etag, "result");
+  if (!qp.has("q")) {
+    return server->fatal(req, "only understand query.");
   }
+  const auto q = restinio::cast_to<string>(qp["q"]);
+  auto j = server->callNodes(dictO({ 
+    { "type", "searchusers" },
+    { "q", q }
+  }));
   
-  return server->fatal(req, "only understand query.");
+  auto resp = server->checkErrors(req, j, "searchusers");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "result");
 
 }
 

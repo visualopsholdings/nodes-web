@@ -42,7 +42,7 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
   const auto group = restinio::cast_to<string>(qp["group"]);
   const auto expires = restinio::cast_to<int>(qp["expires"]);
   
-  server->send(dictO({ 
+  auto j = server->callNodes(dictO({ 
     { "type", "sharelink" },
     { "collection", "streams" },
     { "id", id },
@@ -52,7 +52,13 @@ status_t getstreamsharelink(Server *server, const req_t& req, params_t params)
     { "urlpostfix", "/apps/chat/#/streams/" + id },
     { "me", session.value()->userid() }
   }));
-  return server->receiveRawObject(req, etag);
+
+  auto resp = server->checkErrors(req, j, "sharelink");
+  if (resp) {
+    return resp.value();
+  }
+
+  return server->returnObj(req, etag, j);
 
 }
 

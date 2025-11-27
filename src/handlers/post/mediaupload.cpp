@@ -106,10 +106,7 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
     { "images", images }
   });
   
-  server->send(msg);
-  auto j = server->receive();
-  
-//  BOOST_LOG_TRIVIAL(trace) << "received " << Dict::toString(j);
+  auto j = server->callNodes(msg);
   
   auto resp = server->checkErrors(req, j, type);
   if (resp) {

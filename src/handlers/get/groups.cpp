@@ -30,8 +30,13 @@ status_t getgroups(Server *server, const req_t& req, params_t params)
     { "me", session.value()->userid() }
   });
   auto etag = ETag::collectionChanged(req, &msg);
-  server->send(msg);
-  return server->receiveArray(req, etag, "groups");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "groups");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "groups");
 
 }
 

@@ -32,8 +32,13 @@ status_t getnodes(Server *server, const req_t& req, params_t params)
     { "type", "nodes" }
   });
   auto etag = ETag::collectionChanged(req, &msg);
-  server->send(msg);
-  return server->receiveArray(req, etag, "nodes");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "nodes");
+  if (resp) {
+    return resp.value();
+  }
+  return server->returnArray(req, etag, j, "nodes");
 
 }
 

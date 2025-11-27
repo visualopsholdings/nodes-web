@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -29,17 +30,19 @@ status_t deletegroupusers(Server *server, const req_t& req, params_t params) {
   const auto id = restinio::cast_to<string>(params["id"]);
   const auto user = restinio::cast_to<string>(params["user"]);
   
-	server->send(dictO({
+  auto j = server->callNodes(dictO({
 	  { "type", "deletemember" },
 	  { "group",  id },
 	  { "id",  user },
     { "me", session.value()->userid() }
 	}));
-  auto j = server->receive();
   
-//  BOOST_LOG_TRIVIAL(trace) << j;
+  auto resp = server->checkErrors(req, j, "deletemember");
+  if (resp) {
+    return resp.value();
+  }
   
-  return server->checkErrorsReturnEmptyObj(req, j, "deletemember");
+  return server->returnEmptyObj(req, ETag::none());
 
 }
 

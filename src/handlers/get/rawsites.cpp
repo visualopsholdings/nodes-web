@@ -27,8 +27,14 @@ status_t getrawsites(Server *server, const req_t& req, params_t params)
     { "type", "site" }
   });
   auto etag = ETag::modifyDate(req, &msg);
-  server->send(msg);
-  return server->receiveObject(req, etag, "site");
+  auto j = server->callNodes(msg);
+
+  auto resp = server->checkErrors(req, j, "site");
+  if (resp) {
+    return resp.value();
+  }
+  
+  return server->returnObject(req, etag, j, "site");
 
 }
 

@@ -36,14 +36,12 @@ status_t postnewuser(Server *server, const req_t& req, params_t params) {
     return server->returnEmptyObj(req, etag);
   }
   
-  server->send(dictO({
+  j = server->callNodes(dictO({
       { "type", "adduser" },
       { "vopsidtoken", vopsidtoken.value() },
       { "fullname", fullname.value() },
       { "collection", "streams" },
   }));
-  
-  j = server->receive();
 
   auto resp1 = server->checkErrors(req, *j, "postnewuser");
   if (resp1) {

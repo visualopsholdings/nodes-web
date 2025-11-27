@@ -12,6 +12,7 @@
 #include "server.hpp"
 #include "session.hpp"
 #include "json.hpp"
+#include "etag.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <restinio/router/express.hpp>
@@ -39,17 +40,19 @@ status_t postgroupusers(Server *server, const req_t& req, params_t params) {
     return server->fatal(req, "body missing _id");
   }
   
-	server->send(dictO({
+  auto j2 = server->callNodes(dictO({
 	  { "type", "addmember" },
 	  { "group",  id },
 	  { "id",  *bodyid },
     { "me", session.value()->userid() }
 	}));
-  auto j2 = server->receive();
+
+  auto resp = server->checkErrors(req, j2, "addmember");
+  if (resp) {
+    return resp.value();
+  }
   
-//  BOOST_LOG_TRIVIAL(trace) << j;
-  
-  return server->checkErrorsReturnEmptyObj(req, j2, "addmember");
+  return server->returnEmptyObj(req, ETag::none());
 
 }
 
