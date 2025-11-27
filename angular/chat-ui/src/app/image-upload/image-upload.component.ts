@@ -119,17 +119,13 @@ export class ImageUploadComponent {
       }),
       catchError((error: HttpErrorResponse) => {
         this.inProgress = false;
-//        uploaded(false);
-//        element.value = null;
-       return of(`upload failed.`);
+        return of(`upload failed.`);
       })).subscribe((event: any) => {
         if (event && event.status == 200) {
           this.progress = 100;
           this.inProgress = false;
           this.noThumbnail = "Image upload successful.";
-//          uploaded(true);
-//           element.value = event.body._id;
-//           this.textChange(element);
+           this.router.navigateByUrl("/streams/" + this.id);
         }
       });
   }

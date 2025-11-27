@@ -11,6 +11,7 @@ import { NodeDetailComponent } from './node-detail/node-detail.component';
 import { SiteDetailComponent } from './site-detail/site-detail.component';
 import { StreamsComponent } from './streams/streams.component';
 import { StreamDetailComponent } from './stream-detail/stream-detail.component';
+import { MediaComponent }  from './media/media.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/infos', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'users/:id', component: UserDetailComponent },
   { path: 'streams', component: StreamsComponent },
   { path: 'streams/:id', component: StreamDetailComponent },
+  { path: 'media', component: MediaComponent },
   { path: 'teams', component: TeamsComponent },
   { path: 'teams/:id', component: TeamDetailComponent },
   { path: 'infos', component: InfosComponent },

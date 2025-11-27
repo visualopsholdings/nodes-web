@@ -249,7 +249,7 @@ Build and run this project in another terminal window:
 
 ```
 cd nodes-web/build
-make -j4 && ./nodes-web --logLevel=trace
+make -j4 && ./nodes-web --logLevel=trace --mediaPath=../private/media
 ```
 
 And then for the angular chat front end (in another terminal window):
@@ -433,10 +433,8 @@ Visual Ops node.
 ### 19 Nov 2025
 - Rewrite to use new "Dict" instead of boost json.
 
-### 24 Nov 2025
-- Simple media upload.
-
-
+### 24 Nov 2025 - 27 Nov 2025
+- Simple media upload and display.
 
 
 

@@ -7,6 +7,7 @@ export class Idea {
   stream?: string;
   date?: Date;
   user?: string;
+  image?: string;
 
    // computed
   itemType?: string;

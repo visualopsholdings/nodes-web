@@ -29,6 +29,9 @@
         </mat-menu>
       </div>
     </div>
+    <div class="flex-row image" [style.width]="width" [style.background-color]="bgColor(isMe())">
+      <img *ngIf="idea.image" src="/rest/1.0/media/{{idea.image}}/content">
+    </div>
     <div class="date flex-fixed-left" [style.color]="dateColor()" [style.display]="dateDisplay()">{{idea.modifyDate | justNow }}</div>
   </div>
   <div class="flex-spacer"></div>

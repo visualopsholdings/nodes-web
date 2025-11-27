@@ -455,28 +455,7 @@ export class ConversationComponent implements OnInit, OnDestroy {
 
   addImage(): void {
 
-    let message = new Idea();
-    message.user = this.me._id;
-    message.needsSend = true;
-    if (this.message.length > 0) {
-      message.text = this.message;
-    }
-    else {
-      message.text = "Image";
-    }
-
-    this._addItem("message", message, message.date);
-    this.calcSeps();
-    this.message = "";
-
-    message.stream = this.stream._id;
-
-    this.ideaService.addIdea(message).subscribe(i => {
-      message.modifyDate = i.modifyDate;
-      message._id = i._id;
-      message.needsSend = false;
-      this.router.navigateByUrl("/image-upload/" + message._id);
-    });
+    this.router.navigateByUrl("/image-upload/" + this.stream._id);
 
   }
 

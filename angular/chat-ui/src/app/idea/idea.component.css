@@ -21,7 +21,12 @@
 .idea {
   border-radius: 5px;
   margin-top: 4px;
-  margin-bottom: 4px;
+  margin-bottom: 0px;
+}
+
+.image {
+  display: block;
+  width: 100%;
 }
 
 .fields {

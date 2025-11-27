@@ -131,6 +131,10 @@ set(HANDLERS
   src/handlers/post/rawstream.cpp
   src/handlers/post/ideas.cpp
   src/handlers/post/mediaupload.cpp
+  src/handlers/get/content.cpp
+  src/handlers/get/rawmedia.cpp
+  src/handlers/delete/media.cpp
+  src/handlers/post/rawmedia.cpp
 )
 
 include_directories(include)

@@ -59,7 +59,7 @@ export class StreamsComponent implements OnInit {
           this.hasUpstream = infos.filter(e => e.type == "upstream").length > 0;
           var mirror = infos.filter(e => e.type == "upstreamMirror");
           this.isMirror = mirror.length > 0 && mirror[0].text == "true";
-          this.serverId = infos.filter(e => e.type == "serverId")[0].text;
+//          this.serverId = infos.filter(e => e.type == "serverId")[0].text;
         });
         this.startSocket();
         this.updatePurgeCount();

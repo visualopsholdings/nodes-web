@@ -74,6 +74,8 @@ import { TeamQueryResultDialogComponent } from './team-query-result-dialog/team-
 import { AddUpstreamStreamDialogComponent } from './add-upstream-stream-dialog/add-upstream-stream-dialog.component';
 import { StreamQueryResultDialogComponent } from './stream-query-result-dialog/stream-query-result-dialog.component';
 import { IdeaService }  from './idea.service';
+import { MediaComponent } from './media/media.component';
+import { MediaService }  from './media.service';
 
 @NgModule({
   declarations: [
@@ -110,7 +112,8 @@ import { IdeaService }  from './idea.service';
     AddUpstreamTeamDialogComponent,
     TeamQueryResultDialogComponent,
     AddUpstreamStreamDialogComponent,
-    StreamQueryResultDialogComponent
+    StreamQueryResultDialogComponent,
+    MediaComponent
   ],
   imports: [
     BrowserModule,
@@ -144,7 +147,7 @@ import { IdeaService }  from './idea.service';
     MatNativeDateModule
   ],
   providers: [IconService, MeService, UserService, InfoService, SiteService, SocketService,
-    TeamService, StreamService, PolicyService, NodesService, IdeaService],
+    TeamService, StreamService, PolicyService, NodesService, IdeaService, MediaService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

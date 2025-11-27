@@ -33,11 +33,11 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
     return server->unauthorised(req);
   }
 
-  const auto id = restinio::cast_to<string>(params["id"]);
-  if (id == "undefined") {
+  const auto stream = restinio::cast_to<string>(params["id"]);
+  if (stream == "undefined") {
     return server->returnEmptyObj(req, ETag::none());
   }
-  BOOST_LOG_TRIVIAL(trace) << "idea " << id;
+  BOOST_LOG_TRIVIAL(trace) << "stream " << stream;
   const auto qp = restinio::parse_query(req->header().query());
   if (!qp.has("type")) {
     return server->fatal(req, "missing type");
@@ -47,6 +47,20 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
     return server->fatal(req, "can only deal with images");
   }
 
+  // get the policy of the stream
+  auto reply = server->callNodes(dictO({
+    { "type", "object" },
+    { "objtype", "stream" },
+    { "id", stream }
+  }));
+  auto resp = server->checkErrors(req, reply, "get stream");
+  if (resp) {
+    return resp.value();
+  }
+  
+//  BOOST_LOG_TRIVIAL(trace) << Dict::toString(reply);
+  auto policy = Dict(reply).object("stream").object("policy").string();
+  
   vector<tuple<string, string> > files;
   
 	const auto enumeration_result = enumerate_parts_with_files(*req,
@@ -64,7 +78,7 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
           // remember the filesnames and UUIDs
           files.push_back(tuple<string, string>(uuid, *part.filename));
 
-					// write this file.
+        // write this file.
           std::ofstream dest_file;
           dest_file.exceptions(std::ofstream::failbit);
           stringstream ss;
@@ -73,13 +87,10 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
           ss << uuid;
           dest_file.open(ss.str());
           dest_file.write(part.body.data(), part.body.size());
-
+      
 				}
-        else if (part.name == "idea") {
-          BOOST_LOG_TRIVIAL(trace) << "idea " << part.body;
-        }
-        else if (part.name == "type") {
-          BOOST_LOG_TRIVIAL(trace) << "type " << part.body;
+        else {
+          BOOST_LOG_TRIVIAL(warning) << "unknown part " << part.name;
         }
         
         // go through everything.
@@ -91,26 +102,35 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
 	  return server->fatal(req, "file content not found!");
 	}
 
-  auto images = DictV();
+  // create all the ideas.
   for (auto i: files) {
-    images.push_back(dictO({
+  
+    reply = server->callNodes(dictO({
+      { "type", "addobject" },
+      { "objtype", "media" },
+      { "me", session.value()->userid() },
+      { "policy", policy },
+      { "type", "IMAGE" },
       { "uuid", get<0>(i) },
-      { "filename", get<1>(i) }
+      { "name", get<1>(i) }
     }));
-  }
-  
-  auto msg = dictO({
-    { "type", "setobject" },
-    { "objtype", "idea" },
-    { "id", id },
-    { "images", images }
-  });
-  
-  auto j = server->callNodes(msg);
-  
-  auto resp = server->checkErrors(req, j, type);
-  if (resp) {
-    return resp.value();
+    resp = server->checkErrors(req, reply, "add media");
+    if (resp) {
+      return resp.value();
+    }
+    reply = server->callNodes(dictO({
+      { "type", "addobject" },
+      { "objtype", "idea" },
+      { "me", session.value()->userid() },
+      { "policy", policy },
+      { "text", "Image" },
+      { "stream", stream },
+      { "image", Dict(reply).object("result").object("id").string() }
+    }));
+    resp = server->checkErrors(req, reply, "add idea");
+    if (resp) {
+      return resp.value();
+    }
   }
   
   return server->returnEmptyObj(req, ETag::none());

@@ -123,6 +123,10 @@ status_t deleteidea(Server *server, const req_t& req, params_t );
 status_t getideaspurgecount(Server *server, const req_t& req, params_t );
 status_t postrawstream(Server *server, const req_t& req, params_t );
 status_t postmediaupload(Server *server, const req_t& req, params_t );
+status_t getcontent(Server *server, const req_t& req, params_t );
+status_t getrawmedia(Server *server, const req_t& req, params_t );
+status_t deletemedia(Server *server, const req_t& req, params_t );
+status_t postrawmedia(Server *server, const req_t& req, params_t );
 
 status_t getroot(Server *server, const req_t& req, params_t params)
 {
@@ -290,6 +294,17 @@ std::unique_ptr<router_t> Server::createRouter()
   router->http_post("/rest/1.0/streams", by(&nodes::poststreams));
   router->http_delete("/rest/1.0/streams/:id", by(&nodes::deletestream));
 
+  router->http_get("/rest/1.0/rawmedia", by(&nodes::getrawmedia));
+  router->http_get("/rest/1.0/rawmedia/purgecount", [&](const req_t& req, params_t params) {
+    auto msg = dictO({
+      { "type", "purgecount" },
+      { "objtype", "media" }
+    });
+    return sendSimpleReturnRawObjectAdmin(msg, req);
+  });
+  router->http_delete("/rest/1.0/rawmedia/:id", by(&nodes::deletemedia));
+  router->http_post("/rest/1.0/rawmedia", by(&nodes::postrawmedia));
+
   router->http_get("/rest/1.0/rawgroups/:id/policy", by(&nodes::getrawgrouppolicy));
   router->http_put("/rest/1.0/rawgroups/:id/policy", [&](const req_t& req, params_t params) {
     return sendObjReturnEmptyObjAdmin(req, dictO({
@@ -321,6 +336,7 @@ std::unique_ptr<router_t> Server::createRouter()
   });
   router->http_delete("/rest/1.0/nodes/:id", by(&nodes::deletenode));
   router->http_post("/rest/1.0/media/upload/:id", by(&nodes::postmediaupload));
+  router->http_get("/rest/1.0/media/:id/content", by(&nodes::getcontent));
 
   router->non_matched_request_handler([&](const req_t& req) {
   

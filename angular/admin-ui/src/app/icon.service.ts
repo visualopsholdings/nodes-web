@@ -16,6 +16,9 @@ export class IconService {
     else if (icon == "internal:user") {
       return "assets/user-icon.svg";
     }
+    else if (icon == "internal:media") {
+      return "assets/media-button.svg";
+    }
     else {
       // it's an url. Should always be absolute but it's not.
       return "/" + icon;
