@@ -237,7 +237,7 @@ build and run nodes (in one terminal window):
 
 ```
 cd nodes/build
-make -j4 && ./nodes --test --logLevel=trace --schema=../../nodes-web/scripts/schema.json
+make -j4 && ./nodes --test --logLevel=trace --schema=../../nodes-web/scripts/schema.json --mediaDir=../../nodes-web/private/media
 ```
 
 The "test" allows the login to take a username "GET" argument (you'll see that below). This is just part
@@ -249,7 +249,7 @@ Build and run this project in another terminal window:
 
 ```
 cd nodes-web/build
-make -j4 && ./nodes-web --logLevel=trace --mediaPath=../private/media
+make -j4 && ./nodes-web --logLevel=trace --mediaDir=../private/media
 ```
 
 And then for the angular chat front end (in another terminal window):
