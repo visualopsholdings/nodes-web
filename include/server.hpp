@@ -49,7 +49,7 @@ class ETagHandler;
 class Server {
 
 public:
-  Server(int reqPort, int subPort, const string &mediaPath, bool test);
+  Server(int reqPort, int subPort, const string &mediaDir, bool test);
     
   void run(int httpPort);
     // run the server.
@@ -121,7 +121,7 @@ public:
 	}
 
   bool _test;
-  string _mediaPath;
+  string _mediaDir;
   
 private:
   zmq::context_t _context;

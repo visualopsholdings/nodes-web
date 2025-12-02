@@ -53,7 +53,7 @@ status_t getcontent(Server *server, const req_t& req, params_t params)
 //  BOOST_LOG_TRIVIAL(trace) << "filename " << name;
 
   stringstream ss;
-  ss << server->_mediaPath;
+  ss << server->_mediaDir;
   ss << "/";
   ss << uuid;
   auto sf = restinio::sendfile(ss.str());

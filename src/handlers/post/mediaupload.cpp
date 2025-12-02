@@ -82,7 +82,7 @@ status_t postmediaupload(Server *server, const req_t& req, params_t params) {
           std::ofstream dest_file;
           dest_file.exceptions(std::ofstream::failbit);
           stringstream ss;
-          ss << server->_mediaPath;
+          ss << server->_mediaDir;
           ss << "/";
           ss << uuid;
           dest_file.open(ss.str());

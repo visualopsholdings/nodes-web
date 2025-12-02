@@ -59,10 +59,10 @@ using traits_t =
     boost_logger_t,
     router_t >;
 
-Server::Server(int reqPort, int subPort, const string &mediaPath, bool test): 
+Server::Server(int reqPort, int subPort, const string &mediaDir, bool test): 
     _context(1), _req(_context, ZMQ_REQ), _test(test) {
     
-  _mediaPath = mediaPath;
+  _mediaDir = mediaDir;
   _req.connect("tcp://127.0.0.1:" + to_string(reqPort));
   
 	_zmq = shared_ptr<ZMQClient>(new ZMQClient(this, subPort));
