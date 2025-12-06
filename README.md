@@ -237,7 +237,7 @@ build and run nodes (in one terminal window):
 
 ```
 cd nodes/build
-make -j4 && ./nodes --test --logLevel=trace --schema=../../nodes-web/scripts/schema.json --mediaDir=../../nodes-web/private/media
+make -j4 && ./nodes --test --logLevel=trace --schema=../../nodes-web/scripts/schema.json
 ```
 
 The "test" allows the login to take a username "GET" argument (you'll see that below). This is just part
